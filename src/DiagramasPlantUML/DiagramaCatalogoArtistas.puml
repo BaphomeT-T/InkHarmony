@@ -1,0 +1,58 @@
+@startuml
+package AdministracionUsuarios {
+    class Administrador {
+        - id: int
+        - usuario: String
+        - contraseña: String
+        + iniciarSesion(): boolean
+        + activarCuenta(usuario: Perfil): void
+        + desactivarCuenta(usuario: Perfil): void
+        + cambiarTipoUsuario(usuario: Perfil, tipo: String): void
+        + eliminarCuenta(usuario: Perfil): void
+        + consultarUsuarios(): List<Perfil>
+    }
+}
+
+package CatalogoArtistas {
+    class ArtistaDAO {
+
+        + registrarArtista(artista: Artista): void
+        + actualizarArtista(artista: Artista): void
+        + eliminarArtista(artista: Artista): void
+        + buscarArtista(): List<Artista>
+        + buscarArtistaID(artista: Artista): Artista
+    }
+
+    class ServicioValidacion {
+        + validarCampos(artista: Artista): boolean
+        + esNombreUnico(nombre: string): boolean
+        + tieneElementoAsociado(artista: Artista): boolean
+    }
+
+    class Artista {
+        - id: int
+        - nombre: String
+        - genero: Genero
+        - fechaNacimiento: Date
+        - biografia: String
+        - imagen: String
+    }
+
+
+    interface UnicoNombreValidable {
+        + esNombreUnico(nombre: string): boolean
+    }
+
+    interface AsociacionValidable {
+        + tieneElementosAsociados(artista : Artista): boolean
+    }
+}
+
+Administrador --> ArtistaDAO
+ArtistaDAO --> Artista
+ServicioValidacion --> Artista
+ServicioValidacion ..|> UnicoNombreValidable
+ServicioValidacion ..|> AsociacionValidable
+ArtistaDAO --> ServicioValidacion
+
+@endumlml
