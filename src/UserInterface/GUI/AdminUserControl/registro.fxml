@@ -155,7 +155,7 @@
                                     <Font size="24.0" />
                                  </font>
                               </Label>
-                              <PasswordField fx:id="txtContrasena" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <PasswordField fx:id="txtRepetirContrasena" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <font>
                                     <Font size="20.0" />
                                  </font>
