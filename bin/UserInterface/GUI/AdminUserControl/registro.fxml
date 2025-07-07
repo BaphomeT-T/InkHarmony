@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.GUI.controllers.AdminUserControl.RegistroController">
+   <children>
+      <GridPane prefHeight="634.0" prefWidth="1280.0" VBox.vgrow="ALWAYS">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="417.4000244140625" minWidth="0.0" prefWidth="130.59993896484374" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1112.0000366210938" minWidth="10.0" prefWidth="1021.0000610351561" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="253.39996337890625" minWidth="5.39996337890625" prefWidth="127.60002441406255" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="330.7999633789062" minHeight="10.0" prefHeight="132.1333038330078" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="588.7999877929688" minHeight="10.0" prefHeight="499.2666961669922" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="588.7999877929688" minHeight="10.0" prefHeight="48.93337402343752" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <GridPane style="-fx-background-color: #1B1A55; -fx-background-radius: 25;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="980.9333251953125" minWidth="10.0" prefWidth="387.33330688476565" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="746.5334167480469" minWidth="10.0" prefWidth="164.53342285156248" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="746.5334167480469" minWidth="10.0" prefWidth="470.66657714843757" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <GridPane prefHeight="499.0" prefWidth="765.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 25;">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="642.1333374023437" minWidth="10.0" prefWidth="397.9999938964844" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="20.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="208.26669921874998" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <GridPane prefHeight="63.0" prefWidth="398.0" GridPane.rowIndex="1">
+                          <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="182.60000610351562" minWidth="10.0" prefWidth="33.26668930053711" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="344.7333106994629" minWidth="10.0" prefWidth="344.7333106994629" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Nombre" textFill="WHITE" GridPane.columnIndex="1">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="txtNombre" prefHeight="31.0" prefWidth="345.0" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </GridPane>
+                        <GridPane prefHeight="51.0" prefWidth="378.0" GridPane.rowIndex="2">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="182.60000610351562" minWidth="10.0" prefWidth="33.26668930053711" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="344.7333106994629" minWidth="10.0" prefWidth="344.7333106994629" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label text="Apellido" textFill="WHITE" GridPane.columnIndex="1">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="txtApellido" prefHeight="31.0" prefWidth="345.0" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </GridPane>
+                        <GridPane prefHeight="51.0" prefWidth="378.0" GridPane.rowIndex="3">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="182.60000610351562" minWidth="10.0" prefWidth="33.26668930053711" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="344.7333106994629" minWidth="10.0" prefWidth="344.7333106994629" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label text="Correo electrónico" textFill="WHITE" GridPane.columnIndex="1">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="txtCorreo" prefHeight="31.0" prefWidth="345.0" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </GridPane>
+                        <GridPane prefHeight="51.0" prefWidth="378.0" GridPane.rowIndex="4">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="182.60000610351562" minWidth="10.0" prefWidth="33.26668930053711" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="344.7333106994629" minWidth="10.0" prefWidth="344.7333106994629" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label text="Contraseña" textFill="WHITE" GridPane.columnIndex="1">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                              <PasswordField fx:id="txtContrasena" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </PasswordField>
+                           </children>
+                        </GridPane>
+                        <GridPane prefHeight="51.0" prefWidth="378.0" GridPane.rowIndex="5">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="182.60000610351562" minWidth="10.0" prefWidth="33.26668930053711" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="344.7333106994629" minWidth="10.0" prefWidth="344.7333106994629" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label text="Verificar contraseña" textFill="WHITE" GridPane.columnIndex="1">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                              <PasswordField fx:id="txtContrasena" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </PasswordField>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </GridPane>
+                  <GridPane GridPane.columnIndex="2">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints maxHeight="230.4" minHeight="10.0" prefHeight="230.4" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="160.00000610351563" minHeight="10.0" prefHeight="38.133343505859415" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="248.73331298828128" minHeight="10.0" prefHeight="229.53336181640628" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="238.5999816894531" minHeight="10.0" prefHeight="97.26663818359373" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <StackPane prefHeight="150.0" prefWidth="200.0">
+                           <children>
+                              <Circle fill="#b0bac3" radius="82.0" stroke="BLACK" strokeType="INSIDE" />
+                              <ImageView fitHeight="91.0" fitWidth="62.0" opacity="0.38" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../Resources/img/busqueda.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </StackPane>
+                        <GridPane GridPane.rowIndex="1">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="175.933349609375" minWidth="10.0" prefWidth="166.33331298828125" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="231.533203125" minWidth="10.0" prefWidth="158.266650390625" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="151.60009765625" minWidth="10.0" prefWidth="142.53334960937497" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label prefHeight="35.0" prefWidth="172.0" text="Foto de Perfil" textFill="WHITE" GridPane.columnIndex="1">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </GridPane>
+                        <GridPane prefHeight="230.0" prefWidth="407.0" GridPane.rowIndex="2">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="71.00000610351563" minHeight="10.0" prefHeight="45.40000381469727" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="128.60003890991212" minHeight="10.0" prefHeight="109.39999618530274" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <GridPane prefHeight="38.0" prefWidth="405.0">
+                                <columnConstraints>
+                                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="152.5999755859375" minWidth="10.0" prefWidth="76.06664657592773" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="385.5999267578125" minWidth="10.0" prefWidth="309.3333740234375" />
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="121.60003662109375" minWidth="10.0" prefWidth="91.46662597656251" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <TextField fx:id="txtBusquedaGenero" prefHeight="43.0" prefWidth="343.0" promptText="Buscar género" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;" GridPane.columnIndex="1">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </TextField>
+                                    <ImageView fitHeight="39.0" fitWidth="89.0" pickOnBounds="true" preserveRatio="true" style="visibility: 100;">
+                                       <image>
+                                          <Image url="@../../Resources/img/lupa.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </GridPane>
+                              <GridPane GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                                <columnConstraints>
+                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Button mnemonicParsing="false" prefHeight="36.0" prefWidth="108.0" style="-fx-background-color: #6e6da1; -fx-background-radius: 20;" text="Metal" textFill="WHITE">
+                                       <font>
+                                          <Font size="22.0" />
+                                       </font>
+                                    </Button>
+                                    <Button mnemonicParsing="false" prefHeight="36.0" prefWidth="108.0" style="-fx-background-color: #6e6da1; -fx-background-radius: 20;" text="Rock" textFill="WHITE" GridPane.columnIndex="1">
+                                       <font>
+                                          <Font size="22.0" />
+                                       </font>
+                                    </Button>
+                                    <Button mnemonicParsing="false" prefHeight="36.0" prefWidth="108.0" style="-fx-background-color: #6e6da1; -fx-background-radius: 20;" text="Jazz" textFill="WHITE" GridPane.columnIndex="2">
+                                       <font>
+                                          <Font size="22.0" />
+                                       </font>
+                                    </Button>
+                                    <Button mnemonicParsing="false" prefHeight="36.0" prefWidth="108.0" style="-fx-background-color: #6e6da1; -fx-background-radius: 20;" text="Clásico" textFill="WHITE" GridPane.rowIndex="1">
+                                       <font>
+                                          <Font size="22.0" />
+                                       </font>
+                                    </Button>
+                                    <Button mnemonicParsing="false" prefHeight="36.0" prefWidth="108.0" style="-fx-background-color: #6e6da1; -fx-background-radius: 20;" text="Pop" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <font>
+                                          <Font size="22.0" />
+                                       </font>
+                                    </Button>
+                                    <Button mnemonicParsing="false" prefHeight="36.0" prefWidth="108.0" style="-fx-background-color: #6e6da1; -fx-background-radius: 20;" text="Grunge" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                       <font>
+                                          <Font size="22.0" />
+                                       </font>
+                                    </Button>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </GridPane>
+                  <GridPane GridPane.columnIndex="1">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="385.0667236328125" minHeight="10.0" prefHeight="385.0667236328125" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="160.00003662109378" minHeight="3.662109378410605E-5" prefHeight="61.333276367187466" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="160.00003662109378" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Button fx:id="btnRegistrar" mnemonicParsing="false" onAction="#registrarCuenta" prefHeight="49.0" prefWidth="164.0" style="-fx-background-color: #9190C2;" text="Registrar" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                           <font>
+                              <Font size="27.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </GridPane>
+               </children>
+            </GridPane>
+            <Label prefHeight="158.0" prefWidth="256.0" text="Registro" textFill="WHITE" GridPane.columnIndex="1">
+               <font>
+                  <Font size="70.0" />
+               </font>
+            </Label>
+         </children>
+      </GridPane>
+   </children>
+</VBox>
