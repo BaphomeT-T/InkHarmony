@@ -1,0 +1,67 @@
+@startuml
+
+package "Módulo Administración de Usuarios" {
+
+class Perfil {
+- nombre: String
+- apellido: String
+- email: String
+- contrasenia: String
+- cuentaActiva: boolean
+- tipoUsuario: String
+- fechaRegistro: Date
+- foto: Image
+- preferenciasMusicales: List<Generos>
+}
+
+class Usuario {
++ registrarUsuario(nombre: String, apellido: String, email: String, contrasenia: String): void
++ actualizarPerfil(nombre: String, apellido: String, foto: Image): void
++ agregarPreferenciasMusicales(generos: List<Genero>): void
+}
+
+class Administrador {
++ activarCuenta(usuario: Perfil): void
++ desactivarCuenta(usuario: Perfil): void
++ cambiarTipoUsuario(usuario: Perfil, tipo: String): void
++ eliminarCuenta(usuario: Perfil): void
++ consultarUsuarios(): List<Perfil>
+}
+
+class Autenticador {
++ validarCredenciales(emailPorVerificar: String, contraseniaPorVerificar: String): boolean
++ obtenerPerfil(email: String): Perfil
+}
+
+class Sesion {
+- usuarioActual: Perfil
++ iniciarSesion(email: String, contrasenia: String): boolean
++ cerrarSesion(): void
++ estaAutenticado(): boolean
++ obtenerUsuarioActual(): Perfil
+}
+
+enum Generos {
+}
+
+
+class PerfilDAO {
++ guardar(perfil: Perfil): void
++ buscarPorEmail(email: String): Perfil
++ listarTodos(): List<Perfil>
++ eliminar(perfil: Perfil): void
++ actualizar(perfil: Perfil): void
++ desactivar(perfil: Perfil): void
+}
+
+Autenticador --  Sesion
+Sesion --> "1" Perfil: usuarioActual
+Perfil --> "*" Generos : preferenciasMusicales
+Usuario --|> Perfil
+Administrador --|> Perfil
+Perfil -> PerfilDAO
+
+
+}
+
+@enduml
