@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Ignorar archivos compilados
 *.class
 
@@ -6,3 +7,10 @@
 
 # Ignorar archivos de configuración de Vs code
 .vscode/
+=======
+# Ignorar clases compiladas
+*.class
+
+# Ignorar carpetas de compilación comunes
+/bin/
+>>>>>>> 84b1c126b1131d97b52fd65393c3bf955d98b17f
