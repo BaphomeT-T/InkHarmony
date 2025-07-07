@@ -1,4 +1,4 @@
-package UserInterface.GUI.controllers.AdminUserControl;
+package UserInterface.CustomerControl.AdminUserControl;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
