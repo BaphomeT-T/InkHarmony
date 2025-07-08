@@ -20,6 +20,7 @@ public class ServicioValidacion implements UnicoNombreValidable, AsociacionValid
         return false;
     }
 
+    //implementando todos los metodos de la interfaz
     @Override
     public boolean tieneElementosAsociados(Artista artista) {
         return false;
