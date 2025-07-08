@@ -42,7 +42,7 @@
             <graphic>
                 <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../Resources/play.png" />
+                        <Image url="@../Resources/img/play.png" />
                     </image>
                 </ImageView>
             </graphic>
@@ -52,7 +52,7 @@
             <graphic>
                 <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../Resources/siguiente-pista.png" />
+                        <Image url="@../Resources/img/siguiente-pista.png" />
                     </image>
                 </ImageView>
             </graphic>
@@ -62,7 +62,7 @@
             <graphic>
                 <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../Resources/pista-anterior.png" />
+                        <Image url="@../Resources/img/pista-anterior.png" />
                     </image>
                 </ImageView>
             </graphic>
@@ -74,7 +74,7 @@
             </font></Label>
         <ImageView fitHeight="36.0" fitWidth="41.0" layoutX="899.0" layoutY="21.0" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@../Resources/lupa.png" />
+                <Image url="@../Resources/img/lupa.png" />
             </image>
         </ImageView>
       <Pane layoutX="50.0" layoutY="86.0" prefHeight="587.0" prefWidth="339.0" style="-fx-background-color: #1B1A55;">
@@ -93,7 +93,7 @@
             <Pane layoutX="25.0" layoutY="105.0" prefHeight="79.0" prefWidth="89.0" style="-fx-background-color: white;" />
               <ImageView fitHeight="46.0" fitWidth="68.0" layoutX="14.0" layoutY="59.0" pickOnBounds="true" preserveRatio="true">
                   <image>
-                  <Image url="@../Resources/lupa.png" />
+                  <Image url="@../Resources/img/lupa.png" />
               </image>
               </ImageView>
             <Pane layoutX="114.0" layoutY="105.0" prefHeight="79.0" prefWidth="201.0" style="-fx-background-color: #ffffff;" />

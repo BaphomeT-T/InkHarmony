@@ -50,7 +50,7 @@
          <graphic>
             <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Resources/play.png" />
+                  <Image url="@../Resources/img/play.png" />
                </image>
             </ImageView>
          </graphic>
@@ -60,7 +60,7 @@
          <graphic>
             <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Resources/siguiente-pista.png" />
+                  <Image url="@../Resources/img/siguiente-pista.png" />
                </image>
             </ImageView>
          </graphic>
@@ -70,7 +70,7 @@
          <graphic>
             <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Resources/pista-anterior.png" />
+                  <Image url="@../Resources/img/pista-anterior.png" />
                </image>
             </ImageView>
          </graphic>
@@ -82,7 +82,7 @@
          </font></Label>
       <ImageView fitHeight="36.0" fitWidth="41.0" layoutX="899.0" layoutY="21.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../Resources/lupa.png" />
+            <Image url="@../Resources/img/lupa.png" />
          </image>
       </ImageView>
    </children>
