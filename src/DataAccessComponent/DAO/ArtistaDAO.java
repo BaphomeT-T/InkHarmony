@@ -21,10 +21,13 @@ public class ArtistaDAO {
     }
 
     public ArrayList<Artista> buscarArtistas() {
+
         return artistas;
     }
 
     public Artista buscarArtistaID(Artista artista) {
+
         return artista;
+
     }
 }
