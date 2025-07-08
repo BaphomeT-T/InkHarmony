@@ -1,4 +1,4 @@
-package UserInterface.GUI.AdminUserControl;
+package UserInterface.GUI;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -12,10 +12,10 @@ public class AdministracionUsuario extends Application {
     public void start(Stage primaryStage) throws Exception {
         // Cargar el FXML
         Parent root = FXMLLoader.load(getClass().getResource(
-            "/UserInterface/GUI/AdminUserControl/administracion_Usuarios.fxml"));
+            "/UserInterface/GUI/AdminUserControl/login.fxml"));
 
         Scene scene = new Scene(root);
-        primaryStage.setTitle("Administración de Usuarios");
+        primaryStage.setTitle("Inicio de sesión");
         primaryStage.setScene(scene);
 
         // Establecer tamaño mínimo (para que no se pueda achicar más)

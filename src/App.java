@@ -1,5 +1,5 @@
 
-import UserInterface.GUI.AdminUserControl.AdministracionUsuario;
+import UserInterface.GUI.AdministracionUsuario;
 import javafx.application.Application;
 
 public class App {

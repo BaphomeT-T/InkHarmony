@@ -155,7 +155,7 @@
                                     <Font size="24.0" />
                                  </font>
                               </Label>
-                              <PasswordField fx:id="txtContrasena" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <PasswordField fx:id="txtRepetirContrasena" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <font>
                                     <Font size="20.0" />
                                  </font>
@@ -303,6 +303,11 @@
             <Label prefHeight="158.0" prefWidth="256.0" text="Registro" textFill="WHITE" GridPane.columnIndex="1">
                <font>
                   <Font size="70.0" />
+               </font>
+            </Label>
+            <Label fx:id="lblSalirRegistro" contentDisplay="CENTER" onMouseClicked="#salirRegistro" text="X" textFill="WHITE" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+               <font>
+                  <Font size="81.0" />
                </font>
             </Label>
          </children>
