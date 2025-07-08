@@ -6,6 +6,8 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
@@ -31,7 +33,11 @@
        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
      </rowConstraints>
       <children>
-           <Label text="Buscar" />
+         <ImageView fitHeight="34.0" fitWidth="43.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+            <image>
+               <Image url="@../../Resources/img/lupa.png" />
+            </image>
+         </ImageView>
            <TextField prefHeight="26.0" prefWidth="696.0" promptText="Buscar usuarios..." style="-fx-pref-width: 300; -fx-background-radius: 15; -fx-padding: 10;" GridPane.columnIndex="1" GridPane.columnSpan="2" />
           
           <TableView minWidth="-Infinity" prefHeight="351.0" prefWidth="474.0" style="-fx-pref-height: 500; -fx-background-color: #B0BAC3;" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.rowSpan="2">
