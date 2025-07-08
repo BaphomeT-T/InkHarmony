@@ -15,11 +15,23 @@
 <?import javafx.scene.text.Font?>
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1280.0" spacing="10" style="-fx-padding: 20; -fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.AdminUserControl.AdministracionUsuarioController">
-   <Label text="Administración Usuarios" textFill="white">
-      <font>
-         <Font size="30" />
-      </font>
-   </Label>
+   <GridPane>
+     <columnConstraints>
+       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+     </columnConstraints>
+     <rowConstraints>
+       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+     </rowConstraints>
+      <children>
+         <Label text="Administración Usuarios" textFill="white">
+            <font>
+               <Font size="30" />
+            </font>
+         </Label>
+         <Button fx:id="btnCerrarSesion" mnemonicParsing="false" onAction="#cerrarSesion" style="-fx-background-color: #b0a7d1; -fx-border-width: 555;" text="Cerrar Sesión" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.vgrow="ALWAYS" />
+      </children>
+   </GridPane>
    <GridPane style="-fx-background-color: #1B1A55; -fx-background-radius: 15; -fx-padding: 10;" VBox.vgrow="ALWAYS">
      <columnConstraints>
        <ColumnConstraints hgrow="NEVER" maxWidth="524.9333190917969" minWidth="-Infinity" prefWidth="40.266692352294925" />
@@ -38,7 +50,7 @@
                <Image url="@../../Resources/img/lupa.png" />
             </image>
          </ImageView>
-           <TextField prefHeight="26.0" prefWidth="696.0" promptText="Buscar usuarios..." style="-fx-pref-width: 300; -fx-background-radius: 15; -fx-padding: 10;" GridPane.columnIndex="1" GridPane.columnSpan="2" />
+           <TextField prefHeight="26.0" prefWidth="696.0" promptText="Buscar usuarios..." style="-fx-pref-width: 300; -fx-background-color: #575a81; -fx-background-radius: 15; -fx-padding: 10; -fx-text-fill: #FFFFFF;" GridPane.columnIndex="1" GridPane.columnSpan="2" />
           
           <TableView minWidth="-Infinity" prefHeight="351.0" prefWidth="474.0" style="-fx-pref-height: 500; -fx-background-color: #B0BAC3;" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.rowSpan="2">
               <columns>
@@ -78,11 +90,11 @@
                   <font>
                      <Font size="16.0" />
                   </font></Button>
-                  <TextField fx:id="txtNombre" editable="false" promptText="Nombre" GridPane.rowIndex="1">
+                  <TextField fx:id="txtNombre" editable="false" promptText="Nombre" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;" GridPane.rowIndex="1">
                   <font>
                      <Font size="16.0" />
                   </font></TextField>
-                  <TextField fx:id="txtApellido" editable="false" prefHeight="26.0" prefWidth="269.0" promptText="Apellido" GridPane.rowIndex="3">
+                  <TextField fx:id="txtApellido" editable="false" prefHeight="26.0" prefWidth="269.0" promptText="Apellido" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;" GridPane.rowIndex="3">
                   <font>
                      <Font size="16.0" />
                   </font></TextField>
@@ -91,7 +103,7 @@
                   <font>
                      <Font size="16.0" />
                   </font></Button>
-                  <ComboBox promptText="Seleccionar rol" style="-fx-pref-height: 40;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                  <ComboBox promptText="Seleccionar rol" style="-fx-pref-height: 40; -fx-background-color: #575a81; -fx-background-radius: 20;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                <Label text="Rol" textFill="#eeeeee" GridPane.columnIndex="2">
                   <font>
                      <Font name="System Bold" size="28.0" />

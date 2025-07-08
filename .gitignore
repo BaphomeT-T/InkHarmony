@@ -1,5 +1,9 @@
-# Ignorar clases compiladas
+# Ignorar archivos compilados
 *.class
 
-# Ignorar carpetas de compilación comunes
+# Ignorar carpetas de compilación
 /bin/
+/out/
+
+# Ignorar archivos de configuración de Vs code
+.vscode/
