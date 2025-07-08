@@ -51,10 +51,10 @@ CREATE TABLE Cancion (
                          id_cancion INTEGER PRIMARY KEY AUTOINCREMENT,
                          anio INTEGER,
                          titulo VARCHAR(20) NOT NULL,
-                         archivo_mp3 VARCHAR(20),
+                         archivo_mp3 BLOB,
                          duracion REAL,
                          fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                         portada VARCHAR(20)
+                         portada BLOB
 );
 
 -- Tabla Cancion_Genero (N:M)
