@@ -6,7 +6,7 @@
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="rutaControlador"
+      fx:controller="UserInterface.CustomerControl.RecomendacionesControl.PlaylistItemController"
       prefHeight="150.0" prefWidth="150.0"
       spacing="5"
       style="-fx-background-color: #1D1F4E; -fx-border-color: #B0BAC3; -fx-padding: 8; -fx-background-radius: 10;">

@@ -1,40 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Button?>
 
-<AnchorPane style="-fx-background-color: #0A0E27;"
-            stylesheets="@../../../estilos_recomendaciones.css"
-            xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane style="-fx-background-color: #0A0E27;" stylesheets="/UserInterface/Resources/estilos/estilos_recomendaciones.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.RecomendacionesControl.EstrenoController">
 
    <children>
       <!-- Encabezado con título y botón de actualización -->
-      <Label layoutX="20.0" layoutY="17.0"
-             style="-fx-font-size: 15px; -fx-text-fill: white; -fx-padding: 4;"
-             text="Canciones agregadas recientemente" />
+      <Label layoutX="20.0" layoutY="17.0" style="-fx-font-size: 15px; -fx-text-fill: white; -fx-padding: 4;" text="Canciones agregadas recientemente" />
 
-      <HBox layoutX="370.0" layoutY="14.0" prefHeight="35.0"
-            AnchorPane.rightAnchor="20.0"
-            style="-fx-spacing: 10; -fx-padding: 5 10; -fx-background-color: #0A0E27; -fx-background-radius: 20;">
+      <HBox layoutX="370.0" layoutY="14.0" prefHeight="35.0" style="-fx-spacing: 10; -fx-padding: 5 10; -fx-background-color: #0A0E27; -fx-background-radius: 20;" AnchorPane.rightAnchor="20.0">
          <children>
-            <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="29.0"
-                    style="-fx-background-color: #0A0E27;" text="🔄" textFill="WHITE" />
+            <Button fx:id="btnActualizarEstrenos" mnemonicParsing="false" onAction="#actualizarEstrenos" prefHeight="25.0" prefWidth="29.0" style="-fx-background-color: #0A0E27;" text="🔄" textFill="WHITE" />
             <Label text="Actualizar estrenos" textFill="WHITE" />
          </children>
       </HBox>
 
       <!-- Tabla principal con anclajes para adaptabilidad -->
-      <TableView fx:id="tablaCancionesPersonalizadas"
-                 style="-fx-background-color: #201D4E;"
-                 AnchorPane.topAnchor="60.0"
-                 AnchorPane.bottomAnchor="10.0"
-                 AnchorPane.leftAnchor="10.0"
-                 AnchorPane.rightAnchor="10.0">
+      <TableView fx:id="tablaCancionesPersonalizadas" style="-fx-background-color: #201D4E;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="60.0">
          <columns>
             <TableColumn fx:id="colImagen" prefWidth="90.0" style="-fx-alignment: center;" />
             <TableColumn fx:id="colTitulo" prefWidth="123.0" style="-fx-alignment: center;" text="Título" />
