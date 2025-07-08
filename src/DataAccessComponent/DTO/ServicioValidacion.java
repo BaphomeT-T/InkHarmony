@@ -1,4 +1,4 @@
-package BusinessLogic.CatalogoArtistas;
+package DataAccessComponent.DTO;
 
 public class ServicioValidacion implements UnicoNombreValidable, AsociacionValidable{
 
@@ -20,4 +20,8 @@ public class ServicioValidacion implements UnicoNombreValidable, AsociacionValid
         return false;
     }
 
+    @Override
+    public boolean tieneElementosAsociados(Artista artista) {
+        return false;
+    }
 }
