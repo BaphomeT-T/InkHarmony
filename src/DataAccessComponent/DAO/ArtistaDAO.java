@@ -28,5 +28,6 @@ public class ArtistaDAO {
 
     public Artista buscarArtistaID(Artista artista) {
         return artista;
+
     }
 }
