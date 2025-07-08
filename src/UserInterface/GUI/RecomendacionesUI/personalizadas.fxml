@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 
 <AnchorPane style="-fx-background-color: #0A0E27;"
-            stylesheets="@../../../estilos_recomendaciones.css"
+            stylesheets="/UserInterface/Resources/estilos/estilos_recomendaciones.css"
             xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1">
 
