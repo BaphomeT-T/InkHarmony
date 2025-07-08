@@ -12,7 +12,7 @@ public class AdministracionUsuario extends Application {
     public void start(Stage primaryStage) throws Exception {
         // Cargar el FXML
         Parent root = FXMLLoader.load(getClass().getResource(
-            "/UserInterface/GUI/AdminUserControl/registro.fxml"));
+            "/UserInterface/GUI/AdminUserControl/login.fxml"));
 
         Scene scene = new Scene(root);
         primaryStage.setTitle("Administración de Usuarios");
