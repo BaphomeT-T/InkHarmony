@@ -1,4 +1,6 @@
 package DataAccessComponent.DAO;
+import java.util.ArrayList;
+import DataAccessComponent.DTO.Artista;
 
 public class ArtistaDAO {
 

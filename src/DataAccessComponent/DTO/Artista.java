@@ -1,4 +1,4 @@
-package BusinessLogic.CatalogoArtistas;
+package DataAccessComponent.DTO;
 
 import java.util.Date;
 
