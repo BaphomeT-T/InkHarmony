@@ -1,4 +1,6 @@
 package DataAccessComponent.DAO;
+import java.util.ArrayList;
+import DataAccessComponent.DTO.Artista;
 
 public class ArtistaDAO {
 
@@ -26,5 +28,6 @@ public class ArtistaDAO {
 
     public Artista buscarArtistaID(Artista artista) {
         return artista;
+
     }
 }
