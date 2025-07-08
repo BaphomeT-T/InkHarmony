@@ -7,6 +7,7 @@ public class Artista {
     private String nombre;
 
     //Generos debemos coordinar
+    //protected Genero genero; creo que así porque es enum en el modulo de catálogo canciones
     private String genero;
     private Date fechaNacimiento;
     private String biografia;
