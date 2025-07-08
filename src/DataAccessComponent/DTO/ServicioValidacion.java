@@ -10,11 +10,13 @@ public class ServicioValidacion implements UnicoNombreValidable, AsociacionValid
 
     public boolean esNombreUnico(String nombre) {
         // Implementacion para verificar si el nombre es unico
+        // Agregar
         return false;
     }
 
     public boolean tieneElementoAsociado(Artista artista) {
         // Implementacion para verificar si el artista tiene elementos asociados
+        // Agregar
         return false;
     }
 
