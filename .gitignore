@@ -2,8 +2,8 @@
 *.class
 
 # Ignorar carpetas de compilación
-/bin/
-/out/
+/bin
+/out
 
 # Ignorar archivos de configuración de Vs code
 .vscode/
