@@ -305,6 +305,11 @@
                   <Font size="70.0" />
                </font>
             </Label>
+            <Label fx:id="lblSalirRegistro" contentDisplay="CENTER" onMouseClicked="#salirRegistro" text="X" textFill="WHITE" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+               <font>
+                  <Font size="81.0" />
+               </font>
+            </Label>
          </children>
       </GridPane>
    </children>
