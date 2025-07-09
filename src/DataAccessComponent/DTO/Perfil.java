@@ -1,7 +1,6 @@
 package DataAccessComponent.DTO;
 
 import java.util.Date;
-import java.util.List;
 
 public class Perfil {
     private String nombre;
