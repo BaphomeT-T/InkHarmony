@@ -1,17 +1,46 @@
 package UserInterface.CustomerControl.AdminUserControl;
 
+import java.util.List;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polyline;
 
 public class RegistroController {
+
+    private List<String> rutasImagenes = List.of(
+        "/UserInterface/Resources/img/Perfil/perfilH1.jpg",
+        "/UserInterface/Resources/img/Perfil/perfilH2.jpg",
+        "/UserInterface/Resources/img/Perfil/perfilH3.jpg",
+        "/UserInterface/Resources/img/Perfil/perfilM1.jpg",
+        "/UserInterface/Resources/img/Perfil/perfilM2.jpg",
+        "/UserInterface/Resources/img/Perfil/perfilM3.jpg"
+        );
+    private int indiceActual = 0;
+
+
     @FXML
-    private Label lblSalirRegistro;
+    private Polyline btnAnterior;
+
     @FXML
     private Button btnRegistrar;
+
+    @FXML
+    private Polyline btnSiguiente;
+
+    @FXML
+    private Circle imgPerfil;
+
+    @FXML
+    private Label lblSalirRegistro;
 
     @FXML
     private TextField txtApellido;
@@ -30,6 +59,31 @@ public class RegistroController {
 
     @FXML
     private PasswordField txtRepetirContrasena;
+
+    @FXML
+    public void initialize() {
+        actualizarImagenPerfil();
+    }
+
+    @FXML
+    void imagenAnterior(MouseEvent event) {
+        if (indiceActual == 0) {
+            indiceActual = rutasImagenes.size() - 1; // si está en la primera, vuelve a la última
+        } else {
+            indiceActual--;
+        }
+        actualizarImagenPerfil();
+    }
+
+    @FXML
+    void imagenSiguiente(MouseEvent event) {
+        if (indiceActual == rutasImagenes.size() - 1) {
+            indiceActual = 0; // si está en la última, vuelve a la primera
+        } else {
+            indiceActual++;
+        }
+        actualizarImagenPerfil();
+    }
 
     @FXML
     void registrarCuenta(ActionEvent event) {
@@ -86,6 +140,19 @@ public class RegistroController {
         alerta.setContentText(mensaje);
         alerta.showAndWait();
     }
+
+    private void actualizarImagenPerfil() {
+        try {
+            String ruta = rutasImagenes.get(indiceActual);
+            Image imagen = new Image(getClass().getResourceAsStream(ruta));
+            ImagePattern patron = new ImagePattern(imagen);
+            imgPerfil.setFill(patron);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     @FXML
     private void salirRegistro() {
