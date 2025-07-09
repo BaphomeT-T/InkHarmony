@@ -8,13 +8,13 @@ class Perfil {
 - email: String
 - contrasenia: String
 - cuentaActiva: boolean
-- tipoUsuario: String
+- tipoUsuario: TipoUsuario
 - fechaRegistro: Date
-- foto: Image
-- preferenciasMusicales: List<Generos>
+- foto: String
 }
 
 class Usuario {
+- preferenciasMusicales: List<Generos>
 + registrarUsuario(nombre: String, apellido: String, email: String, contrasenia: String): void
 + actualizarPerfil(nombre: String, apellido: String, foto: Image): void
 + agregarPreferenciasMusicales(generos: List<Genero>): void
@@ -42,6 +42,11 @@ class Sesion {
 }
 
 enum Generos {
+
+}
+enum TipoUsuario {
+    ADMINISTRADOR
+    USUARIO
 }
 
 
