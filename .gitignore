@@ -3,6 +3,7 @@
 
 # Ignorar carpetas de compilación
 /bin/
+/out/
 
 # Ignorar archivos de configuración de Vs code
 .vscode/

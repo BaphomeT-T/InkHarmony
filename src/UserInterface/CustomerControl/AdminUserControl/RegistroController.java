@@ -3,11 +3,13 @@ package UserInterface.CustomerControl.AdminUserControl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 public class RegistroController {
-
+    @FXML
+    private Label lblSalirRegistro;
     @FXML
     private Button btnRegistrar;
 
@@ -68,11 +70,13 @@ public class RegistroController {
         }
 
         if (!contrasena.equals(repetirContrasena)) {
-            mostrarAlerta("Contraseñas no coinciden", "Las contraseñas ingresadas no son iguales.", javafx.scene.control.Alert.AlertType.ERROR);
+            mostrarAlerta("Contraseñas no coinciden", "Las contraseñas ingresadas no son iguales.",
+                    javafx.scene.control.Alert.AlertType.ERROR);
             return;
         }
 
-        mostrarAlerta("Registro exitoso", "¡Cuenta registrada correctamente!", javafx.scene.control.Alert.AlertType.INFORMATION);
+        mostrarAlerta("Registro exitoso", "¡Cuenta registrada correctamente!",
+                javafx.scene.control.Alert.AlertType.INFORMATION);
     }
 
     private void mostrarAlerta(String titulo, String mensaje, javafx.scene.control.Alert.AlertType tipo) {
@@ -83,4 +87,24 @@ public class RegistroController {
         alerta.showAndWait();
     }
 
+    @FXML
+    private void salirRegistro() {
+        // Cerrar la ventana de registro y abrir de nuevo la ventana de login
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                    getClass().getResource("/UserInterface/GUI/AdminUserControl/login.fxml"));
+            javafx.scene.Parent root = loader.load();
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.setTitle("Login");
+            stage.setMinWidth(1280);
+            stage.setMinHeight(680);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        javafx.stage.Stage stage = (javafx.stage.Stage) lblSalirRegistro.getScene().getWindow();
+        stage.close();
+
+    }
 }
