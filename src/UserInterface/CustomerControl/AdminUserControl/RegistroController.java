@@ -16,7 +16,7 @@ import javafx.scene.shape.Polyline;
 
 public class RegistroController {
 
-    private List<String> rutasImagenes = List.of(
+    private List<String> rutasImagenes = List.of(   
         "/UserInterface/Resources/img/Perfil/perfilH1.jpg",
         "/UserInterface/Resources/img/Perfil/perfilH2.jpg",
         "/UserInterface/Resources/img/Perfil/perfilH3.jpg",
