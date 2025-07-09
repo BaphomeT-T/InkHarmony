@@ -1,6 +1,10 @@
 package UserInterface.CustomerControl.AdminUserControl;
 
+import DataAccessComponent.DAO.GeneroDAO;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,9 +14,11 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polyline;
+import javafx.scene.text.Font;
 
 public class RegistroController {
 
@@ -26,6 +32,10 @@ public class RegistroController {
         );
     private int indiceActual = 0;
 
+    private List<String> todosLosGeneros;
+    private List<String> generosMostrados;
+    private List<String> generosSeleccionados = new ArrayList<>();
+
 
     @FXML
     private Polyline btnAnterior;
@@ -35,6 +45,9 @@ public class RegistroController {
 
     @FXML
     private Polyline btnSiguiente;
+
+    @FXML
+    private GridPane contenedorGeneros;
 
     @FXML
     private Circle imgPerfil;
@@ -63,6 +76,8 @@ public class RegistroController {
     @FXML
     public void initialize() {
         actualizarImagenPerfil();
+        cargarGenerosMusicales();
+        configurarBusquedaGeneros();
     }
 
     @FXML
@@ -129,8 +144,16 @@ public class RegistroController {
             return;
         }
 
+        // Validar que se hayan seleccionado géneros
+        if (generosSeleccionados.isEmpty()) {
+            mostrarAlerta("Géneros no seleccionados", "Debe seleccionar al menos un género musical.", 
+                javafx.scene.control.Alert.AlertType.WARNING);
+            return;
+        }
+
         mostrarAlerta("Registro exitoso", "¡Cuenta registrada correctamente!",
                 javafx.scene.control.Alert.AlertType.INFORMATION);
+        salirRegistro();
     }
 
     private void mostrarAlerta(String titulo, String mensaje, javafx.scene.control.Alert.AlertType tipo) {
@@ -152,7 +175,94 @@ public class RegistroController {
         }
     }
 
+    private void actualizarBotonesGeneros() {
+        // Limpiar el GridPane
+        contenedorGeneros.getChildren().clear();
+        
+        int columna = 0;
+        int fila = 0;
+        
+        for (String genero : generosMostrados) {
+            if (columna >= 3) { // Máximo 3 columnas
+                columna = 0;
+                fila++;
+            }
+            
+            if (fila >= 2) break; // Máximo 2 filas
+            
+            Button botonGenero = crearBotonGenero(genero);
+            contenedorGeneros.add(botonGenero, columna, fila);
+            
+            columna++;
+        }
+        
+        // Rellenar espacios vacíos si hay menos de 6 géneros
+        while (fila < 2) {
+            while (columna < 3) {
+                Button botonVacio = crearBotonVacio();
+                contenedorGeneros.add(botonVacio, columna, fila);
+                columna++;
+            }
+            columna = 0;
+            fila++;
+        }
+    }
 
+    private void cargarGenerosMusicales() {
+        // Obtener géneros desde la base de datos
+        todosLosGeneros = GeneroDAO.obtenerTodos();
+        
+        // Mostrar los primeros 6 géneros inicialmente
+        generosMostrados = new ArrayList<>(todosLosGeneros.subList(0, Math.min(6, todosLosGeneros.size())));
+        actualizarBotonesGeneros();
+    }
+
+    private Button crearBotonGenero(String genero) {
+        Button boton = new Button(genero);
+        boton.setMaxWidth(120);
+        boton.setMaxHeight(40);
+        boton.setStyle("-fx-background-color: " + 
+                    (generosSeleccionados.contains(genero) ? "#9190C2" : "#575a81") + 
+                    "; -fx-text-fill: white; -fx-background-radius: 15;");
+        boton.setFont(new Font(14));
+        
+        boton.setOnAction(event -> {
+            if (generosSeleccionados.contains(genero)) {
+                generosSeleccionados.remove(genero);
+                boton.setStyle("-fx-background-color: #575a81; -fx-text-fill: white; -fx-background-radius: 15;");
+            } else {
+                generosSeleccionados.add(genero);
+                boton.setStyle("-fx-background-color: #9190C2; -fx-text-fill: white; -fx-background-radius: 15;");
+            }
+        });
+        
+        return boton;
+    }
+
+    private Button crearBotonVacio() {
+        Button boton = new Button();
+        boton.setMaxWidth(Double.MAX_VALUE);
+        boton.setMaxHeight(Double.MAX_VALUE);
+        boton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+        boton.setDisable(true);
+        return boton;
+    }
+
+    private void configurarBusquedaGeneros() {
+        txtBusquedaGenero.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.isEmpty()) {
+                // Mostrar primeros 6 géneros si no hay búsqueda
+                generosMostrados = new ArrayList<>(todosLosGeneros.subList(0, Math.min(6, todosLosGeneros.size())));
+            } else {
+                // Filtrar géneros y tomar los primeros 6 coincidentes
+                generosMostrados = todosLosGeneros.stream()
+                    .filter(genero -> genero.toLowerCase().contains(newValue.toLowerCase()))
+                    .limit(6)
+                    .collect(Collectors.toList());
+            }
+            actualizarBotonesGeneros();
+        });
+    }
 
     @FXML
     private void salirRegistro() {
