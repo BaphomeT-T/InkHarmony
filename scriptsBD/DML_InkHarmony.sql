@@ -1,4 +1,3 @@
--- database: ../database/InkHarmony.sqlite
 INSERT INTO Genero (nombre_genero) VALUES
                                        ('GAME_OST'),
                                        ('ROCK'),
