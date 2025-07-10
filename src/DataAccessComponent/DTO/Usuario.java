@@ -3,7 +3,7 @@ package DataAccessComponent.DTO;
 import java.util.List;
 
 public class Usuario extends Perfil {
-    private List<Generos> preferenciasMusicales;
+    private List<Genero> preferenciasMusicales;
 
     public Usuario() {
         super();
@@ -30,17 +30,17 @@ public class Usuario extends Perfil {
         this.setFoto(foto);
     }
 
-    public void agregarPreferenciasMusicales(List<Generos> generos) {
+    public void agregarPreferenciasMusicales(List<Genero> generos) {
         // Implementación pendiente
         this.preferenciasMusicales = generos;
     }
 
     // Getters y setters
-    public List<Generos> getPreferenciasMusicales() {
+    public List<Genero> getPreferenciasMusicales() {
         return preferenciasMusicales;
     }
 
-    public void setPreferenciasMusicales(List<Generos> preferenciasMusicales) {
+    public void setPreferenciasMusicales(List<Genero> preferenciasMusicales) {
         this.preferenciasMusicales = preferenciasMusicales;
     }
 } 
