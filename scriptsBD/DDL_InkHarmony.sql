@@ -20,7 +20,7 @@ CREATE TABLE Usuario (
                          correo VARCHAR(20) UNIQUE NOT NULL,
                          contraseña VARCHAR(20) NOT NULL,
                          fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                         id_foto_Perfil VARCHAR(20) UNIQUE NOT NULL,
+                         id_foto_Perfil VARCHAR(20) NOT NULL,
                          tipo_usuario BOOLEAN NOT NULL DEFAULT 0
 );
 
