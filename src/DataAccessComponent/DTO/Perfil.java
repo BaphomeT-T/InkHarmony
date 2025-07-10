@@ -2,6 +2,7 @@ package DataAccessComponent.DTO;
 
 import java.util.Date;
 
+
 public class Perfil {
     private String nombre;
     private String apellido;
