@@ -9,18 +9,18 @@ public class Administrador extends Perfil {
     }
 
     public Administrador(String nombre, String apellido, String email, String contrasenia, 
-                        TipoUsuario tipoUsuario, java.util.Date fechaRegistro, String foto) {
-        super(nombre, apellido, email, contrasenia, tipoUsuario, fechaRegistro, foto);
+                        TipoUsuario tipoUsuario, java.util.Date fechaRegistro, String foto, String estadoCuenta) {
+        super(nombre, apellido, email, contrasenia, tipoUsuario, fechaRegistro, foto, estadoCuenta);
     }
 
     public void activarCuenta(Perfil usuario) {
         // Implementación pendiente
-        usuario.setCuentaActiva(true);
+        usuario.setEstadoCuenta("activo");
     }
 
     public void desactivarCuenta(Perfil usuario) {
         // Implementación pendiente
-        usuario.setCuentaActiva(false);
+        usuario.setEstadoCuenta("desactivado");
     }
 
     public void cambiarTipoUsuario(Perfil usuario, String tipo) {

@@ -3,6 +3,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -12,6 +14,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1280.0" spacing="10" style="-fx-padding: 20; -fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.AdminUserControl.AdministracionUsuarioController">
@@ -29,7 +32,14 @@
                <Font size="30" />
             </font>
          </Label>
-         <Button fx:id="btnCerrarSesion" mnemonicParsing="false" onAction="#cerrarSesion" style="-fx-background-color: #b0a7d1; -fx-border-width: 555;" text="Cerrar Sesión" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.vgrow="ALWAYS" />
+         <MenuButton fx:id="menuPerfil" style="-fx-background-color: transparent;" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+            <items>
+               <MenuItem fx:id="btnCerrarSesion" onAction="#cerrarSesion" text="Cerrar Sesión" />
+            </items>
+            <graphic>
+               <Circle fx:id="imgPerfil" fill="DODGERBLUE" radius="23.0" stroke="BLACK" strokeType="INSIDE" />
+            </graphic>
+         </MenuButton>
       </children>
    </GridPane>
    <GridPane style="-fx-background-color: #1B1A55; -fx-background-radius: 15; -fx-padding: 10;" VBox.vgrow="ALWAYS">
