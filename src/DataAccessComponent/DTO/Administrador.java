@@ -2,6 +2,8 @@ package DataAccessComponent.DTO;
 
 import java.util.List;
 
+import DataAccessComponent.DAO.PerfilDAO;
+
 public class Administrador extends Perfil {
     
     public Administrador() {
@@ -11,6 +13,10 @@ public class Administrador extends Perfil {
     public Administrador(String nombre, String apellido, String email, String contrasenia, 
                         TipoUsuario tipoUsuario, java.util.Date fechaRegistro, String foto, String estadoCuenta) {
         super(nombre, apellido, email, contrasenia, tipoUsuario, fechaRegistro, foto, estadoCuenta);
+    }
+    public List<Perfil> consultarUsuarios() {
+        PerfilDAO perfilDAO = new PerfilDAO();
+        return perfilDAO.listarTodos();
     }
 
     public void activarCuenta(Perfil usuario) {
@@ -38,9 +44,5 @@ public class Administrador extends Perfil {
         // o realmente eliminarlo de la base de datos
     }
 
-    public List<Perfil> consultarUsuarios() {
-        // Implementación pendiente
-        // Este método debería obtener la lista de usuarios desde el DAO
-        return null;
-    }
+  
 } 
