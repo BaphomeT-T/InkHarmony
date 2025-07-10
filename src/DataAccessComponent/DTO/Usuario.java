@@ -10,8 +10,9 @@ public class Usuario extends Perfil {
     }
 
     public Usuario(String nombre, String apellido, String email, String contrasenia, 
-                   TipoUsuario tipoUsuario, java.util.Date fechaRegistro, String foto) {
-        super(nombre, apellido, email, contrasenia, tipoUsuario, fechaRegistro, foto);
+                   TipoUsuario tipoUsuario, java.util.Date fechaRegistro, String foto, String estadoCuenta, List<Generos> preferenciasMusicales) {
+        super(nombre, apellido, email, contrasenia, tipoUsuario, fechaRegistro, foto, estadoCuenta);
+        this.preferenciasMusicales = preferenciasMusicales;
     }
 
     public void registrarUsuario(String nombre, String apellido, String email, String contrasenia) {

@@ -14,7 +14,7 @@ public class Sesion {
     public boolean iniciarSesion(String email, String contrasenia) {
         // Implementación pendiente
         Perfil perfil = perfilDAO.buscarPorEmail(email);
-        if (perfil != null && perfil.isCuentaActiva() && 
+        if (perfil != null && perfil.getEstado_cuenta().equals("activo") && 
             perfil.getContrasenia().equals(contrasenia)) {
             this.usuarioActual = perfil;
             return true;

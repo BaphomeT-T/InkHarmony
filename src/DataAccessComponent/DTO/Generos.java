@@ -1,5 +1,6 @@
 package DataAccessComponent.DTO;
 
+
 public enum Generos {
     ROCK,
     POP,
@@ -10,12 +11,4 @@ public enum Generos {
     HIP_HOP,
     COUNTRY,
     BLUES,
-    METAL,
-    PUNK,
-    FOLK,
-    RNB,
-    SOUL,
-    FUNK,
-    DISCO,
-    OTRO
 } 

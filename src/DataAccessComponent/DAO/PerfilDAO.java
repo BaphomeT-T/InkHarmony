@@ -15,8 +15,15 @@ public class PerfilDAO extends SQLiteDataHelper {
     
     public void guardar(Perfil perfil) {
         String sql = """
-            INSERT INTO perfil (nombre, apellido, email, contrasenia, tipo_usuario, foto)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO Usuario (
+                         nombre_usuario ,
+                         apellido_usuario ,
+                         correo ,
+                         contraseña ,
+                         id_foto_Perfil ,
+                         estado_cuenta ,
+                         tipo_usuario)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         """;
         
         try {
@@ -27,8 +34,9 @@ public class PerfilDAO extends SQLiteDataHelper {
             pstmt.setString(2, perfil.getApellido());
             pstmt.setString(3, perfil.getEmail());
             pstmt.setString(4, perfil.getContrasenia());
-            pstmt.setString(5, perfil.getTipoUsuario().toString());
-            pstmt.setString(6, perfil.getFoto());
+            pstmt.setString(5, perfil.getFoto());
+            pstmt.setString(6, "activa");
+            pstmt.setString(7, perfil.getTipoUsuario().toString());
             
             pstmt.executeUpdate();
             pstmt.close();
@@ -38,7 +46,7 @@ public class PerfilDAO extends SQLiteDataHelper {
     }
     
     public Perfil buscarPorEmail(String email) {
-        String sql = "SELECT * FROM perfil WHERE email = ?";
+        String sql = "SELECT * FROM Usuario WHERE email = ?";
         
         try {
             Connection conn = openConnection();
@@ -62,7 +70,7 @@ public class PerfilDAO extends SQLiteDataHelper {
     
     public List<Perfil> listarTodos() {
         List<Perfil> perfiles = new ArrayList<>();
-        String sql = "SELECT * FROM perfil";
+        String sql = "SELECT * FROM Usuario";
         
         try {
             Connection conn = openConnection();
@@ -81,7 +89,7 @@ public class PerfilDAO extends SQLiteDataHelper {
     }
     
     public void eliminar(Perfil perfil) {
-        String sql = "DELETE FROM perfil WHERE email = ?";
+        String sql = "DELETE FROM Usuario WHERE email = ?";
         
         try {
             Connection conn = openConnection();
@@ -94,11 +102,10 @@ public class PerfilDAO extends SQLiteDataHelper {
         }
     }
     
-    public void actualizar(Perfil perfil) {
+    public void actualizar(String tipoUsuario, Perfil perfil) {
         String sql = """
-            UPDATE perfil 
-            SET nombre = ?, apellido = ?, contrasenia = ?, 
-                cuenta_activa = ?, tipo_usuario = ?, foto = ?
+            UPDATE Usuario 
+            SET  tipo_usuario= ?
             WHERE email = ?
         """;
         
@@ -106,13 +113,9 @@ public class PerfilDAO extends SQLiteDataHelper {
             Connection conn = openConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql);
             
-            pstmt.setString(1, perfil.getNombre());
-            pstmt.setString(2, perfil.getApellido());
-            pstmt.setString(3, perfil.getContrasenia());
-            pstmt.setBoolean(4, perfil.isCuentaActiva());
-            pstmt.setString(5, perfil.getTipoUsuario().toString());
-            pstmt.setString(6, perfil.getFoto());
-            pstmt.setString(7, perfil.getEmail());
+            pstmt.setString(1, tipoUsuario);
+            pstmt.setString(2, perfil.getEmail());
+          
             
             pstmt.executeUpdate();
             pstmt.close();
@@ -122,7 +125,7 @@ public class PerfilDAO extends SQLiteDataHelper {
     }
     
     public void desactivar(Perfil perfil) {
-        String sql = "UPDATE perfil SET cuenta_activa = 0 WHERE email = ?";
+        String sql = "UPDATE Usuario SET cuenta_activa = 0 WHERE email = ?";
         
         try {
             Connection conn = openConnection();
@@ -141,7 +144,7 @@ public class PerfilDAO extends SQLiteDataHelper {
         perfil.setApellido(rs.getString("apellido"));
         perfil.setEmail(rs.getString("email"));
         perfil.setContrasenia(rs.getString("contrasenia"));
-        perfil.setCuentaActiva(rs.getBoolean("cuenta_activa"));
+        perfil.setEstadoCuenta(rs.getString("cuenta_activa"));
         perfil.setTipoUsuario(TipoUsuario.valueOf(rs.getString("tipo_usuario")));
         perfil.setFechaRegistro(rs.getTimestamp("fecha_registro"));
         perfil.setFoto(rs.getString("foto"));
