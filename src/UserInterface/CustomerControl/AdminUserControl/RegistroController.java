@@ -1,5 +1,6 @@
 package UserInterface.CustomerControl.AdminUserControl;
 
+import UserInterface.Utils.*;
 import BusinessLogic.ServicioPerfil;
 import BusinessLogic.Sesion;
 import DataAccessComponent.DAO.GeneroDAO;
@@ -30,21 +31,12 @@ public class RegistroController {
 
     private final ServicioPerfil servicioPerfil = new ServicioPerfil();
 
-
-    private List<String> rutasImagenes = List.of(   
-        "/UserInterface/Resources/img/Perfil/perfilH1.jpg", //Índice 0 
-        "/UserInterface/Resources/img/Perfil/perfilH2.jpg", //Índice 1
-        "/UserInterface/Resources/img/Perfil/perfilH3.jpg", //Índice 2
-        "/UserInterface/Resources/img/Perfil/perfilM1.jpg", //Índice 3
-        "/UserInterface/Resources/img/Perfil/perfilM2.jpg", //Índice 4
-        "/UserInterface/Resources/img/Perfil/perfilM3.jpg"  //Índice 5
-        );
+    private List<String> rutasImagenes = RecursosPerfil.obtenerRutasImagenes();
     private int indiceActual = 0;
 
     private List<String> todosLosGeneros;
     private List<String> generosMostrados;
     private List<String> generosSeleccionados = new ArrayList<>();
-
 
     @FXML
     private Polyline btnAnterior;
@@ -92,7 +84,7 @@ public class RegistroController {
     @FXML
     void imagenAnterior(MouseEvent event) {
         if (indiceActual == 0) {
-            indiceActual = rutasImagenes.size() - 1; // si está en la primera, vuelve a la última
+            indiceActual = RecursosPerfil.totalImagenes() - 1; // si está en la primera, vuelve a la última
         } else {
             indiceActual--;
         }
@@ -101,13 +93,14 @@ public class RegistroController {
 
     @FXML
     void imagenSiguiente(MouseEvent event) {
-        if (indiceActual == rutasImagenes.size() - 1) {
+        if (indiceActual == RecursosPerfil.totalImagenes() - 1) {
             indiceActual = 0; // si está en la última, vuelve a la primera
         } else {
             indiceActual++;
         }
         actualizarImagenPerfil();
     }
+
 
     @FXML
     void registrarCuenta(ActionEvent event) {
