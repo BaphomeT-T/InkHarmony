@@ -1,5 +1,7 @@
 package UserInterface.CustomerControl.AdminUserControl;
 
+import BusinessLogic.Sesion;
+import DataAccessComponent.DTO.Perfil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,6 +11,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.scene.control.PasswordField;
+
+import BusinessLogic.ServicioPerfil;
 
 public class LoginController {
 
@@ -20,40 +24,47 @@ public class LoginController {
 
     @FXML
     private Button iniciarSesion;
+
     @FXML
     private void iniciarSesion() {
-        String email = txtEmail.getText();
-        String password = txtContrasenia.getText();
+        String correo = txtEmail.getText();
+        String contraseniaIngresada = txtContrasenia.getText();
 
-        // Validación simulada
-        if (email.equals("admin") && password.equals("1234")) {
+        ServicioPerfil perfilService = new ServicioPerfil();
+        Perfil perfil = perfilService.autenticar(correo, contraseniaIngresada);
+
+        if (perfil != null) {
+            Sesion.iniciarSesion(perfil);
+            mostrarAlerta("Correcto","Inicio correcto", Alert.AlertType.INFORMATION);
+
+            // Mostrar nueva vista "Reproductor de Música"
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/administracion_Usuarios.fxml"));
-                Parent root = loader.load();
-                Stage stage = new Stage();
-                stage.setScene(new Scene(root));
-                stage.setTitle("Administración de Usuarios");
+                javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                        getClass().getResource("/UserInterface/GUI/AdminUserControl/reproductor.fxml"));
+                javafx.scene.Parent root = loader.load();
+                javafx.stage.Stage stage = new javafx.stage.Stage();
+                stage.setScene(new javafx.scene.Scene(root));
+                stage.setTitle("InkHarmony");
                 stage.setMinWidth(1280);
                 stage.setMinHeight(680);
-
                 stage.show();
 
-                // Cerrar la ventana de login
+                // Cerrar login
                 ((Stage) txtEmail.getScene().getWindow()).close();
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-            showAlert("Usuario o contraseña incorrectos");
+            mostrarAlerta("Error", "Usuario o contraseña incorrectos", Alert.AlertType.ERROR);
         }
-        
-        
     }
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setContentText(message);
-        alert.show();
+    private void mostrarAlerta(String titulo, String mensaje, javafx.scene.control.Alert.AlertType tipo) {
+        javafx.scene.control.Alert alerta = new javafx.scene.control.Alert(tipo);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
     }
     @FXML
     private void registrarUsuario() {
