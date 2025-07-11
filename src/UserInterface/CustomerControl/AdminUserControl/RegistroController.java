@@ -1,5 +1,6 @@
 package UserInterface.CustomerControl.AdminUserControl;
 
+import BusinessLogic.Sesion;
 import DataAccessComponent.DAO.GeneroDAO;
 import DataAccessComponent.DAO.PerfilDAO;
 import DataAccessComponent.DAO.UsuarioDAO;
@@ -122,7 +123,7 @@ public class RegistroController {
         
         // 3. Verificar si el correo ya existe
         PerfilDAO perfilDAO = new PerfilDAO();
-        if (perfilDAO.buscarPorCorreo(correo) != null) {
+        if (perfilDAO.buscarPorEmail(correo) != null) {
             mostrarAlerta("Correo ya registrado", 
                 "El correo electrónico ya está en uso. Por favor use otro.",
                 Alert.AlertType.ERROR);
@@ -143,7 +144,7 @@ public class RegistroController {
                 .map(Genero::new)
                 .collect(Collectors.toList());
         
-        // 5. Guardar TODO (perfil + preferencias) de manera atómica
+        // 5. Guardar todo en la base de datos
         try {
             // Paso 1: Guardar perfil
             perfilDAO.guardar(nuevoPerfil);
@@ -328,6 +329,7 @@ public class RegistroController {
 
     @FXML
     private void salirRegistro() {
+        Sesion.cerrarSesion();
         // Cerrar la ventana de registro y abrir de nuevo la ventana de login
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
