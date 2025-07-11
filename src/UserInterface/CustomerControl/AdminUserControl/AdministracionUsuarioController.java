@@ -5,6 +5,7 @@ import java.util.List;
 import DataAccessComponent.DTO.Administrador;
 import DataAccessComponent.DTO.Perfil;
 import DataAccessComponent.DTO.TipoUsuario;
+import UserInterface.Utils.RecursosPerfil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -23,13 +24,7 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class AdministracionUsuarioController {
     // private Sesion session;
-    private List<String> rutasImagenes = List.of(
-            "/UserInterface/Resources/img/Perfil/perfilH1.jpg",
-            "/UserInterface/Resources/img/Perfil/perfilH2.jpg",
-            "/UserInterface/Resources/img/Perfil/perfilH3.jpg",
-            "/UserInterface/Resources/img/Perfil/perfilM1.jpg",
-            "/UserInterface/Resources/img/Perfil/perfilM2.jpg",
-            "/UserInterface/Resources/img/Perfil/perfilM3.jpg");
+    private List<String> rutasImagenes = RecursosPerfil.obtenerRutasImagenes();
     private int indiceActual = 0;
     @FXML
     private Button btnActivarCuenta;
