@@ -23,7 +23,6 @@ public abstract class SQLiteDataHelper {
     protected static synchronized Connection openConnection() throws Exception {
         try {
             if (conn == null)
-            System.err.println("path:"+DBPathConnection);
                 conn = DriverManager.getConnection(DBPathConnection);
         } catch (SQLException e) {
             throw e;

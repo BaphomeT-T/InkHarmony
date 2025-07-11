@@ -19,12 +19,6 @@ INSERT INTO Genero (nombre_genero) VALUES
                                        ('K_POP'),
                                        ('BOLERO'),
                                        ('PASILLO');
-INSERT INTO Usuario (
-    nombre_usuario, apellido_usuario, correo, contraseña,
-    id_foto_Perfil, estado_cuenta, tipo_usuario
-) VALUES (
-    'Jonas', 'Garcia', 'jonas@gmail.com', '$2a$10$Eeq00NcIkFIZGTbgL8p/wetV5sO84ogE8htlZJaC.ztFXV3ib1eAu4',
-    '1', 'activo', 'ADMINISTRADOR'
-);
-
+INSERT INTO Usuario (nombre_usuario, apellido_usuario, correo, contraseña, tipo_usuario, id_foto_Perfil, estado_cuenta) VALUES
+('Jonas', 'Garcia', 'jonas@gmail.com', '$2a$10$wFBV8MmGWPzIwsnhJ3/w0eWNici2F8dXx1RUM7F0TxTAa1T2CWfPK', 'ADMINISTRADOR',  '1', 'activo');
 SELECT * FROM Usuario

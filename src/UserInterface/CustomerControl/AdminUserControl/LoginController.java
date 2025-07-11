@@ -2,6 +2,7 @@ package UserInterface.CustomerControl.AdminUserControl;
 
 import BusinessLogic.Sesion;
 import DataAccessComponent.DTO.Perfil;
+import DataAccessComponent.DTO.TipoUsuario;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -39,8 +40,12 @@ public class LoginController {
 
             // Mostrar nueva vista "Reproductor de Música"
             try {
-                javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
-                        getClass().getResource("/UserInterface/GUI/AdminUserControl/reproductor.fxml"));
+                javafx.fxml.FXMLLoader loader;
+                if (perfil.getTipoUsuario() == TipoUsuario.ADMINISTRADOR) {
+                    loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/administracion_Usuarios.fxml"));
+                } else {
+                    loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/reproductor.fxml"));
+                }
                 javafx.scene.Parent root = loader.load();
                 javafx.stage.Stage stage = new javafx.stage.Stage();
                 stage.setScene(new javafx.scene.Scene(root));

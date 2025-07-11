@@ -1,12 +1,11 @@
 package UserInterface.CustomerControl.AdminUserControl;
 
+import BusinessLogic.ServicioPerfil;
 import BusinessLogic.Sesion;
 import DataAccessComponent.DAO.GeneroDAO;
 import DataAccessComponent.DAO.PerfilDAO;
 import DataAccessComponent.DAO.UsuarioDAO;
 import DataAccessComponent.DTO.Genero;
-import DataAccessComponent.DTO.Perfil;
-import DataAccessComponent.DTO.TipoUsuario;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +27,9 @@ import javafx.scene.shape.Polyline;
 import javafx.scene.text.Font;
 
 public class RegistroController {
+
+    private final ServicioPerfil servicioPerfil = new ServicioPerfil();
+
 
     private List<String> rutasImagenes = List.of(   
         "/UserInterface/Resources/img/Perfil/perfilH1.jpg", //Índice 0 
@@ -121,7 +123,7 @@ public class RegistroController {
             return;
         }
         
-        // 3. Verificar si el correo ya existe
+        // 3. Verificar si el correo ya existe (puedes seguir usando perfilDAO o delegar a ServicioPerfil)
         PerfilDAO perfilDAO = new PerfilDAO();
         if (perfilDAO.buscarPorEmail(correo) != null) {
             mostrarAlerta("Correo ya registrado", 
@@ -130,34 +132,21 @@ public class RegistroController {
             return;
         }
         
-        // 4. Crear objetos necesarios
-        Perfil nuevoPerfil = new Perfil();
-        nuevoPerfil.setNombre(nombre);
-        nuevoPerfil.setApellido(apellido);
-        nuevoPerfil.setCorreo(correo);
-        nuevoPerfil.setContrasenia(contrasena);
-        nuevoPerfil.setFoto(String.valueOf(indiceActual));
-        nuevoPerfil.setTipoUsuario(TipoUsuario.USUARIO);
-        
-        // Convertir generosSeleccionados (List<String>) a List<Genero>
-        List<Genero> generos = generosSeleccionados.stream()
-                .map(Genero::new)
-                .collect(Collectors.toList());
-        
-        // 5. Guardar todo en la base de datos
         try {
-            // Paso 1: Guardar perfil
-            perfilDAO.guardar(nuevoPerfil);
+            // 4. Registrar usuario usando ServicioPerfil (encripta contraseña)
+            servicioPerfil.registrarUsuario(nombre, apellido, correo, contrasena, String.valueOf(indiceActual));
             
-            // Paso 2: Guardar preferencias
+            // 5. Guardar preferencias
             UsuarioDAO usuarioDAO = new UsuarioDAO();
+            List<Genero> generos = generosSeleccionados.stream()
+                    .map(Genero::new)
+                    .collect(Collectors.toList());
             if (!usuarioDAO.guardarPreferencias(correo, generos)) {
-                // Si fallan las preferencias, ELIMINAR el perfil recién creado
-                perfilDAO.eliminar(nuevoPerfil);
+                // Si fallan las preferencias, eliminar perfil
+                perfilDAO.eliminar(perfilDAO.buscarPorEmail(correo));
                 throw new RuntimeException("No se pudieron guardar las preferencias");
             }
             
-            // Éxito
             mostrarAlerta("Éxito", "Registro completo con preferencias", Alert.AlertType.INFORMATION);
             salirRegistro();
             
@@ -165,6 +154,7 @@ public class RegistroController {
             mostrarAlerta("Error", "No se completó el registro: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
+
 
     private boolean validarCampos(String nombre, String apellido, String correo, 
                                 String contrasena, String repetirContrasena) {
