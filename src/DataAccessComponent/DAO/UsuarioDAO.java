@@ -10,8 +10,9 @@ public class UsuarioDAO extends SQLiteDataHelper {
 
     public boolean guardarPreferencias(String correo, List<Genero> generos) {
         String sql = "UPDATE Usuario SET preferencias_musicales = ? WHERE correo = ?";
-        try (Connection conn = openConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try {
+            Connection conn = openConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
             
             // Validar géneros contra la BD
             List<String> generosValidos = GeneroDAO.obtenerTodos();
@@ -36,8 +37,9 @@ public class UsuarioDAO extends SQLiteDataHelper {
 
     public List<Genero> obtenerPreferencias(String correo) {
         String sql = "SELECT preferencias_musicales FROM Usuario WHERE correo = ?";
-        try (Connection conn = openConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try {
+            Connection conn = openConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
             
             pstmt.setString(1, correo);
             ResultSet rs = pstmt.executeQuery();
@@ -63,8 +65,9 @@ public class UsuarioDAO extends SQLiteDataHelper {
         }
 
         String sql = "UPDATE Usuario SET preferencias_musicales = ? WHERE correo = ?";
-        try (Connection conn = openConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try {
+            Connection conn = openConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
             
             // Convertir List<Genero> a JSON manualmente
             StringBuilder json = new StringBuilder("[");
