@@ -155,7 +155,7 @@ public class PerfilDAO extends SQLiteDataHelper {
         if (timestamp != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String fechaFormateada = sdf.format(new Date(timestamp.getTime()));
-            System.out.println(fechaFormateada);
+            // System.out.println(fechaFormateada);
             try {
                 fechaRegistro = sdf.parse(fechaFormateada);
             } catch (java.text.ParseException e) {
