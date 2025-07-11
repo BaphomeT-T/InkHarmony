@@ -14,7 +14,7 @@ public class Autenticador {
     public boolean validarCredenciales(String emailPorVerificar, String contraseniaPorVerificar) {
         // Implementación pendiente
         Perfil perfil = perfilDAO.buscarPorEmail(emailPorVerificar);
-        if (perfil != null && perfil.isCuentaActiva()) {
+        if (perfil != null && perfil.getEstado_cuenta().equals("activo")) {
             return perfil.getContrasenia().equals(contraseniaPorVerificar);
         }
         return false;

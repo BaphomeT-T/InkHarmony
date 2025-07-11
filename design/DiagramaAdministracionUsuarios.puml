@@ -7,10 +7,10 @@ class Perfil {
 - apellido: String
 - email: String
 - contrasenia: String
-- cuentaActiva: boolean
 - tipoUsuario: TipoUsuario
 - fechaRegistro: Date
 - foto: String
+- estadoCuenta: String
 }
 
 class Usuario {

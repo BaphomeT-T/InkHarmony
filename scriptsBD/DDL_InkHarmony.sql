@@ -21,7 +21,9 @@ CREATE TABLE Usuario (
                          contraseña VARCHAR(20) NOT NULL,
                          fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                          id_foto_Perfil VARCHAR(20) NOT NULL,
-                         tipo_usuario BOOLEAN NOT NULL DEFAULT 0
+                         estado_cuenta VARCHAR(20) NOT NULL,
+                         preferencias_musicales JSON,
+                         tipo_usuario VARCHAR(20) NOT NULL
 );
 
 -- Tabla Genero
