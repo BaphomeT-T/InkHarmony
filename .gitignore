@@ -10,5 +10,5 @@
 
 # Ignorar archivos de configuración de IntelliJ IDEA
 .idea/
-.iml
+*.iml
 

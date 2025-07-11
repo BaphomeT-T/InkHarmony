@@ -147,5 +147,5 @@ public class PerfilDAO extends SQLiteDataHelper {
         perfil.setFoto(rs.getString("foto"));
         return perfil;
     }
-    
-} 
+
+}
