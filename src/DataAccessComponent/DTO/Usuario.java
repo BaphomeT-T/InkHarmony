@@ -16,14 +16,6 @@ public class Usuario extends Perfil {
         this.preferenciasMusicales = preferenciasMusicales;
     }
 
-    public void registrarUsuario(String nombre, String apellido, String email, String contrasenia) {
-        // Implementación pendiente
-        this.setNombre(nombre);
-        this.setApellido(apellido);
-        this.setEmail(email);
-        this.setContrasenia(contrasenia);
-    }
-
     public void actualizarPerfil(String nombre, String apellido, String foto) {
         // Implementación pendiente
         this.setNombre(nombre);

@@ -4,35 +4,23 @@ import DataAccessComponent.DTO.Perfil;
 import DataAccessComponent.DAO.PerfilDAO;
 
 public class Sesion {
-    private Perfil usuarioActual;
-    private PerfilDAO perfilDAO;
+    private static Perfil usuarioActual;
     
-    public Sesion() {
-        this.perfilDAO = new PerfilDAO();
+    public static void iniciarSesion(Perfil usuarioLogeado) {
+        usuarioActual = usuarioLogeado;
     }
     
-    public boolean iniciarSesion(String email, String contrasenia) {
+    public static void cerrarSesion() {
         // Implementación pendiente
-        Perfil perfil = perfilDAO.buscarPorEmail(email);
-        if (perfil != null && perfil.getEstado_cuenta().equals("activo") && 
-            perfil.getContrasenia().equals(contrasenia)) {
-            this.usuarioActual = perfil;
-            return true;
-        }
-        return false;
+        usuarioActual = null;
     }
     
-    public void cerrarSesion() {
-        // Implementación pendiente
-        this.usuarioActual = null;
-    }
-    
-    public boolean estaAutenticado() {
+    public static boolean estaAutenticado() {
         // Implementación pendiente
         return usuarioActual != null;
     }
     
-    public Perfil obtenerUsuarioActual() {
+    public static Perfil obtenerUsuarioActual() {
         // Implementación pendiente
         return usuarioActual;
     }

@@ -38,7 +38,7 @@ public class PerfilDAO extends SQLiteDataHelper {
             pstmt.setString(3, perfil.getEmail());
             pstmt.setString(4, perfil.getContrasenia());
             pstmt.setString(5, perfil.getFoto());
-            pstmt.setString(6, "activa");
+            pstmt.setString(6, "activo");
             pstmt.setString(7, perfil.getTipoUsuario().toString());
 
             pstmt.executeUpdate();
@@ -48,13 +48,13 @@ public class PerfilDAO extends SQLiteDataHelper {
         }
     }
 
-    public Perfil buscarPorEmail(String email) {
-        String sql = "SELECT * FROM Usuario WHERE email = ?";
+    public Perfil buscarPorEmail(String correo) {
+        String sql = "SELECT * FROM Usuario WHERE correo = ?";
 
         try {
             Connection conn = openConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, email);
+            pstmt.setString(1, correo);
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {

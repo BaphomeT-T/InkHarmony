@@ -1,5 +1,7 @@
 package UserInterface.CustomerControl.AdminUserControl;
 
+import BusinessLogic.ServicioPerfil;
+import BusinessLogic.Sesion;
 import DataAccessComponent.DAO.GeneroDAO;
 
 import java.util.ArrayList;
@@ -151,6 +153,9 @@ public class RegistroController {
             return;
         }
 
+        ServicioPerfil perfil = new ServicioPerfil();
+        perfil.registrarUsuario(nombre, apellido, correo, contrasena, "1");
+
         mostrarAlerta("Registro exitoso", "¡Cuenta registrada correctamente!",
                 javafx.scene.control.Alert.AlertType.INFORMATION);
         salirRegistro();
@@ -266,6 +271,7 @@ public class RegistroController {
 
     @FXML
     private void salirRegistro() {
+        Sesion.cerrarSesion();
         // Cerrar la ventana de registro y abrir de nuevo la ventana de login
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
