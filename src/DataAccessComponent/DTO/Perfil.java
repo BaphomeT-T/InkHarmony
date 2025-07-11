@@ -6,7 +6,7 @@ import java.util.Date;
 public class Perfil {
     private String nombre;
     private String apellido;
-    private String email;
+    private String correo;
     private String contrasenia;
     private TipoUsuario tipoUsuario;
     private Date fechaRegistro;
@@ -16,10 +16,10 @@ public class Perfil {
 
     public Perfil() {}
 
-    public Perfil(String nombre, String apellido, String email, String contrasenia, TipoUsuario tipoUsuario, Date fechaRegistro, String foto , String estadoCuenta) {
+    public Perfil(String nombre, String apellido, String correo, String contrasenia, TipoUsuario tipoUsuario, Date fechaRegistro, String foto , String estadoCuenta) {
         this.nombre = nombre;
         this.apellido = apellido;
-        this.email = email;
+        this.correo = correo;
         this.contrasenia = contrasenia;
         this.tipoUsuario = tipoUsuario;
         this.fechaRegistro = fechaRegistro;
@@ -44,12 +44,12 @@ public class Perfil {
         this.apellido = apellido;
     }
 
-    public String getEmail() {
-        return email;
+    public String getCorreo() {
+        return correo;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setCorreo(String correo) {
+        this.correo = correo;
     }
 
     public String getContrasenia() {
