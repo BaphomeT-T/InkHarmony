@@ -13,7 +13,7 @@ public class Autenticador {
     
     public boolean validarCredenciales(String emailPorVerificar, String contraseniaPorVerificar) {
         // Implementación pendiente
-        Perfil perfil = perfilDAO.buscarPorEmail(emailPorVerificar);
+        Perfil perfil = perfilDAO.buscarPorCorreo(emailPorVerificar);
         if (perfil != null && perfil.getEstado_cuenta().equals("activo")) {
             return perfil.getContrasenia().equals(contraseniaPorVerificar);
         }
@@ -22,6 +22,6 @@ public class Autenticador {
     
     public Perfil obtenerPerfil(String email) {
         // Implementación pendiente
-        return perfilDAO.buscarPorEmail(email);
+        return perfilDAO.buscarPorCorreo(email);
     }
 } 

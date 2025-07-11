@@ -1,6 +1,11 @@
 package UserInterface.CustomerControl.AdminUserControl;
 
 import DataAccessComponent.DAO.GeneroDAO;
+import DataAccessComponent.DAO.PerfilDAO;
+import DataAccessComponent.DAO.UsuarioDAO;
+import DataAccessComponent.DTO.Genero;
+import DataAccessComponent.DTO.Perfil;
+import DataAccessComponent.DTO.TipoUsuario;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -23,12 +29,12 @@ import javafx.scene.text.Font;
 public class RegistroController {
 
     private List<String> rutasImagenes = List.of(   
-        "/UserInterface/Resources/img/Perfil/perfilH1.jpg",
-        "/UserInterface/Resources/img/Perfil/perfilH2.jpg",
-        "/UserInterface/Resources/img/Perfil/perfilH3.jpg",
-        "/UserInterface/Resources/img/Perfil/perfilM1.jpg",
-        "/UserInterface/Resources/img/Perfil/perfilM2.jpg",
-        "/UserInterface/Resources/img/Perfil/perfilM3.jpg"
+        "/UserInterface/Resources/img/Perfil/perfilH1.jpg", //Índice 0 
+        "/UserInterface/Resources/img/Perfil/perfilH2.jpg", //Índice 1
+        "/UserInterface/Resources/img/Perfil/perfilH3.jpg", //Índice 2
+        "/UserInterface/Resources/img/Perfil/perfilM1.jpg", //Índice 3
+        "/UserInterface/Resources/img/Perfil/perfilM2.jpg", //Índice 4
+        "/UserInterface/Resources/img/Perfil/perfilM3.jpg"  //Índice 5
         );
     private int indiceActual = 0;
 
@@ -102,58 +108,114 @@ public class RegistroController {
 
     @FXML
     void registrarCuenta(ActionEvent event) {
+        // 1. Obtener datos del formulario
         String nombre = txtNombre.getText().trim();
         String apellido = txtApellido.getText().trim();
         String correo = txtCorreo.getText().trim();
         String contrasena = txtContrasena.getText().trim();
         String repetirContrasena = txtRepetirContrasena.getText().trim();
+        
+        // 2. Validaciones básicas (incluye validación de géneros)
+        if (!validarCampos(nombre, apellido, correo, contrasena, repetirContrasena)) {
+            return;
+        }
+        
+        // 3. Verificar si el correo ya existe
+        PerfilDAO perfilDAO = new PerfilDAO();
+        if (perfilDAO.buscarPorCorreo(correo) != null) {
+            mostrarAlerta("Correo ya registrado", 
+                "El correo electrónico ya está en uso. Por favor use otro.",
+                Alert.AlertType.ERROR);
+            return;
+        }
+        
+        // 4. Crear objetos necesarios
+        Perfil nuevoPerfil = new Perfil();
+        nuevoPerfil.setNombre(nombre);
+        nuevoPerfil.setApellido(apellido);
+        nuevoPerfil.setCorreo(correo);
+        nuevoPerfil.setContrasenia(contrasena);
+        nuevoPerfil.setFoto(String.valueOf(indiceActual));
+        nuevoPerfil.setTipoUsuario(TipoUsuario.USUARIO);
+        
+        // Convertir generosSeleccionados (List<String>) a List<Genero>
+        List<Genero> generos = generosSeleccionados.stream()
+                .map(Genero::new)
+                .collect(Collectors.toList());
+        
+        // 5. Guardar TODO (perfil + preferencias) de manera atómica
+        try {
+            // Paso 1: Guardar perfil
+            perfilDAO.guardar(nuevoPerfil);
+            
+            // Paso 2: Guardar preferencias
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+            if (!usuarioDAO.guardarPreferencias(correo, generos)) {
+                // Si fallan las preferencias, ELIMINAR el perfil recién creado
+                perfilDAO.eliminar(nuevoPerfil);
+                throw new RuntimeException("No se pudieron guardar las preferencias");
+            }
+            
+            // Éxito
+            mostrarAlerta("Éxito", "Registro completo con preferencias", Alert.AlertType.INFORMATION);
+            salirRegistro();
+            
+        } catch (Exception e) {
+            mostrarAlerta("Error", "No se completó el registro: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
 
-        // Verificar campos vacíos
+    private boolean validarCampos(String nombre, String apellido, String correo, 
+                                String contrasena, String repetirContrasena) {
+        // Validar campos vacíos
         StringBuilder camposVacios = new StringBuilder("Debe llenar los siguientes campos:\n");
-
         boolean hayVacios = false;
-        if (nombre.isEmpty()) {
-            camposVacios.append("- Nombre\n");
-            hayVacios = true;
-        }
-        if (apellido.isEmpty()) {
-            camposVacios.append("- Apellido\n");
-            hayVacios = true;
-        }
-        if (correo.isEmpty()) {
-            camposVacios.append("- Correo\n");
-            hayVacios = true;
-        }
-        if (contrasena.isEmpty()) {
-            camposVacios.append("- Contraseña\n");
-            hayVacios = true;
-        }
-        if (repetirContrasena.isEmpty()) {
-            camposVacios.append("- Verificar Contraseña\n");
-            hayVacios = true;
-        }
+        
+        if (nombre.isEmpty()) { camposVacios.append("- Nombre\n"); hayVacios = true; }
+        if (apellido.isEmpty()) { camposVacios.append("- Apellido\n"); hayVacios = true; }
+        if (correo.isEmpty()) { camposVacios.append("- Correo\n"); hayVacios = true; }
+        if (contrasena.isEmpty()) { camposVacios.append("- Contraseña\n"); hayVacios = true; }
+        if (repetirContrasena.isEmpty()) { camposVacios.append("- Verificar Contraseña\n"); hayVacios = true; }
 
         if (hayVacios) {
-            mostrarAlerta("Campos incompletos", camposVacios.toString(), javafx.scene.control.Alert.AlertType.WARNING);
-            return;
+            mostrarAlerta("Campos incompletos", camposVacios.toString(), 
+                Alert.AlertType.WARNING);
+            return false;
         }
 
+        // Validar formato de correo
+        if (!correo.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            mostrarAlerta("Correo inválido", 
+                "Por favor ingrese un correo electrónico válido.",
+                Alert.AlertType.ERROR);
+            return false;
+        }
+
+        // Validar que las contraseñas coincidan
         if (!contrasena.equals(repetirContrasena)) {
-            mostrarAlerta("Contraseñas no coinciden", "Las contraseñas ingresadas no son iguales.",
-                    javafx.scene.control.Alert.AlertType.ERROR);
-            return;
+            mostrarAlerta("Contraseñas no coinciden", 
+                "Las contraseñas ingresadas no son iguales.",
+                Alert.AlertType.ERROR);
+            return false;
+        }
+
+        // Validar fortaleza de contraseña (opcional)
+        if (contrasena.length() < 8) {
+            mostrarAlerta("Contraseña débil", 
+                "La contraseña debe tener al menos 8 caracteres.",
+                Alert.AlertType.WARNING);
+            return false;
         }
 
         // Validar que se hayan seleccionado géneros
         if (generosSeleccionados.isEmpty()) {
-            mostrarAlerta("Géneros no seleccionados", "Debe seleccionar al menos un género musical.", 
-                javafx.scene.control.Alert.AlertType.WARNING);
-            return;
+            mostrarAlerta("Géneros no seleccionados", 
+                "Debe seleccionar al menos un género musical.", 
+                Alert.AlertType.WARNING);
+            return false;
         }
 
-        mostrarAlerta("Registro exitoso", "¡Cuenta registrada correctamente!",
-                javafx.scene.control.Alert.AlertType.INFORMATION);
-        salirRegistro();
+        return true;
     }
 
     private void mostrarAlerta(String titulo, String mensaje, javafx.scene.control.Alert.AlertType tipo) {

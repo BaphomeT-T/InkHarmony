@@ -2,7 +2,6 @@ package UserInterface.CustomerControl.AdminUserControl;
 
 import java.util.List;
 
-import BusinessLogic.Sesion;
 import DataAccessComponent.DTO.Administrador;
 import DataAccessComponent.DTO.Perfil;
 import DataAccessComponent.DTO.TipoUsuario;
@@ -78,7 +77,7 @@ public class AdministracionUsuarioController {
         // Configurar cómo obtener los datos para cada columna
         colNombre.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNombre()));
         colApellido.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getApellido()));
-        colCorreo.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
+        colCorreo.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCorreo()));
         colRol.setCellValueFactory(
                 cellData -> new SimpleStringProperty(cellData.getValue().getTipoUsuario().toString()));
 
@@ -133,7 +132,7 @@ public class AdministracionUsuarioController {
         } else {
             ObservableList<Perfil> filtrados = FXCollections.observableArrayList();
             for (Perfil perfil : listaOriginalUsuarios) {
-                if (perfil.getEmail().toLowerCase().contains(filtro.toLowerCase())) {
+                if (perfil.getCorreo().toLowerCase().contains(filtro.toLowerCase())) {
                     filtrados.add(perfil);
                 }
             }

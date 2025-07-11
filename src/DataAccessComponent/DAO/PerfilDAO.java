@@ -35,7 +35,7 @@ public class PerfilDAO extends SQLiteDataHelper {
 
             pstmt.setString(1, perfil.getNombre());
             pstmt.setString(2, perfil.getApellido());
-            pstmt.setString(3, perfil.getEmail());
+            pstmt.setString(3, perfil.getCorreo());
             pstmt.setString(4, perfil.getContrasenia());
             pstmt.setString(5, perfil.getFoto());
             pstmt.setString(6, "activa");
@@ -48,13 +48,13 @@ public class PerfilDAO extends SQLiteDataHelper {
         }
     }
 
-    public Perfil buscarPorEmail(String email) {
-        String sql = "SELECT * FROM Usuario WHERE email = ?";
+    public Perfil buscarPorCorreo(String Correo) {
+        String sql = "SELECT * FROM Usuario WHERE Correo = ?";
 
         try {
             Connection conn = openConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, email);
+            pstmt.setString(1, Correo);
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -92,12 +92,12 @@ public class PerfilDAO extends SQLiteDataHelper {
     }
 
     public void eliminar(Perfil perfil) {
-        String sql = "DELETE FROM Usuario WHERE email = ?";
+        String sql = "DELETE FROM Usuario WHERE Correo = ?";
 
         try {
             Connection conn = openConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, perfil.getEmail());
+            pstmt.setString(1, perfil.getCorreo());
             pstmt.executeUpdate();
             pstmt.close();
         } catch (Exception e) {
@@ -109,7 +109,7 @@ public class PerfilDAO extends SQLiteDataHelper {
         String sql = """
                     UPDATE Usuario
                     SET  tipo_usuario= ?
-                    WHERE email = ?
+                    WHERE Correo = ?
                 """;
 
         try {
@@ -117,7 +117,7 @@ public class PerfilDAO extends SQLiteDataHelper {
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setString(1, tipoUsuario);
-            pstmt.setString(2, perfil.getEmail());
+            pstmt.setString(2, perfil.getCorreo());
 
             pstmt.executeUpdate();
             pstmt.close();
@@ -127,12 +127,12 @@ public class PerfilDAO extends SQLiteDataHelper {
     }
 
     public void desactivar(Perfil perfil) {
-        String sql = "UPDATE Usuario SET cuenta_activa = 0 WHERE email = ?";
+        String sql = "UPDATE Usuario SET cuenta_activa = 0 WHERE Correo = ?";
 
         try {
             Connection conn = openConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, perfil.getEmail());
+            pstmt.setString(1, perfil.getCorreo());
             pstmt.executeUpdate();
             pstmt.close();
         } catch (Exception e) {
@@ -145,7 +145,7 @@ public class PerfilDAO extends SQLiteDataHelper {
         Perfil perfil = new Perfil();
         perfil.setNombre(rs.getString(2));
         perfil.setApellido(rs.getString(3));
-        perfil.setEmail(rs.getString(4));
+        perfil.setCorreo(rs.getString(4));
         perfil.setContrasenia(rs.getString(5));
         perfil.setEstadoCuenta(rs.getString(8));
         perfil.setTipoUsuario(TipoUsuario.valueOf(rs.getString(10)));
