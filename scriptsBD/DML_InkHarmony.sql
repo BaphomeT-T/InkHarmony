@@ -1,3 +1,5 @@
+-- database: ../database/InkHarmony.sqlite
+
 INSERT INTO Genero (nombre_genero) VALUES
                                        ('GAME_OST'),
                                        ('ROCK'),
@@ -17,3 +19,6 @@ INSERT INTO Genero (nombre_genero) VALUES
                                        ('K_POP'),
                                        ('BOLERO'),
                                        ('PASILLO');
+INSERT INTO Usuario (nombre_usuario, apellido_usuario, correo, contraseña, tipo_usuario, id_foto_Perfil, estado_cuenta,tipo_usuario) VALUES
+('Jonas', 'Garcia', 'jonas@gmail.com', '1234', 'ADMIN',  '1', 'activo','ADMIN');
+SELECT * FROM Usuario
