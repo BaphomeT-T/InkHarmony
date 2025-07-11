@@ -14,9 +14,10 @@ public class GeneroDAO extends SQLiteDataHelper {
         List<String> generos = new ArrayList<>();
         String sql = "SELECT nombre_genero FROM Genero";
 
-        try (Connection conn = openConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try {
+            Connection conn = openConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
                 generos.add(rs.getString("nombre_genero"));
