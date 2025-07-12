@@ -76,4 +76,4 @@ ServicioValidacion ..|> UnicoNombreValidable
 ServicioValidacion ..|> AsociacionValidable
 ArtistaDAO --> ServicioValidacion
 Artista --> Genero
-@endumlml
+@enduml
