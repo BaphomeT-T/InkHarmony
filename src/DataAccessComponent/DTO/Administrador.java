@@ -9,6 +9,9 @@ public class Administrador extends Perfil {
     public Administrador() {
         super();
     }
+    public Administrador(Perfil perfil) {
+        super(perfil.getNombre(), perfil.getApellido(), perfil.getCorreo(), perfil.getContrasenia(), perfil.getTipoUsuario(), perfil.getFechaRegistro(), perfil.getFoto(), perfil.getEstado_cuenta());
+    }
 
     public Administrador(String nombre, String apellido, String email, String contrasenia, 
                         TipoUsuario tipoUsuario, java.util.Date fechaRegistro, String foto, String estadoCuenta) {
@@ -22,26 +25,26 @@ public class Administrador extends Perfil {
     public void activarCuenta(Perfil usuario) {
         // Implementación pendiente
         usuario.setEstadoCuenta("activo");
+        PerfilDAO perfilDAO = new PerfilDAO();
+        perfilDAO.actualizar( usuario);
     }
 
     public void desactivarCuenta(Perfil usuario) {
         // Implementación pendiente
         usuario.setEstadoCuenta("desactivado");
+        PerfilDAO perfilDAO = new PerfilDAO();
+        perfilDAO.actualizar( usuario);
     }
 
-    public void cambiarTipoUsuario(Perfil usuario, String tipo) {
-        // Implementación pendiente
-        if ("ADMINISTRADOR".equalsIgnoreCase(tipo)) {
-            usuario.setTipoUsuario(TipoUsuario.ADMINISTRADOR);
-        } else if ("USUARIO".equalsIgnoreCase(tipo)) {
-            usuario.setTipoUsuario(TipoUsuario.USUARIO);
-        }
+    public void cambiarTipoUsuario(Perfil usuario, TipoUsuario tipoUsuario) {
+        usuario.setTipoUsuario(tipoUsuario);
+        PerfilDAO perfilDAO = new PerfilDAO();
+        perfilDAO.actualizar( usuario);
     }
 
     public void eliminarCuenta(Perfil usuario) {
-        // Implementación pendiente
-        // En una implementación real, esto podría marcar el usuario como eliminado
-        // o realmente eliminarlo de la base de datos
+        PerfilDAO perfilDAO = new PerfilDAO();
+        perfilDAO.eliminar(usuario);
     }
 
   

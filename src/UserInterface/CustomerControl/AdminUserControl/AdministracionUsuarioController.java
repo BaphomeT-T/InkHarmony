@@ -2,6 +2,7 @@ package UserInterface.CustomerControl.AdminUserControl;
 
 import java.util.List;
 
+import BusinessLogic.Sesion;
 import DataAccessComponent.DTO.Administrador;
 import DataAccessComponent.DTO.Perfil;
 import DataAccessComponent.DTO.TipoUsuario;
@@ -10,6 +11,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -18,16 +25,26 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.shape.Circle;
 import javafx.scene.image.Image;
 import javafx.beans.property.SimpleStringProperty;
 
+
 public class AdministracionUsuarioController {
     // private Sesion session;
     private List<String> rutasImagenes = RecursosPerfil.obtenerRutasImagenes();
-    private int indiceActual = 0;
+    private Perfil administrador = new Administrador(Sesion.obtenerUsuarioActual());
+    private int indiceActual = Integer.parseInt(administrador.getFoto());
     @FXML
     private Button btnActivarCuenta;
+    @FXML
+    private Button btnAgregarCancion;
+    @FXML
+    private Button btnAgregarArtista;
+    @FXML
+    private Button btnActualizarRol;
+    
 
     @FXML
     private MenuButton menuPerfil;
@@ -69,25 +86,46 @@ public class AdministracionUsuarioController {
 
     @FXML
     public void initialize() {
+        // Configurar componentes de la interfaz
+        configurarColumnasTabla();
+        configurarComboBox();
+        
+        // Cargar la imagen de perfil
+        actualizarImagenPerfil();
+        
+        // Actualizar tabla con datos y estilos
+        actualizarTablaUsuarios();
+
+        // Configurar listeners
+        configurarListeners();
+    }
+
+    private void configurarColumnasTabla() {
         // Configurar cómo obtener los datos para cada columna
         colNombre.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNombre()));
         colApellido.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getApellido()));
         colCorreo.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCorreo()));
         colRol.setCellValueFactory(
                 cellData -> new SimpleStringProperty(cellData.getValue().getTipoUsuario().toString()));
+    }
 
-        // Cargar la imagen de perfil
-        actualizarImagenPerfil();
+    private void configurarComboBox() {
+        cmbRol.setItems(FXCollections.observableArrayList(TipoUsuario.values()));
+    }
 
+    private void actualizarTablaUsuarios() {
         // Cargar los usuarios en la tabla
         cargarUsuarios();
+        // Configurar el estilo de las filas según el estado de la cuenta
+        configurarEstiloFilas();
+    }
 
+    private void configurarListeners() {
         // Listener para búsqueda activa
         txtBuscarCorreo.textProperty().addListener((observable, oldValue, newValue) -> {
             filtrarUsuariosPorCorreo(newValue);
         });
 
-        cmbRol.setItems(FXCollections.observableArrayList(TipoUsuario.values()));
         // Listener para selección de fila
         tblUsuarios.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -108,6 +146,7 @@ public class AdministracionUsuarioController {
         List<Perfil> usuarios = administrador.consultarUsuarios();
         listaOriginalUsuarios.setAll(usuarios);
         tblUsuarios.setItems(listaOriginalUsuarios);
+    
     }
 
     private void actualizarImagenPerfil() {
@@ -121,13 +160,41 @@ public class AdministracionUsuarioController {
         }
     }
 
+    private void configurarEstiloFilas() {
+        // Configurar el estilo de las filas según el estado de la cuenta
+        tblUsuarios.setRowFactory(tv -> new TableRow<Perfil>() {
+            @Override
+            protected void updateItem(Perfil item, boolean empty) {
+                super.updateItem(item, empty);
+                
+                if (empty || item == null) {
+                    setStyle("");
+                } else {
+                    // Aplicar estilo según el estado de la cuenta
+                    String estado = item.getEstado_cuenta();
+                    if ("Activo".equalsIgnoreCase(estado) || "1".equals(estado)) {
+                        setStyle("-fx-background-color: #24E23E; -fx-text-fill: #Ffffff;"); // Verde claro
+                    } else if ("desactivado".equalsIgnoreCase(estado) || "0".equals(estado)) {
+                        setStyle("-fx-background-color: #FF0000 ; -fx-text-fill: #ffffff;"); // Rojo claro
+                    } else {
+                        setStyle(""); // Sin estilo para estados desconocidos
+                    }
+                }
+            }
+        });
+    }
+
     private void filtrarUsuariosPorCorreo(String filtro) {
-        if (filtro == null || filtro.isEmpty()) {
+     
+        if (filtro == null || filtro.trim().isEmpty()) {
             tblUsuarios.setItems(listaOriginalUsuarios);
         } else {
             ObservableList<Perfil> filtrados = FXCollections.observableArrayList();
+            String filtroLower = filtro.toLowerCase().trim();
+            
             for (Perfil perfil : listaOriginalUsuarios) {
-                if (perfil.getCorreo().toLowerCase().contains(filtro.toLowerCase())) {
+                String correo = perfil.getCorreo();
+                if (correo != null && correo.toLowerCase().startsWith(filtroLower)) {
                     filtrados.add(perfil);
                 }
             }
@@ -137,25 +204,55 @@ public class AdministracionUsuarioController {
 
     @FXML
     void activarCuenta(ActionEvent event) {
-        System.out.println("hola hola");
+        
+        // Obtener el usuario seleccionado de la tabla
+        Perfil usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
+        ((Administrador) administrador).activarCuenta(usuarioSeleccionado);
+        actualizarTablaUsuarios();
     }
 
     @FXML
     void desactivarCuenta(ActionEvent event) {
-        // Implementar lógica para desactivar cuenta
-        System.out.println("Desactivar cuenta");
+        
+        Perfil usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
+        if(usuarioSeleccionado.getCorreo().equals(Sesion.obtenerUsuarioActual().getCorreo())){
+            mostrarAlerta("Error", "No se puede desactivar la cuenta actual", Alert.AlertType.ERROR);
+            return;
+        }else{
+            ((Administrador) administrador).desactivarCuenta(usuarioSeleccionado);
+            actualizarTablaUsuarios();
+        }
     }
 
     @FXML
     void eliminarCuenta(ActionEvent event) {
-        // Implementar lógica para eliminar cuenta
-        System.out.println("Eliminar cuenta");
+        Perfil usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
+        if(usuarioSeleccionado.getCorreo().equals(Sesion.obtenerUsuarioActual().getCorreo())){
+            mostrarAlerta("Error", "No se puede eliminar la cuenta actual", Alert.AlertType.ERROR);
+            return;
+        }else{
+            ((Administrador) administrador).eliminarCuenta(usuarioSeleccionado);
+            actualizarTablaUsuarios();
+        }
+    }
+
+    private void mostrarAlerta(String string, String string2, AlertType error) {
+        Alert alert = new Alert(error);
+        alert.setTitle(string);
+        alert.setContentText(string2);
+        alert.showAndWait();
     }
 
     @FXML
     void actualizarRol(ActionEvent event) {
-        // Implementar lógica para actualizar rol
-        System.out.println("Actualizar rol");
+        Perfil usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
+        if(usuarioSeleccionado.getCorreo().equals(Sesion.obtenerUsuarioActual().getCorreo())){
+            mostrarAlerta("Error", "No se puede cambiar el rol de la cuenta actual", Alert.AlertType.ERROR);
+            return;
+        }else{
+        ((Administrador) administrador).cambiarTipoUsuario(usuarioSeleccionado, cmbRol.getValue());
+        actualizarTablaUsuarios();
+        }
     }
 
     @FXML
@@ -179,5 +276,44 @@ public class AdministracionUsuarioController {
         stage.close();
 
     }
+    @FXML
+    void agregarCancionesFxml() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/registro.fxml"));// colocar la ruta de la ventana
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Registro de Usuario");
+            stage.setMinWidth(1280);
+            stage.setMinHeight(680);
 
+            stage.show();
+
+            // Cerrar la ventana de login
+            ((Stage) btnAgregarArtista.getScene().getWindow()).close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void agregarArtistaFxml() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/registro.fxml"));// colocar la ruta de la ventana
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Registro de Usuario");
+            stage.setMinWidth(1280);
+            stage.setMinHeight(680);
+
+            stage.show();
+
+            // Cerrar la ventana de login
+            ((Stage) btnAgregarArtista.getScene().getWindow()).close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
