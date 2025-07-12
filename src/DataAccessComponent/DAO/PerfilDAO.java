@@ -105,19 +105,22 @@ public class PerfilDAO extends SQLiteDataHelper {
         }
     }
 
-    public void actualizar(String tipoUsuario, Perfil perfil) {
+    public void actualizar(Perfil perfil) {
         String sql = """
                     UPDATE Usuario
-                    SET  tipo_usuario= ?
-                    WHERE Correo = ?
+                    SET  
+                    estado_cuenta= ?,
+                    tipo_usuario= ?
+                    WHERE correo = ?
                 """;
 
         try {
             Connection conn = openConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            pstmt.setString(1, tipoUsuario);
-            pstmt.setString(2, perfil.getCorreo());
+            pstmt.setString(1, perfil.getEstado_cuenta());
+            pstmt.setString(2, perfil.getTipoUsuario().toString());
+            pstmt.setString(3, perfil.getCorreo());
 
             pstmt.executeUpdate();
             pstmt.close();

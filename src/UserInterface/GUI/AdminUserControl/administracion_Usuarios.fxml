@@ -149,12 +149,12 @@
                <Font size="30.0" />
             </font>
          </Label>
-         <Button prefHeight="68.0" prefWidth="199.0" style="-fx-background-color: #b0a7d1;" text="Agregar canciones" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+         <Button fx:id="btnAgregarCancion" onAction="#agregarCancionesFxml" prefHeight="68.0" prefWidth="199.0" style="-fx-background-color: #b0a7d1;" text="Agregar canciones" GridPane.halignment="CENTER" GridPane.rowIndex="1">
             <font>
                <Font size="16.0" />
             </font>
          </Button>
-         <Button prefHeight="68.0" prefWidth="199.0" style="-fx-background-color: #b0a7d1;" text="Agregar Artistas" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+         <Button fx:id="btnAgregarArtista" onAction="#agregarArtistaFxml" prefHeight="68.0" prefWidth="199.0" style="-fx-background-color: #b0a7d1;" text="Agregar Artistas" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
             <font>
                <Font size="16.0" />
             </font>
