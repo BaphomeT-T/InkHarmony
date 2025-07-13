@@ -1,4 +1,5 @@
 package UserInterface.CustomerControl.CatalogoArtistas;
+import DataAccessComponent.DTO.CatalogoArtistas.ServicioValidacion;
 import DataAccessComponent.DTO.CatalogoCanciones.Genero;
 
 import javafx.event.ActionEvent;
@@ -40,6 +41,9 @@ public class SubirArtistasController {
 
     @FXML
     private TextField nombreTextField;
+
+    @FXML
+    private Label mensajeNombreLabel;
 
     @FXML
     private Button publicarButton;
@@ -114,9 +118,23 @@ public class SubirArtistasController {
                 e.consume(); // evita que se cierre el menú al hacer clic
                 actualizarTextoMenuButton();
             });
-
             generoMenuButton.getItems().add(item);
         }
+        // Validación del nombre único mientras se esta escribiendo
+        nombreTextField.textProperty().addListener((obs, oldText, newText) -> {
+            if (newText != null && !newText.trim().isEmpty()) {
+                ServicioValidacion servicioValidacion = new ServicioValidacion();
+                boolean esUnico = servicioValidacion.esNombreUnico(newText);
+                if (!esUnico) {
+                    mensajeNombreLabel.setText("El nombre del artista ya está en uso");
+                    mensajeNombreLabel.setStyle("-fx-text-fill: red;");
+                } else {
+                    mensajeNombreLabel.setText("");
+                }
+            } else {
+                mensajeNombreLabel.setText("");
+            }
+        });
     }
 
     private void actualizarTextoMenuButton() {

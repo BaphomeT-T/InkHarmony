@@ -32,11 +32,16 @@
                    </opaqueInsets>
                     </Label>
 
-                          <TextField fx:id="nombreTextField" layoutX="30.0" layoutY="85.0" prefHeight="60.0" prefWidth="434.0" promptText="Ingresa el nombre del artista" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;">
+                    <TextField fx:id="nombreTextField" layoutX="30.0" layoutY="85.0" prefHeight="60.0" prefWidth="434.0" promptText="Ingresa el nombre del artista" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;">
                         <font>
                             <Font size="20.0" />
                         </font>
                     </TextField>
+                    <Label fx:id="mensajeNombreLabel" layoutX="33.0" layoutY="145.0" text="" textFill="#ac890b">
+                        <font>
+                            <Font size="16.0" />
+                        </font>
+                    </Label>
                     <Button fx:id="publicarButton" layoutX="304.0" layoutY="501.0" mnemonicParsing="false" onAction="#publicar" prefHeight="60.0" prefWidth="345.0" style="-fx-background-color: #9190C2; -fx-background-radius: 10;" text="Publicar">
                         <font>
                             <Font name="System Bold" size="26.0" />
