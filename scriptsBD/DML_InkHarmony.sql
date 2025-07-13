@@ -17,3 +17,12 @@ INSERT INTO Genero (nombre_genero) VALUES
                                        ('K_POP'),
                                        ('BOLERO'),
                                        ('PASILLO');
+
+INSERT INTO Artista (nombre, biografia) VALUES
+                                            ('Fleetwood_Mac', 'Banda de rock'),
+                                            ('Weezer', 'Banda de rock alternativo'),
+                                            ('Maluma', 'Cantante y compositor colombiano'),
+                                            ('Karol_G', 'Cantante y compositora colombiana'),
+                                            ('Twice', 'Grupo femenino de K-pop'),
+                                            ('Julio_Jaramillo', 'Cantante ecuatoriano'),
+                                            ('Christian_Nodal', 'Cantante y compositor');
