@@ -4,7 +4,7 @@ package "Administración de usuarios" {
   class Perfil {
     - nombre: String
     - apellido: String
-    - email: String
+    - correo: String
     - contrasenia: String
     - estadoCuenta: String
     - fechaRegistro: Date
