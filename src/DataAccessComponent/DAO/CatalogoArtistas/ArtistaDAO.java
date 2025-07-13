@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DataAccessComponent.DTO.CatalogoArtistas.Artista;
+import DataAccessComponent.DTO.CatalogoArtistas.ServicioValidacion;
 import DataAccessComponent.DTO.CatalogoCanciones.Genero;
 
 public class ArtistaDAO {
@@ -10,9 +11,12 @@ public class ArtistaDAO {
     protected Artista artista;
     private ArrayList<Artista> artistas;
 
+    private ServicioValidacion servicioValidacion;
+
     public ArtistaDAO (Artista artista){
         this.artista = artista;
         this.artistas = new ArrayList<>();
+        this.servicioValidacion = new ServicioValidacion();
     }
 
     public void registrarArtista (int id, String nombre, List<Genero> generos, String biografia, String imagen ){
@@ -36,6 +40,15 @@ public class ArtistaDAO {
 
     }
     public void eliminarArtista (Artista artista){
+        /*
+        if (servicioValidacion.tieneElementosAsociados(artista)) {
+            System.out.println(" No se puede eliminar: tiene elementos asociados.");
+        } else {
+            artistas.remove(artista);
+            System.out.println("Artista eliminado con éxito.");
+        }*/
+
+
         //implementar el metodo de tieneElementosAsociados
         artistas.remove(artista);
 
