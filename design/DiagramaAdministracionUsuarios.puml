@@ -1,71 +1,54 @@
 @startuml
+package "Administración de usuarios" {
 
-package "Módulo Administración de Usuarios" {
+  class Perfil {
+    - nombre: String
+    - apellido: String
+    - email: String
+    - contrasenia: String
+    - estadoCuenta: String
+    - fechaRegistro: Date
+    - foto: String
+  }
 
-class Perfil {
-- nombre: String
-- apellido: String
-- email: String
-- contrasenia: String
-- tipoUsuario: TipoUsuario
-- fechaRegistro: Date
-- foto: String
-- estadoCuenta: String
-}
+  class Usuario {
+    - preferenciasMusicales: List<Genero>
+    + actualizarPerfil(nombre, apellido, foto): void
+    + agregarPreferenciasMusicales(generos: List<Genero>): void
+  }
 
-class Usuario {
-- preferenciasMusicales: List<Generos>
-+ registrarUsuario(nombre: String, apellido: String, email: String, contrasenia: String): void
-+ actualizarPerfil(nombre: String, apellido: String, foto: Image): void
-+ agregarPreferenciasMusicales(generos: List<Genero>): void
-}
+  class Administrador {
+    + consultarUsuarios(): List<Perfil>
+    + activarCuenta(usuario: Perfil): void
+    + desactivarCuenta(usuario: Perfil): void
+    + cambiarTipoUsuario(usuario: Perfil, tipoUsuario: TipoUsuario): void
+    + eliminarCuenta(usuario: Perfil): void
+  }
 
-class Administrador {
-+ activarCuenta(usuario: Perfil): void
-+ desactivarCuenta(usuario: Perfil): void
-+ cambiarTipoUsuario(usuario: Perfil, tipo: String): void
-+ eliminarCuenta(usuario: Perfil): void
-+ consultarUsuarios(): List<Perfil>
-}
+  class ServicioPerfil {
+    - perfilDAO: PerfilDAO
+    - {static} encoder: PasswordEncoder
+    + registrarUsuario(nombre, apellido, correo, contrasenia, foto): void
+    + autenticar(email, password): Perfil
+  }
+  Enum Genero
+  Enum TipoUsuario {
+  ADMINISTRADOR
+  USUARIO
+  }
+  class Sesion {
+    - {static} usuarioLogueado: Perfil
+    + {static} iniciarSesio(usarioLogueado: Perfil): void
+    + {static} obtenerUsuarioActual(): Perfil
+    + {static} cerrarSesion(): void
+  }
 
-class Autenticador {
-+ validarCredenciales(emailPorVerificar: String, contraseniaPorVerificar: String): boolean
-+ obtenerPerfil(email: String): Perfil
-}
-
-class Sesion {
-- usuarioActual: Perfil
-+ iniciarSesion(email: String, contrasenia: String): boolean
-+ cerrarSesion(): void
-+ estaAutenticado(): boolean
-+ obtenerUsuarioActual(): Perfil
-}
-
-enum Generos {
-
-}
-enum TipoUsuario {
-    ADMINISTRADOR
-    USUARIO
-}
-
-
-class PerfilDAO {
-+ guardar(perfil: Perfil): void
-+ buscarPorEmail(email: String): Perfil
-+ listarTodos(): List<Perfil>
-+ eliminar(perfil: Perfil): void
-+ actualizar(perfil: Perfil): void
-+ desactivar(perfil: Perfil): void
-}
-
-Autenticador --  Sesion
-Sesion --> "1" Perfil: usuarioActual
-Perfil --> "*" Generos : preferenciasMusicales
-Usuario --|> Perfil
-Administrador --|> Perfil
-Perfil -> PerfilDAO
-
+  ServicioPerfil .> Perfil
+  Usuario --|> Perfil
+  Administrador --|> Perfil
+  Usuario -> "*" Genero : preferenciasMusicales
+  Perfil --> "1" TipoUsuario: tipoUsuario
+  ServicioPerfil --> Sesion
 
 }
 
