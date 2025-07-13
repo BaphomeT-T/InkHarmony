@@ -56,35 +56,40 @@ public class UsuarioDAO extends SQLiteDataHelper {
     }
 
     public boolean actualizarPreferencias(String correo, List<Genero> nuevosGeneros) {
-        // Validar géneros contra la BD
-        List<String> generosValidos = GeneroDAO.obtenerTodos();
-        for (Genero genero : nuevosGeneros) {
-            if (!generosValidos.contains(genero.getNombreGenero())) {
-                return false; // Género no existe en la BD
-            }
-        }
-
         String sql = "UPDATE Usuario SET preferencias_musicales = ? WHERE correo = ?";
         try {
             Connection conn = openConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            
-            // Convertir List<Genero> a JSON manualmente
-            StringBuilder json = new StringBuilder("[");
-            for (int i = 0; i < nuevosGeneros.size(); i++) {
-                json.append("\"").append(nuevosGeneros.get(i).getNombreGenero()).append("\"");
-                if (i < nuevosGeneros.size() - 1) json.append(",");
-            }
-            json.append("]");
 
-            pstmt.setString(1, json.toString());
+            if (nuevosGeneros == null) {
+                // Si es null, se actualiza la columna como NULL en la base de datos
+                pstmt.setNull(1, Types.VARCHAR);
+            } else {
+                // Validar géneros
+                List<String> generosValidos = GeneroDAO.obtenerTodos();
+                for (Genero genero : nuevosGeneros) {
+                    if (!generosValidos.contains(genero.getNombreGenero())) {
+                        return false;
+                    }
+                }
+
+                // Convertir a JSON manualmente
+                StringBuilder json = new StringBuilder("[");
+                for (int i = 0; i < nuevosGeneros.size(); i++) {
+                    json.append("\"").append(nuevosGeneros.get(i).getNombreGenero()).append("\"");
+                    if (i < nuevosGeneros.size() - 1) json.append(",");
+                }
+                json.append("]");
+                pstmt.setString(1, json.toString());
+            }
+
             pstmt.setString(2, correo);
             pstmt.executeUpdate();
             return true;
-            
         } catch (Exception e) {
             System.err.println("Error al actualizar las preferencias: " + e.getMessage());
             return false;
         }
     }
+
 }
