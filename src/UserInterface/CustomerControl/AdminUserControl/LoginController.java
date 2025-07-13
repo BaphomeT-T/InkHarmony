@@ -27,6 +27,13 @@ public class LoginController {
     private Button iniciarSesion;
 
     @FXML
+    private void initialize() {
+        txtContrasenia.setOnAction(event -> iniciarSesion());
+        txtEmail.setOnAction(event -> iniciarSesion());
+    }
+
+
+    @FXML
     private void iniciarSesion() {
         String correo = txtEmail.getText();
         String contraseniaIngresada = txtContrasenia.getText();

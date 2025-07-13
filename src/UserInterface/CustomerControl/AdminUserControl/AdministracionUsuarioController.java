@@ -204,21 +204,26 @@ public class AdministracionUsuarioController {
 
     @FXML
     void activarCuenta(ActionEvent event) {
-        
-        // Obtener el usuario seleccionado de la tabla
         Perfil usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
+        if (usuarioSeleccionado == null) {
+            mostrarAlerta("Advertencia", "Debe seleccionar un usuario de la tabla", Alert.AlertType.WARNING);
+            return;
+        }
         ((Administrador) administrador).activarCuenta(usuarioSeleccionado);
         actualizarTablaUsuarios();
     }
 
     @FXML
     void desactivarCuenta(ActionEvent event) {
-        
         Perfil usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
-        if(usuarioSeleccionado.getCorreo().equals(Sesion.obtenerUsuarioActual().getCorreo())){
+        if (usuarioSeleccionado == null) {
+            mostrarAlerta("Advertencia", "Debe seleccionar un usuario de la tabla", Alert.AlertType.WARNING);
+            return;
+        }
+        if (usuarioSeleccionado.getCorreo().equals(Sesion.obtenerUsuarioActual().getCorreo())) {
             mostrarAlerta("Error", "No se puede desactivar la cuenta actual", Alert.AlertType.ERROR);
             return;
-        }else{
+        } else {
             ((Administrador) administrador).desactivarCuenta(usuarioSeleccionado);
             actualizarTablaUsuarios();
         }
@@ -227,10 +232,14 @@ public class AdministracionUsuarioController {
     @FXML
     void eliminarCuenta(ActionEvent event) {
         Perfil usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
-        if(usuarioSeleccionado.getCorreo().equals(Sesion.obtenerUsuarioActual().getCorreo())){
+        if (usuarioSeleccionado == null) {
+            mostrarAlerta("Advertencia", "Debe seleccionar un usuario de la tabla", Alert.AlertType.WARNING);
+            return;
+        }
+        if (usuarioSeleccionado.getCorreo().equals(Sesion.obtenerUsuarioActual().getCorreo())) {
             mostrarAlerta("Error", "No se puede eliminar la cuenta actual", Alert.AlertType.ERROR);
             return;
-        }else{
+        } else {
             ((Administrador) administrador).eliminarCuenta(usuarioSeleccionado);
             actualizarTablaUsuarios();
         }
@@ -246,12 +255,16 @@ public class AdministracionUsuarioController {
     @FXML
     void actualizarRol(ActionEvent event) {
         Perfil usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
-        if(usuarioSeleccionado.getCorreo().equals(Sesion.obtenerUsuarioActual().getCorreo())){
+        if (usuarioSeleccionado == null) {
+            mostrarAlerta("Advertencia", "Debe seleccionar un usuario de la tabla", Alert.AlertType.WARNING);
+            return;
+        }
+        if (usuarioSeleccionado.getCorreo().equals(Sesion.obtenerUsuarioActual().getCorreo())) {
             mostrarAlerta("Error", "No se puede cambiar el rol de la cuenta actual", Alert.AlertType.ERROR);
             return;
-        }else{
-        ((Administrador) administrador).cambiarTipoUsuario(usuarioSeleccionado, cmbRol.getValue());
-        actualizarTablaUsuarios();
+        } else {
+            ((Administrador) administrador).cambiarTipoUsuario(usuarioSeleccionado, cmbRol.getValue());
+            actualizarTablaUsuarios();
         }
     }
 

@@ -3,6 +3,7 @@ package DataAccessComponent.DTO;
 import java.util.List;
 
 import DataAccessComponent.DAO.PerfilDAO;
+import DataAccessComponent.DAO.UsuarioDAO;
 
 public class Administrador extends Perfil {
     
@@ -39,7 +40,11 @@ public class Administrador extends Perfil {
     public void cambiarTipoUsuario(Perfil usuario, TipoUsuario tipoUsuario) {
         usuario.setTipoUsuario(tipoUsuario);
         PerfilDAO perfilDAO = new PerfilDAO();
-        perfilDAO.actualizar( usuario);
+        perfilDAO.actualizar(usuario);
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        if (tipoUsuario == TipoUsuario.ADMINISTRADOR) {
+            usuarioDAO.actualizarPreferencias(usuario.getCorreo(), null);
+        }
     }
 
     public void eliminarCuenta(Perfil usuario) {
