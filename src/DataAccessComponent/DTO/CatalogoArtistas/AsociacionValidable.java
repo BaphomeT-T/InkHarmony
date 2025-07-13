@@ -1,4 +1,4 @@
-package DataAccessComponent.DTO;
+package DataAccessComponent.DTO.CatalogoArtistas;
 
 public interface AsociacionValidable {
 
