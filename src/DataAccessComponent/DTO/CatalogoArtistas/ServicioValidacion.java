@@ -1,6 +1,6 @@
-package DataAccessComponent.DTO;
+package DataAccessComponent.DTO.CatalogoArtistas;
 
-public class ServicioValidacion implements UnicoNombreValidable, AsociacionValidable{
+public class ServicioValidacion implements UnicoNombreValidable, AsociacionValidable {
 
     public boolean validarCampos(Artista artista) {
         // Implementar validacion de campos
