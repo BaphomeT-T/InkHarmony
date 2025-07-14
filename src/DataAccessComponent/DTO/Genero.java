@@ -14,7 +14,7 @@ import DataAccessComponent.SQLiteDataHelper;
  * <p>La clase proporciona constructores para crear géneros y métodos getter/setter
  * para acceder y modificar el nombre del género de manera controlada.</p>
  * 
- * @author InkHarmony Team
+ * @author Grupo E - InkHarmony Team
  * @version 1.0
  * @since 1.0
  */

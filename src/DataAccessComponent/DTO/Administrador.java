@@ -18,7 +18,7 @@ import DataAccessComponent.DAO.UsuarioDAO;
  * <p>La clase utiliza los DAOs correspondientes (PerfilDAO, UsuarioDAO) para
  * realizar las operaciones de base de datos de manera segura y consistente.</p>
  * 
- * @author InkHarmony Team
+ * @author Grupo E - InkHarmony Team
  * @version 1.0
  * @since 1.0
  */

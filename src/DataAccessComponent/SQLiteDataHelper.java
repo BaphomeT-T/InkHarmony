@@ -27,7 +27,7 @@ import java.sql.SQLException;
  * <p>Esta clase es la base para todas las clases DAO del sistema, proporcionándoles
  * la funcionalidad de conexión a la base de datos de manera transparente.</p>
  * 
- * @author Jonathan Pagual
+ * @author Grupo E - InkHarmony Team
  * @version 1.0
  * @since 27-02-2024
  */

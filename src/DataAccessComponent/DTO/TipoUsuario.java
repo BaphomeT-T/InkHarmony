@@ -11,7 +11,7 @@ package DataAccessComponent.DTO;
  * funcionalidades de la aplicación y para determinar qué operaciones puede realizar
  * cada usuario.</p>
  * 
- * @author InkHarmony Team
+ * @author Grupo E - InkHarmony Team
  * @version 1.0
  * @since 1.0
  */

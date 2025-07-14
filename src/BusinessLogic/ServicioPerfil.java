@@ -17,7 +17,7 @@ import java.util.Date;
  * con la capa de acceso a datos a través de PerfilDAO para persistir y recuperar
  * información de usuarios.</p>
  * 
- * @author InkHarmony Team
+ * @author Grupo E - InkHarmony Team
  * @version 1.0
  * @since 1.0
  */

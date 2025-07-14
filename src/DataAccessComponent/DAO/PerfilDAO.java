@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
  * <p>Los métodos de esta clase manejan automáticamente la apertura y cierre de conexiones,
  * así como el manejo de excepciones SQL.</p>
  * 
- * @author InkHarmony Team
+ * @author Grupo E - InkHarmony Team
  * @version 1.0
  * @since 1.0
  */
