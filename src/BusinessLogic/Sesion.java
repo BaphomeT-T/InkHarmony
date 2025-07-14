@@ -14,7 +14,7 @@ import DataAccessComponent.DTO.Perfil;
  * <p>La clase es thread-safe ya que utiliza variables estáticas para el almacenamiento
  * de la información de sesión.</p>
  * 
- * @author InkHarmony Team
+ * @author Grupo E - InkHarmony Team
  * @version 1.0
  * @since 1.0
  */

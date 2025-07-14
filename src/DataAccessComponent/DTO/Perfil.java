@@ -13,7 +13,7 @@ import java.util.Date;
  * <p>La clase proporciona constructores para crear perfiles y métodos getter/setter
  * para acceder y modificar los datos del usuario de manera controlada.</p>
  * 
- * @author InkHarmony Team
+ * @author Grupo E - InkHarmony Team
  * @version 1.0
  * @since 1.0
  */

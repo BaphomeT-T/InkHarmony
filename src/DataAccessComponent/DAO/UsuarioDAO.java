@@ -18,7 +18,7 @@ import java.util.List;
  * <p>Los métodos de esta clase incluyen validación de géneros musicales contra la
  * base de datos para asegurar la integridad de los datos.</p>
  * 
- * @author InkHarmony Team
+ * @author Grupo E - InkHarmony Team
  * @version 1.0
  * @since 1.0
  */
