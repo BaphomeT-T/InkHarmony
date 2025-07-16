@@ -50,7 +50,24 @@ public class ServicioValidacion implements UnicoNombreValidable, AsociacionValid
     @Override
     public boolean tieneElementosAsociados(Artista artista) {
         int id = artista.getId();
-        return artistasConCanciones.contains(id) || artistasEnPlaylist.contains(id);
+
+        String sqlCanciones = "SELECT COUNT(*) FROM Cancion WHERE artista_id = ?";
+
+        try (Connection conexion = ConexionBD.getConexion()) {
+            // Verifica canciones asociadas
+            try (PreparedStatement stmt1 = conexion.prepareStatement(sqlCanciones)) {
+                stmt1.setInt(1, id);
+                ResultSet rs1 = stmt1.executeQuery();
+                if (rs1.next() && rs1.getInt(1) > 0) {
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
+
 
 }
