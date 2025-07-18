@@ -1,4 +1,5 @@
 package DataAccessComponent.DAO.CatalogoArtistas;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,12 +20,39 @@ public class ArtistaDAO {
         this.servicioValidacion = new ServicioValidacion();
     }
 
-    public void registrarArtista (int id, String nombre, List<Genero> generos, String biografia, String imagen ){
-        Artista artistaARegistrar = new Artista(id, nombre, generos, biografia, imagen);
-        //implementar el metodo de esNombreUnico para validar que nadie mas tenga ese nombre
-        artistas.add(artista);
+    public void registrarArtista(String nombre, List<Genero> generos, String biografia, byte[] imagen) {
+        try (Connection conexion = ConexionBD.getConexion()) {
+            // 1. Insertar en la tabla Artista
+            String sql = "INSERT INTO Artista(nombre, biografia, imagen) VALUES (?, ?, ?)";
+            PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, nombre);
+            ps.setString(2, biografia);
+            ps.setBytes(3, imagen);
+            ps.executeUpdate();
 
+            // 2. Obtener el ID generado automáticamente
+            ResultSet rs = ps.getGeneratedKeys();
+            int idArtista = -1;
+            if (rs.next()) {
+                idArtista = rs.getInt(1);
+            }
+
+            // 3. Insertar en tabla puente Artista_Genero
+            sql = "INSERT INTO Artista_Genero(id_artista, id_genero) VALUES (?, ?)";
+            ps = conexion.prepareStatement(sql);
+            for (Genero genero : generos) {
+                ps.setInt(1, idArtista);
+                ps.setInt(2, genero.getId()); // ← asegúrate de que Genero tiene el método getId()
+                ps.addBatch();
+            }
+            ps.executeBatch();
+
+            System.out.println("Artista registrado con éxito.");
+        } catch (SQLException e) {
+            System.err.println("Error al registrar artista: " + e.getMessage());
+        }
     }
+
     public void actualizarArtista (Artista artistaAActualizar){
         for(int i = 0; i < artistas.size(); i++){
             Artista artistaActual = artistas.get(i);
@@ -36,8 +64,6 @@ public class ArtistaDAO {
 
             }
         }
-
-
     }
     public void eliminarArtista (Artista artista){
         /*

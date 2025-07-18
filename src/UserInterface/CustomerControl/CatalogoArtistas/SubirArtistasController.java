@@ -1,4 +1,5 @@
 package UserInterface.CustomerControl.CatalogoArtistas;
+import DataAccessComponent.DAO.CatalogoArtistas.ArtistaDAO;
 import DataAccessComponent.DTO.CatalogoArtistas.ServicioValidacion;
 import DataAccessComponent.DTO.CatalogoCanciones.Genero;
 
@@ -12,6 +13,7 @@ import javafx.stage.FileChooser;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SubirArtistasController {
 
@@ -59,36 +61,87 @@ public class SubirArtistasController {
 
     @FXML
     void publicar(ActionEvent event) {
+        String nombre = nombreTextField.getText();
+        String biografia = biografiaTextArea.getText();
+
+        // Validaciones simples
+        if (nombre.isBlank() || biografia.isBlank() || artistaImageView.getImage() == null) {
+            mostrarAlerta("Completa todos los campos antes de publicar.");
+            return;
+        }
+
+        // 1. Obtener géneros seleccionados
         List<Genero> generosSeleccionados = generoMenuButton.getItems().stream()
                 .filter(item -> item instanceof CheckMenuItem && ((CheckMenuItem) item).isSelected())
                 .map(item -> (Genero) item.getUserData())
                 .toList();
 
-        System.out.println("Géneros seleccionados:");
-        for (Genero genero : generosSeleccionados) {
-            System.out.println(genero);
+        // 2. Obtener la imagen en formato byte[]
+        byte[] imagenBytes = null;
+        try {
+            java.net.URI uri = new java.net.URI(artistaImageView.getImage().getUrl());
+            java.nio.file.Path path = java.nio.file.Paths.get(uri);
+            imagenBytes = java.nio.file.Files.readAllBytes(path);
+        } catch (Exception e) {
+            mostrarAlerta("Error al procesar la imagen.");
+            return;
         }
+
+
+        // 3. Registrar en la BD
+        ArtistaDAO dao = new ArtistaDAO(null); // tu constructor actual requiere un Artista, podrías cambiar eso
+        dao.registrarArtista(nombre, generosSeleccionados, biografia, imagenBytes);
+        // Mostrar alerta de éxito
+        mostrarExito("Artista registrado con éxito.");
+
+        // Limpiar campos
+        limpiarCampos();
     }
+
+    private void mostrarExito(String mensaje) {
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+        alerta.setTitle("Éxito");
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
+    }
+
+    private void limpiarCampos() {
+        nombreTextField.clear();
+        biografiaTextArea.clear();
+        artistaImageView.setImage(
+                new Image(Objects.requireNonNull(getClass().getResourceAsStream("/UserInterface/Resources/img/CatalogoArtistas/camara.png")))
+        );
+        mensajeNombreLabel.setText("");
+        generoMenuButton.setText("Seleccione");
+        for (MenuItem item : generoMenuButton.getItems()) {
+            if (item instanceof CheckMenuItem checkItem) {
+                checkItem.setSelected(false);
+            }
+        }
+
+
+    }
+
 
     @FXML
     public void seleccionarImagen(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccionar imagen del artista");
 
-        // Solo permitir archivos PNG
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Archivos PNG (*.png)", "*.png");
-        fileChooser.getExtensionFilters().add(extFilter);
+        // Permitir PNG, JPG y JPEG en un solo filtro
+        FileChooser.ExtensionFilter extFilterImagenes = new FileChooser.ExtensionFilter(
+                "Imágenes (*.png, *.jpg, *.jpeg)", "*.png", "*.jpg", "*.jpeg"
+        );
+        fileChooser.getExtensionFilters().add(extFilterImagenes);
 
-        // Mostrar el diálogo
         File archivoSeleccionado = fileChooser.showOpenDialog(null);
         if (archivoSeleccionado != null) {
             try {
                 Image imagen = new Image(archivoSeleccionado.toURI().toString());
 
-                // Validar dimensiones exactas
                 if (imagen.getWidth() == 264 && imagen.getHeight() == 264) {
                     artistaImageView.setImage(imagen);
-                    // Opcional: puedes guardar la ruta para guardarla después
                     System.out.println("Imagen cargada correctamente: " + archivoSeleccionado.getAbsolutePath());
                 } else {
                     mostrarAlerta("La imagen debe tener exactamente 264x264 píxeles.");
@@ -98,6 +151,8 @@ public class SubirArtistasController {
             }
         }
     }
+
+
     private void mostrarAlerta(String mensaje) {
         Alert alerta = new Alert(Alert.AlertType.WARNING);
         alerta.setTitle("Advertencia");
