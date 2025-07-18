@@ -1,5 +1,4 @@
 package DataAccessComponent.DTO;
 
-public class somethingDTO {
-    
+public class ArtistaDTO {
 }

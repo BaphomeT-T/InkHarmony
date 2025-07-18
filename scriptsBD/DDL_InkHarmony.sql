@@ -1,3 +1,4 @@
+-- database: ../database/InkHarmony.sqlite
 -- Borrar tablas en orden seguro
 DROP TABLE IF EXISTS Reproduccion;
 DROP TABLE IF EXISTS Playlist_Cancion;
@@ -17,15 +18,12 @@ CREATE TABLE Usuario (
                          nombre_usuario VARCHAR(20) NOT NULL,
                          apellido_usuario VARCHAR(20),
                          correo VARCHAR(20) UNIQUE NOT NULL,
-                         contraseña VARCHAR(20) NOT NULL,
+                         contraseña VARCHAR(255) NOT NULL,
                          fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                         tipo_usuario BOOLEAN NOT NULL DEFAULT 0
-);
-
--- Tabla Genero
-CREATE TABLE Genero (
-                        id_genero INTEGER PRIMARY KEY AUTOINCREMENT,
-                        nombre_genero VARCHAR(20) NOT NULL
+                         id_foto_Perfil VARCHAR(20) NOT NULL,
+                         estado_cuenta VARCHAR(20) NOT NULL,
+                         preferencias_musicales JSON,
+                         tipo_usuario VARCHAR(20) NOT NULL
 );
 
 -- Tabla Artista
@@ -37,14 +35,7 @@ CREATE TABLE Artista (
                          fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabla Artista_Genero (N:M)
-CREATE TABLE Artista_Genero (
-                                id_artista INTEGER NOT NULL,
-                                id_genero INTEGER NOT NULL,
-                                PRIMARY KEY (id_artista, id_genero),
-                                FOREIGN KEY (id_artista) REFERENCES Artista(id_artista),
-                                FOREIGN KEY (id_genero) REFERENCES Genero(id_genero)
-);
+
 
 -- Tabla Cancion
 CREATE TABLE Cancion (
@@ -57,14 +48,7 @@ CREATE TABLE Cancion (
                          portada BLOB
 );
 
--- Tabla Cancion_Genero (N:M)
-CREATE TABLE Cancion_Genero (
-                                id_cancion INTEGER NOT NULL,
-                                id_genero INTEGER NOT NULL,
-                                PRIMARY KEY (id_cancion, id_genero),
-                                FOREIGN KEY (id_cancion) REFERENCES Cancion(id_cancion),
-                                FOREIGN KEY (id_genero) REFERENCES Genero(id_genero)
-);
+
 
 -- Tabla Cancion_Artista (N:M)
 CREATE TABLE Cancion_Artista (
