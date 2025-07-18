@@ -70,7 +70,7 @@
                </opaqueInsets>
             </Label>
               <Rectangle arcHeight="30.0" arcWidth="30.0" fill="#5b5e87" height="130.0" layoutX="36.0" layoutY="207.0" stroke="#575a81" strokeType="INSIDE" width="440.0" />
-              <TextArea fx:id="biografiaTextArea" layoutX="42.0" layoutY="210.0" opacity="1.0" prefHeight="118.0" prefWidth="428.0" promptText="Ingresa la información del artista" style="-fx-control-inner-background: #575a81; -fx-background-color: #575a81; -fx-prompt-text-fill: #828c9f; -fx-text-fill: transparent; -fx-highlight-text-fill: white; -fx-background-radius: 20; -fx-border-radius: 20; -fx-border-color: transparent; -fx-font-size: 20;" styleClass="#797990">
+              <TextArea fx:id="biografiaTextArea" layoutX="42.0" layoutY="210.0" opacity="1.0" prefHeight="118.0" prefWidth="428.0" promptText="Ingresa la información del artista" style="-fx-control-inner-background: #575a81; -fx-background-color: #575a81; -fx-prompt-text-fill: #b2b2b2; -fx-text-fill: #FFFFFF; -fx-highlight-text-fill: white; -fx-background-radius: 20; -fx-border-radius: 20; -fx-border-color: transparent; -fx-font-size: 20;" styleClass="#797990" wrapText="true">
                   <font>
                       <Font size="20.0" />
                   </font>
