@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -190,6 +191,13 @@ public class SubirArtistasController {
                 mensajeNombreLabel.setText("");
             }
         });
+        //Sirve para redondear los bordes de la imagen
+
+        Rectangle clip = new Rectangle(306, 264);
+        clip.setArcWidth(30);
+        clip.setArcHeight(30);
+        artistaImageView.setClip(clip);
+
     }
 
     private void actualizarTextoMenuButton() {
