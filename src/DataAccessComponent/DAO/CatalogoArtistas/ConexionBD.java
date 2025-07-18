@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 public class ConexionBD {
 
-    private static final String URL = "jdbc:sqlite:C:/Users/Salma Morales/IdeaProjects/InkHarmony/identifier.sqlite"; //pon la ruta donde esta la base de datos
+    private static final String URL = "jdbc:sqlite:C:\\Users\\USUARIO\\Intellij Idea\\InkHarmony\\identifier.sqlite"; //pon la ruta donde esta la base de datos
 
     public static Connection getConexion() throws SQLException {
         return DriverManager.getConnection(URL);
