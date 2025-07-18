@@ -26,6 +26,12 @@ CREATE TABLE Usuario (
                          tipo_usuario VARCHAR(20) NOT NULL
 );
 
+-- Tabla Genero
+CREATE TABLE Genero (
+                        id_genero INTEGER PRIMARY KEY AUTOINCREMENT,
+                        nombre_genero VARCHAR(20) NOT NULL
+);
+
 -- Tabla Artista
 CREATE TABLE Artista (
                          id_artista INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,7 +41,14 @@ CREATE TABLE Artista (
                          fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-
+-- Tabla Artista_Genero (N:M)
+CREATE TABLE Artista_Genero (
+                                id_artista INTEGER NOT NULL,
+                                id_genero INTEGER NOT NULL,
+                                PRIMARY KEY (id_artista, id_genero),
+                                FOREIGN KEY (id_artista) REFERENCES Artista(id_artista),
+                                FOREIGN KEY (id_genero) REFERENCES Genero(id_genero)
+);
 
 -- Tabla Cancion
 CREATE TABLE Cancion (
@@ -48,7 +61,14 @@ CREATE TABLE Cancion (
                          portada BLOB
 );
 
-
+-- Tabla Cancion_Genero (N:M)
+CREATE TABLE Cancion_Genero (
+                                id_cancion INTEGER NOT NULL,
+                                id_genero INTEGER NOT NULL,
+                                PRIMARY KEY (id_cancion, id_genero),
+                                FOREIGN KEY (id_cancion) REFERENCES Cancion(id_cancion),
+                                FOREIGN KEY (id_genero) REFERENCES Genero(id_genero)
+);
 
 -- Tabla Cancion_Artista (N:M)
 CREATE TABLE Cancion_Artista (
