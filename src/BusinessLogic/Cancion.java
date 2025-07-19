@@ -11,8 +11,13 @@ package BusinessLogic;
 
 import DataAccessComponent.DAO.CancionDAO;
 import DataAccessComponent.DTO.CancionDTO;
+import DataAccessComponent.DTO.ArtistaDTO;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import javazoom.jl.decoder.Bitstream;
+import javazoom.jl.decoder.Header;
+import java.io.ByteArrayInputStream;
 
 /**
  * Clase CancionBL que representa la lógica de negocio relacionada con canciones.
@@ -64,14 +69,28 @@ public class Cancion {
     }
 
     /**
-     * Registra una nueva canción en la base de datos.
+     * Registra una nueva canción en el sistema.
+     * Crea internamente el objeto CancionDTO usando los parámetros recibidos
+     * y luego lo pasa al DAO para su almacenamiento.
      *
-     * @param cancionDTO Objeto con los datos de la canción a insertar.
-     * @return true si se registró correctamente.
-     * @throws Exception si ocurre algún error.
+     * @param titulo Título de la canción.
+     * @param anio Año de publicación.
+     * @param archivoMP3 Archivo de audio en formato MP3.
+     * @param portada Imagen de portada.
+     * @param artistas Lista de artistas asociados.
+     * @param generos Lista de géneros asociados.
+     * @return true si el registro fue exitoso.
+     * @throws Exception si ocurre algún error en el DAO.
      */
-    public boolean registrar(CancionDTO cancionDTO) throws Exception {
-        return cancionDAO.registrar(cancionDTO);
+    public boolean registrar(String titulo, int anio,
+                             byte[] archivoMP3, byte[] portada,
+                             List<ArtistaDTO> artistas, List<Genero> generos) throws Exception {
+
+        LocalDateTime fechaRegistro = LocalDateTime.now();
+        double duracion = obtenerDuracionDesdeMP3(archivoMP3);
+        CancionDTO nuevaCancion = new CancionDTO(titulo, duracion, anio, fechaRegistro,
+                archivoMP3, portada, artistas, generos);
+        return cancionDAO.registrar(nuevaCancion);
     }
 
     /**
@@ -106,4 +125,37 @@ public class Cancion {
     public List<CancionDTO> buscarPorTitulo(String titulo) throws Exception {
         return cancionDAO.buscarPorNombre(titulo);
     }
+
+    /**
+     * Calcula la duración total de una canción a partir del archivo MP3 en forma de arreglo de bytes.
+     *
+     * <p>Este método utiliza la librería JLayer para leer los encabezados de los fotogramas MP3
+     * y sumar su duración estimada en milisegundos. El resultado se convierte a segundos.</p>
+     *
+     * @param mp3Data Arreglo de bytes que representa el contenido binario del archivo MP3.
+     * @return Duración aproximada de la canción en segundos. Retorna 0 si ocurre algún error.
+     */
+    private double obtenerDuracionDesdeMP3(byte[] mp3Data) {
+        try {
+            Bitstream bitstream = new Bitstream(new ByteArrayInputStream(mp3Data));
+            Header header = bitstream.readFrame();
+            if (header == null) return 0;
+
+            int frames = 0;
+            double duration = 0;
+
+            while (header != null) {
+                duration += header.ms_per_frame();
+                frames++;
+                bitstream.closeFrame();
+                header = bitstream.readFrame();
+            }
+
+            return duration / 1000.0; // convertir a segundos
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+
 }
