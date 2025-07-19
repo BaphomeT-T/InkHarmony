@@ -1,4 +1,4 @@
-package DataAccessComponent.DTO.CatalogoArtistas;
+package BusinessLogic;
 
 public interface UnicoNombreValidable {
 
