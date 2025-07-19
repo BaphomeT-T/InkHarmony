@@ -103,7 +103,7 @@ CREATE TABLE Reproduccion (
                               id_reproduccion INTEGER PRIMARY KEY AUTOINCREMENT,
                               id_usuario INTEGER,
                               id_cancion INTEGER,
-                              fecha_hora DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                              fecha_hora DATETIME NOT NULL DEFAULT CURRENT_TIaMESTAMP,
                               FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
                               FOREIGN KEY (id_cancion) REFERENCES Cancion(id_cancion)
 );
