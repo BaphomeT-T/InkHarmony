@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="797.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.CatalogoCanciones.SubirCancionController">
+    <children>
+        <AnchorPane layoutX="156.0" layoutY="153.0" prefHeight="606.0" prefWidth="922.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 25;" AnchorPane.leftAnchor="156.0" AnchorPane.rightAnchor="202.0">
+            <children>
+                <Label fx:id="tituloLabel" layoutX="33.0" layoutY="37.0" prefHeight="35.0" prefWidth="242.0" text="Título de la canción" textFill="#ffffff">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+
+                <Label fx:id="añoLanzamientoLabel" layoutX="33.0" layoutY="161.0" text="Año de lanzamiento de la canción" textFill="#ffffff">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                </Label>
+
+                <TextField fx:id="nombreTextField" layoutX="30.0" layoutY="85.0" prefHeight="60.0" prefWidth="434.0" promptText="Ingresa el titulo de la cancion" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;" text="Ingresa el título de la canción aquí">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </TextField>
+                <Button fx:id="registrarButton" layoutX="302.0" layoutY="520.0" mnemonicParsing="false" onAction="#registrarCancion" prefHeight="60.0" prefWidth="345.0" style="-fx-background-color: #9190C2; -fx-background-radius: 10;" text="Registrar">
+                    <font>
+                        <Font name="System Bold" size="26.0" />
+                    </font>
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                </Button>
+                <AnchorPane layoutX="549.0" layoutY="171.0" prefHeight="264.0" prefWidth="264.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+                    <children>
+                        <ImageView fx:id="cancionImageView" fitHeight="264.0" fitWidth="306.0" layoutY="1.0" pickOnBounds="true" preserveRatio="false">
+                            <image>
+                                <Image url="@../../Resources/img/CatalogoCanciones/camara.png" />
+                            </image>
+                        </ImageView>
+                        <Button fx:id="cargarImagenButton" layoutX="11.0" layoutY="21.0" onAction="#seleccionarImagen" opacity="0" prefHeight="232.0" prefWidth="283.0" />
+
+                    </children>
+                </AnchorPane>
+                <Label fx:id="seleccionarLabel" layoutX="526.0" layoutY="102.0" opacity="0.48" prefHeight="35.0" prefWidth="366.0" text="Selecciona una imagen de la canción  (.png) (264x264)" textFill="WHITE">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Label>
+                <StackPane layoutX="33.0" layoutY="269.0" prefWidth="428.0" style="-fx-background-radius: 20; -fx-border-radius: 20;" />
+                <Label fx:id="artistaLabel" layoutX="33.0" layoutY="300.0" text="Artista" textFill="#ffffff">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                </Label>
+
+            <TextField fx:id="nombreTextField1" layoutX="30.0" layoutY="209.0" prefHeight="60.0" prefWidth="434.0" promptText="Ingresa el nombre del artista" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;" text="Ingresa el año de lanzamiento aquí">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </TextField>
+            <Label layoutX="315.0" layoutY="300.0" prefHeight="35.0" prefWidth="83.0" text="Género" textFill="WHITE">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <MenuButton fx:id="generoMenuButton" layoutX="311.0" layoutY="340.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="198.0" style="-fx-background-color: #575a81; -fx-background-radius: 20;" text="Selecciona" textFill="WHITE">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Action 1" />
+                <MenuItem mnemonicParsing="false" text="Action 2" />
+              </items>
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </MenuButton>
+            <Button layoutX="30.0" layoutY="340.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="208.0" style="-fx-background-color: #575a81; -fx-background-radius: 20;" text="Buscar artista" textFill="WHITE" wrapText="true">
+               <font>
+                  <Font size="20.0" />
+               </font></Button>
+            <ImageView fitHeight="35.0" fitWidth="38.0" layoutX="33.0" layoutY="348.0">
+               <image>
+                  <Image url="@../../Resources/img/CatalogoCanciones/Lupa.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="33.0" layoutY="419.0" prefHeight="35.0" prefWidth="297.0" text="Archivo .mp3 de la canción" textFill="WHITE">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Button layoutX="33.0" layoutY="470.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="208.0" style="-fx-background-color: #575a81; -fx-background-radius: 20;" text="Seleccionar archivo" textFill="WHITE">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Button>
+            </children>
+        </AnchorPane>
+        <Label layoutX="86.0" layoutY="55.0" text="NUEVA CANCIÓN" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font size="80.0" />
+            </font>
+        </Label>
+        <Button fx:id="cerrarButton" layoutX="3.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="83.0" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-weight: normal;" text="X" textFill="WHITE">
+            <font>
+                <Font size="40.0" />
+            </font>
+        </Button>
+    </children>
+</AnchorPane>
