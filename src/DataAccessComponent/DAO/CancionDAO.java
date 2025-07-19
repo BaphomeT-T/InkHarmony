@@ -1,3 +1,12 @@
+/*
+|-----------------------------------------------|
+| © 2025 EPN-FIS, Todos los derechos reservados |
+| GR1SW                                         |
+|-----------------------------------------------|
+Autores: Samira Arízaga, Paul Dávila, Sebastián Ramos
+Descripción: Objeto de transferencia de datos (DTO) que representa una canción dentro del sistema InkHarmony.
+*/
+
 package DataAccessComponent.DAO;
 
 import DataAccessComponent.DTO.CancionDTO;
@@ -9,8 +18,26 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Clase CancionDAO que implementa operaciones CRUD sobre la entidad Cancion.
+ * Se comunica con la base de datos SQLite y transforma resultados en objetos CancionDTO.
+ *
+ * Esta clase gestiona canciones, su metadata (título, duración, año), archivos binarios (MP3 y portada),
+ * así como sus relaciones con artistas y géneros musicales.</p>
+ *
+ * @author Grupo A
+ * @version 1.0
+ * @since 18-07-2025
+ */
 public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
 
+    /**
+     * Inserta una nueva canción en la base de datos, incluyendo su relación con artistas y géneros.
+     * El ID generado por la base de datos se asigna automáticamente al objeto DTO.
+     *
+     * @param cancion DTO que contiene los datos de la canción a registrar.
+     * @return true si la operación fue exitosa.
+     */
     @Override
     public boolean registrar(CancionDTO cancion) throws Exception {
         String query = "INSERT INTO Cancion(titulo, archivo_mp3, duracion, anio, portada) VALUES (?, ?, ?, ?, ?)";
@@ -24,11 +51,13 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
             ps.setBytes(5, cancion.getPortada());
             ps.executeUpdate();
 
+            // Recupera el ID generado automáticamente
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
                 int idGenerado = rs.getInt(1);
                 cancion.setIdCancion(idGenerado);
 
+                // Inserta relaciones con artistas
                 for (ArtistaDTO artista : cancion.getArtistas()) {
                     String insertArtista = "INSERT INTO Cancion_Artista(id_cancion, id_artista) VALUES (?, ?)";
                     PreparedStatement psa = conn.prepareStatement(insertArtista);
@@ -37,11 +66,12 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
                     psa.executeUpdate();
                 }
 
+                // Inserta relaciones con géneros (usando ordinal del enum + 1)
                 for (Genero genero : cancion.getGeneros()) {
                     String insertGenero = "INSERT INTO Cancion_Genero(id_cancion, id_genero) VALUES (?, ?)";
                     PreparedStatement psg = conn.prepareStatement(insertGenero);
                     psg.setInt(1, idGenerado);
-                    psg.setInt(2, genero.ordinal() + 1);
+                    psg.setInt(2, genero.ordinal() + 1); // Se asume que el ID en BD coincide con el orden del enum
                     psg.executeUpdate();
                 }
             }
@@ -52,6 +82,12 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
         }
     }
 
+    /**
+     * Recupera todas las canciones registradas en la base de datos.
+     * Incluye la metadata y las relaciones con artistas y géneros.
+     *
+     * @return Lista de canciones.
+     */
     @Override
     public List<CancionDTO> buscarTodo() throws Exception {
         List<CancionDTO> lista = new ArrayList<>();
@@ -80,6 +116,12 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
         return lista;
     }
 
+    /**
+     * Recupera una canción específica según su ID.
+     *
+     * @param id ID de la canción.
+     * @return Objeto CancionDTO completo.
+     */
     @Override
     public CancionDTO buscarPorId(Integer id) throws Exception {
         CancionDTO cancion = new CancionDTO();
@@ -107,11 +149,49 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
         return cancion;
     }
 
+    /**
+     * Busca canciones por coincidencia exacta de su título.
+     *
+     * @param nombre Título de la canción a buscar.
+     * @return Lista de canciones con ese título.
+     */
+    public List<CancionDTO> buscarPorNombre(String nombre) throws Exception {
+        List<CancionDTO> lista = new ArrayList<>();
+        String query = "SELECT id_cancion, titulo, duracion, anio, fecha_registro, archivo_mp3, portada FROM Cancion WHERE titulo = ?";
 
-    public List<CancionDTO> buscarPorNombre(Integer id) throws Exception {
-        return new ArrayList<>(); // Método de relleno por si no se usa todavía
+        try (Connection conn = openConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setString(1, nombre);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                CancionDTO cancion = new CancionDTO();
+                cancion.setIdCancion(rs.getInt("id_cancion"));
+                cancion.setTitulo(rs.getString("titulo"));
+                cancion.setDuracion(rs.getDouble("duracion"));
+                cancion.setAnio(rs.getInt("anio"));
+                cancion.setFechaRegistro(rs.getString("fecha_registro"));
+                cancion.setArchivoMP3(rs.getBytes("archivo_mp3"));
+                cancion.setPortada(rs.getBytes("portada"));
+                cancion.setArtistas(getArtistasPorCancion(cancion.getIdCancion()));
+                cancion.setGeneros(getGenerosPorCancion(cancion.getIdCancion()));
+                lista.add(cancion);
+            }
+
+        } catch (Exception e) {
+            throw e;
+        }
+
+        return lista;
     }
 
+    /**
+     * Actualiza los atributos básicos de una canción (no actualiza artistas ni géneros).
+     *
+     * @param entity Objeto DTO con los nuevos valores.
+     * @return true si se actualizó correctamente.
+     */
     @Override
     public boolean actualizar(CancionDTO entity) throws Exception {
         String query = "UPDATE Cancion SET titulo = ?, archivo_mp3 = ?, duracion = ?, anio = ?, portada = ? WHERE id_cancion = ?";
@@ -131,6 +211,12 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
         }
     }
 
+    /**
+     * Elimina una canción de la base de datos según su ID.
+     *
+     * @param id ID de la canción a eliminar.
+     * @return true si se eliminó correctamente.
+     */
     @Override
     public boolean eliminar(Integer id) throws Exception {
         String query = "DELETE FROM Cancion WHERE id_cancion = ?";
@@ -145,6 +231,12 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
         }
     }
 
+    /**
+     * Recupera los artistas asociados a una canción específica.
+     *
+     * @param idCancion ID de la canción.
+     * @return Lista de artistas relacionados.
+     */
     private List<ArtistaDTO> getArtistasPorCancion(int idCancion) throws Exception {
         List<ArtistaDTO> lista = new ArrayList<>();
         String query = "SELECT a.id_artista, a.nombre FROM Artista a " +
@@ -163,6 +255,13 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
         return lista;
     }
 
+    /**
+     * Recupera los géneros asociados a una canción.
+     * Se espera que el nombre en la tabla Género coincida con los valores del Enum Genero.
+     *
+     * @param idCancion ID de la canción.
+     * @return Lista de géneros como enums.
+     */
     private List<Genero> getGenerosPorCancion(int idCancion) throws Exception {
         List<Genero> lista = new ArrayList<>();
         String query = "SELECT g.nombre_genero FROM Genero g " +
