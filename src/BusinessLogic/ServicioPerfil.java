@@ -1,12 +1,15 @@
 package BusinessLogic;
 
 import DataAccessComponent.DAO.PerfilDAO;
+import DataAccessComponent.DAO.UsuarioDAO;
+import DataAccessComponent.DTO.Genero;
 import DataAccessComponent.DTO.Perfil;
 import DataAccessComponent.DTO.TipoUsuario;
 import DataAccessComponent.DTO.Usuario;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Clase que maneja la lógica de negocio para la gestión de perfiles de usuario.
@@ -27,6 +30,9 @@ public class ServicioPerfil {
     
     /** Objeto DAO para el acceso a datos de perfiles */
     private final PerfilDAO perfilDAO = new PerfilDAO();
+
+    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
+
 
     /**
      * Registra un nuevo usuario en el sistema.
@@ -97,5 +103,15 @@ public class ServicioPerfil {
             }
         }
         return null;
+    }
+
+    
+
+    public boolean actualizarPerfil(Perfil perfil, boolean borrarPreferencias, List<Genero> nuevosGeneros) {
+        if (perfil.getContrasenia() != null) {
+            String contraseniaEncriptada = encoder.encode(perfil.getContrasenia());
+            perfil.setContrasenia(contraseniaEncriptada);
+        }
+        return usuarioDAO.actualizarPerfil(perfil, borrarPreferencias, nuevosGeneros);
     }
 }
