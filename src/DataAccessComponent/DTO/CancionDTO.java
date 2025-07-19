@@ -9,6 +9,9 @@ Descripción: Objeto de transferencia de datos (DTO) que representa una canción
 
 package DataAccessComponent.DTO;
 
+import BusinessLogic.Genero;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -37,7 +40,7 @@ public class CancionDTO {
     private int anio;
 
     /** Fecha de registro de la canción (formato YYYY-MM-DD HH:MM:SS) */
-    private String fechaRegistro;
+    private LocalDateTime fechaRegistro;
 
     /** Archivo de audio en formato MP3 como arreglo de bytes */
     private byte[] archivoMP3;
@@ -68,7 +71,7 @@ public class CancionDTO {
      * @param artistas Lista de artistas asociados
      * @param generos Lista de géneros asociados
      */
-    public CancionDTO(String titulo, double duracion, int anio, String fechaRegistro,
+    public CancionDTO(String titulo, double duracion, int anio, LocalDateTime fechaRegistro,
                       byte[] archivoMP3, byte[] portada,
                       List<ArtistaDTO> artistas, List<Genero> generos) {
         this.titulo = titulo;
@@ -115,11 +118,11 @@ public class CancionDTO {
         this.anio = anio;
     }
 
-    public String getFechaRegistro() {
+    public LocalDateTime getFechaRegistro() {
         return fechaRegistro;
     }
 
-    public void setFechaRegistro(String fechaRegistro) {
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }
 

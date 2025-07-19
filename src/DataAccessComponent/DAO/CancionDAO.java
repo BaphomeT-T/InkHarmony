@@ -11,10 +11,11 @@ package DataAccessComponent.DAO;
 
 import DataAccessComponent.DTO.CancionDTO;
 import DataAccessComponent.DTO.ArtistaDTO;
-import DataAccessComponent.DTO.Genero;
+import BusinessLogic.Genero;
 import DataAccessComponent.SQLiteDataHelper;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
      */
     @Override
     public boolean registrar(CancionDTO cancion) throws Exception {
-        String query = "INSERT INTO Cancion(titulo, archivo_mp3, duracion, anio, portada) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Cancion(titulo, archivo_mp3, duracion, anio, portada, fecha_registro) VALUES (?, ?, ?, ?, ?, ?)";
         try {
             Connection conn = openConnection();
             PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -49,6 +50,7 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
             ps.setDouble(3, cancion.getDuracion());
             ps.setInt(4, cancion.getAnio());
             ps.setBytes(5, cancion.getPortada());
+            ps.setString(6, cancion.getFechaRegistro().toString());
             ps.executeUpdate();
 
             // Recupera el ID generado automáticamente
@@ -103,7 +105,7 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
                 cancion.setTitulo(rs.getString("titulo"));
                 cancion.setDuracion(rs.getDouble("duracion"));
                 cancion.setAnio(rs.getInt("anio"));
-                cancion.setFechaRegistro(rs.getString("fecha_registro"));
+                cancion.setFechaRegistro(LocalDateTime.parse(rs.getString("fecha_registro")));
                 cancion.setArchivoMP3(rs.getBytes("archivo_mp3"));
                 cancion.setPortada(rs.getBytes("portada"));
                 cancion.setArtistas(getArtistasPorCancion(cancion.getIdCancion()));
@@ -137,7 +139,7 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
                 cancion.setTitulo(rs.getString("titulo"));
                 cancion.setDuracion(rs.getDouble("duracion"));
                 cancion.setAnio(rs.getInt("anio"));
-                cancion.setFechaRegistro(rs.getString("fecha_registro"));
+                cancion.setFechaRegistro(LocalDateTime.parse(rs.getString("fecha_registro")));
                 cancion.setArchivoMP3(rs.getBytes("archivo_mp3"));
                 cancion.setPortada(rs.getBytes("portada"));
                 cancion.setArtistas(getArtistasPorCancion(id));
@@ -171,7 +173,7 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
                 cancion.setTitulo(rs.getString("titulo"));
                 cancion.setDuracion(rs.getDouble("duracion"));
                 cancion.setAnio(rs.getInt("anio"));
-                cancion.setFechaRegistro(rs.getString("fecha_registro"));
+                cancion.setFechaRegistro(LocalDateTime.parse(rs.getString("fecha_registro")));
                 cancion.setArchivoMP3(rs.getBytes("archivo_mp3"));
                 cancion.setPortada(rs.getBytes("portada"));
                 cancion.setArtistas(getArtistasPorCancion(cancion.getIdCancion()));

@@ -1,4 +1,4 @@
-package DataAccessComponent.DTO;
+package BusinessLogic;
 
 public enum Genero {
     GAME_OST,
