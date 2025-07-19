@@ -3,7 +3,10 @@ package DataAccessComponent.DAO;
 import DataAccessComponent.DTO.Usuario;
 import DataAccessComponent.SQLiteDataHelper;
 import DataAccessComponent.DTO.Genero;
+import DataAccessComponent.DTO.Perfil;
+
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -104,57 +107,77 @@ public class UsuarioDAO extends SQLiteDataHelper {
         }
     }
 
-    /**
-     * Actualiza las preferencias musicales de un usuario en la base de datos.
-     * 
-     * <p>Este método reemplaza completamente las preferencias musicales existentes
-     * de un usuario con una nueva lista de géneros. Si se proporciona null como
-     * nuevos géneros, se eliminan todas las preferencias del usuario.</p>
-     * 
-     * <p>Antes de actualizar, valida que todos los géneros musicales existan en
-     * la base de datos para mantener la integridad referencial.</p>
-     * 
-     * @param correo El correo electrónico del usuario cuyas preferencias se van a actualizar
-     * @param nuevosGeneros La nueva lista de géneros musicales, o null para eliminar todas las preferencias
-     * @return true si las preferencias se actualizaron exitosamente, false en caso contrario
-     * 
-     * @throws SQLException Si ocurre un error durante la ejecución de la consulta SQL
-     * @throws IllegalArgumentException Si el correo es null o está vacío
-     * @throws RuntimeException Si ocurre un error de conexión con la base de datos
-     */
-    public boolean actualizarPreferencias(String correo, List<Genero> nuevosGeneros) {
-        String sql = "UPDATE Usuario SET preferencias_musicales = ? WHERE correo = ?";
-        try {
-            Connection conn = openConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            if (nuevosGeneros == null) {
-                // Si es null, se actualiza la columna como NULL en la base de datos
-                pstmt.setNull(1, Types.VARCHAR);
-            } else {
-                // Validar géneros
-                List<String> generosValidos = GeneroDAO.obtenerTodos();
-                for (Genero genero : nuevosGeneros) {
-                    if (!generosValidos.contains(genero.getNombreGenero())) {
-                        return false;
-                    }
-                }
+    public boolean actualizarPerfil(Perfil perfil, boolean borrarPreferencias, List<Genero> nuevosGeneros) {
+        StringBuilder sql = new StringBuilder("UPDATE Usuario SET ");
+        List<Object> parametros = new ArrayList<>();
 
-                // Convertir a JSON manualmente
-                StringBuilder json = new StringBuilder("[");
-                for (int i = 0; i < nuevosGeneros.size(); i++) {
-                    json.append("\"").append(nuevosGeneros.get(i).getNombreGenero()).append("\"");
-                    if (i < nuevosGeneros.size() - 1) json.append(",");
+        if (perfil.getNombre() != null) {
+            sql.append("nombre_usuario = ?, ");
+            parametros.add(perfil.getNombre());
+        }
+        if (perfil.getApellido() != null) {
+            sql.append("apellido_usuario = ?, ");
+            parametros.add(perfil.getApellido());
+        }
+        if (perfil.getCorreo() != null) {
+            sql.append("correo = ?, ");
+            parametros.add(perfil.getCorreo());
+        }
+        if (perfil.getFoto() != null) {
+            sql.append("id_foto_Perfil = ?, ");
+            parametros.add(perfil.getFoto());
+        }
+        if (perfil.getContrasenia() != null) {
+            sql.append("contraseña = ?, ");
+            parametros.add(perfil.getContrasenia()); // Aquí ya debe estar encriptada
+        }
+
+        if (borrarPreferencias) {
+            sql.append("preferencias_musicales = NULL, ");
+        } else if (nuevosGeneros != null) {
+            List<String> generosValidos = GeneroDAO.obtenerTodos();
+            for (Genero genero : nuevosGeneros) {
+                if (!generosValidos.contains(genero.getNombreGenero())) {
+                    System.err.println("Género inválido: " + genero.getNombreGenero());
+                    return false;
                 }
-                json.append("]");
-                pstmt.setString(1, json.toString());
             }
 
-            pstmt.setString(2, correo);
-            pstmt.executeUpdate();
-            return true;
+            StringBuilder json = new StringBuilder("[");
+            for (int i = 0; i < nuevosGeneros.size(); i++) {
+                json.append("\"").append(nuevosGeneros.get(i).getNombreGenero()).append("\"");
+                if (i < nuevosGeneros.size() - 1) json.append(",");
+            }
+            json.append("]");
+
+            sql.append("preferencias_musicales = ?, ");
+            parametros.add(json.toString());
+        }
+
+        if (parametros.isEmpty() && !borrarPreferencias) {
+            System.err.println("No se proporcionaron datos para actualizar.");
+            return false;
+        }
+
+        // Quitar la última coma y espacio
+        sql.setLength(sql.length() - 2);
+        sql.append(" WHERE correo = ?");
+        parametros.add(perfil.getCorreo());  // Ojo: si quieres permitir cambiar el correo, ajusta este parámetro
+
+        try {
+            Connection conn = openConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+
+            for (int i = 0; i < parametros.size(); i++) {
+                pstmt.setObject(i + 1, parametros.get(i));
+            }
+
+            int filas = pstmt.executeUpdate();
+            pstmt.close();
+            return filas > 0;
         } catch (Exception e) {
-            System.err.println("Error al actualizar las preferencias: " + e.getMessage());
+            System.err.println("Error al actualizar usuario: " + e.getMessage());
             return false;
         }
     }

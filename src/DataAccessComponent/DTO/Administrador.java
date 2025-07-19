@@ -2,8 +2,8 @@ package DataAccessComponent.DTO;
 
 import java.util.List;
 
+import BusinessLogic.ServicioPerfil;
 import DataAccessComponent.DAO.PerfilDAO;
-import DataAccessComponent.DAO.UsuarioDAO;
 
 /**
  * Clase DTO que representa un administrador del sistema InkHarmony.
@@ -139,9 +139,9 @@ public class Administrador extends Perfil {
         usuario.setTipoUsuario(tipoUsuario);
         PerfilDAO perfilDAO = new PerfilDAO();
         perfilDAO.actualizar(usuario);
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        ServicioPerfil servicio = new ServicioPerfil();
         if (tipoUsuario == TipoUsuario.ADMINISTRADOR) {
-            usuarioDAO.actualizarPreferencias(usuario.getCorreo(), null);
+            servicio.actualizarPerfil(usuario, true, null);
         }
     }
 
