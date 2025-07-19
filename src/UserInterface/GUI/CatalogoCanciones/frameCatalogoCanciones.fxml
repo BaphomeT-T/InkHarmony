@@ -5,18 +5,28 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="832.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="UserInterface.CustomerControl.CatalogoCanciones.TuControlador"> <!-- Poner NOMBRE del controlador correcto -->
+
     <children>
+
+        <!-- HEADER -->
         <AnchorPane layoutY="-13.0" prefHeight="168.0" prefWidth="1280.0" style="-fx-background-color: #08072C;">
             <children>
-                <Label layoutX="56.0" layoutY="81.0" maxHeight="118.0" maxWidth="452.0" prefHeight="118.0" prefWidth="452.0" text="CANCIONES" textFill="WHITE">
+                <Label layoutX="56.0" layoutY="81.0" maxHeight="118.0" maxWidth="452.0"
+                       prefHeight="118.0" prefWidth="452.0" text="CANCIONES" textFill="WHITE">
                     <font>
                         <Font size="80.0" />
                     </font>
                 </Label>
             </children>
         </AnchorPane>
-        <Button layoutX="56.0" layoutY="200.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="57.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+
+        <!-- BOTÓN SUBIR -->
+        <Button layoutX="56.0" layoutY="200.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="57.0"
+                style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
             <graphic>
                 <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                     <image>
@@ -25,28 +35,41 @@
                 </ImageView>
             </graphic>
         </Button>
-        <HBox layoutX="144.0" layoutY="212.0" prefHeight="33.0" prefWidth="262.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+
+        <!-- BARRA DE BÚSQUEDA -->
+        <HBox layoutX="144.0" layoutY="212.0" prefHeight="33.0" prefWidth="262.0"
+              style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
             <children>
-                <TextField alignment="BASELINE_CENTER" style="-fx-background-radius: 20; -fx-background-color: #9190C2;" text="Busca una canción por...">
+                <TextField alignment="BASELINE_CENTER"
+                           style="-fx-background-radius: 20; -fx-background-color: #9190C2;"
+                           text="Busca una canción por...">
                     <font>
                         <Font size="14.0" />
                     </font>
                 </TextField>
-                <ImageView fitHeight="34.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true" translateX="45.0" translateY="1.0" translateZ="5.0">
+                <ImageView fitHeight="34.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true"
+                           translateX="45.0" translateY="1.0" translateZ="5.0">
                     <image>
                         <Image url="@../../Resources/img/CatalogoCanciones/Lupa.png" />
                     </image>
                 </ImageView>
             </children>
         </HBox>
-        <TableView layoutX="56.0" layoutY="274.0" prefHeight="535.0" prefWidth="1170.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 20;">
+
+        <!-- TABLA DE CANCIONES -->
+        <TableView fx:id="tablaCanciones" layoutX="56.0" layoutY="274.0" prefHeight="535.0" prefWidth="1170.0"
+                   style="-fx-background-color: #1B1A55; -fx-background-radius: 20;">
             <columns>
-                <TableColumn prefWidth="259.8965034484863" style="-fx-background-color: #;" text="Título" />
-                <TableColumn minWidth="0.0" prefWidth="241.70352172851562" text="Artista" />
-                <TableColumn prefWidth="195.0" text="Fecha de agregación" />
-                <TableColumn prefWidth="229.0" text="Año de la canción" />
-                <TableColumn prefWidth="246.5" text="Duración" />
+                <TableColumn fx:id="colTitulo" prefWidth="259.0" text="Título" />
+                <TableColumn fx:id="colArtista" prefWidth="241.0" text="Artista" />
+                <TableColumn fx:id="colFecha" prefWidth="195.0" text="Fecha de agregación" />
+                <TableColumn fx:id="colAnio" prefWidth="229.0" text="Año de la canción" />
+                <TableColumn fx:id="colDuracion" prefWidth="246.0" text="Duración" />
+
+                <!-- Columna para botones -->
+                <TableColumn fx:id="colAcciones" prefWidth="100.0" text="Acciones" />
             </columns>
         </TableView>
+
     </children>
 </AnchorPane>
