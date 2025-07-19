@@ -1,8 +1,7 @@
 package UserInterface.CustomerControl.CatalogoArtistas;
 
-import DataAccessComponent.DTO.CatalogoArtistas.Artista;
-import DataAccessComponent.DTO.CatalogoArtistas.ServicioValidacion;
-import DataAccessComponent.DTO.CatalogoCanciones.Genero;
+import DataAccessComponent.DTO.CatalogoArtistas.ArtistaDTO;
+import BusinessLogic.ServicioValidacion;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,11 +30,11 @@ public class EliminarArtistasController {
     @FXML
     private Button cerrarButton;
 
-    private Artista artista;
+    private ArtistaDTO artista;
     private final ServicioValidacion servicioValidacion = new ServicioValidacion();
 
     // Este metodo se llama al iniciar el controlador con el artista a eliminar
-    public void setArtista(Artista artista) {
+    public void setArtista(ArtistaDTO artista) {
         this.artista = artista;
         mostrarInformacionArtista();
     }

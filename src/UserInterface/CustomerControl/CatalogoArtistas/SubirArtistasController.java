@@ -1,7 +1,6 @@
 package UserInterface.CustomerControl.CatalogoArtistas;
-import DataAccessComponent.DAO.CatalogoArtistas.ArtistaDAO;
-import DataAccessComponent.DTO.CatalogoArtistas.ServicioValidacion;
-import DataAccessComponent.DTO.CatalogoCanciones.Genero;
+import DataAccessComponent.DAO.ArtistaDAO;
+import BusinessLogic.ServicioValidacion;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -90,8 +89,8 @@ public class SubirArtistasController {
 
 
         // 3. Registrar en la BD
-        ArtistaDAO dao = new ArtistaDAO(null); // tu constructor actual requiere un Artista, podrías cambiar eso
-        dao.registrarArtista(nombre, generosSeleccionados, biografia, imagenBytes);
+        ArtistaDAO dao = new ArtistaDAO(); // tu constructor actual requiere un Artista, podrías cambiar eso
+        //dao.registrarArtista(nombre, generosSeleccionados, biografia, imagenBytes);
         // Mostrar alerta de éxito
         mostrarExito("Artista registrado con éxito.");
 
