@@ -97,7 +97,7 @@
                   <Font size="24.0" />
                </font>
             </Label>
-            <Button layoutX="33.0" layoutY="470.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="208.0" style="-fx-background-color: #575a81; -fx-background-radius: 20;" text="Seleccionar archivo" textFill="WHITE">
+            <Button layoutX="33.0" layoutY="460.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="208.0" style="-fx-background-color: #575a81; -fx-background-radius: 20;" text="Seleccionar archivo" textFill="WHITE">
                <font>
                   <Font size="20.0" />
                </font>
