@@ -7,6 +7,7 @@ import DataAccessComponent.DAO.GeneroDAO;
 import DataAccessComponent.DAO.PerfilDAO;
 import DataAccessComponent.DAO.UsuarioDAO;
 import DataAccessComponent.DTO.Genero;
+import DataAccessComponent.DTO.Perfil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,13 +129,14 @@ public class RegistroController {
         try {
             // 4. Registrar usuario usando ServicioPerfil (encripta contraseña)
             servicioPerfil.registrarUsuario(nombre, apellido, correo, contrasena, String.valueOf(indiceActual));
+            Perfil usuario = perfilDAO.buscarPorEmail(correo);
             
             // 5. Guardar preferencias
             UsuarioDAO usuarioDAO = new UsuarioDAO();
             List<Genero> generos = generosSeleccionados.stream()
                     .map(Genero::new)
                     .collect(Collectors.toList());
-            if (!usuarioDAO.guardarPreferencias(correo, generos)) {
+            if (!usuarioDAO.guardarPreferencias(usuario, generos)) {
                 // Si fallan las preferencias, eliminar perfil
                 perfilDAO.eliminar(perfilDAO.buscarPorEmail(correo));
                 throw new RuntimeException("No se pudieron guardar las preferencias");

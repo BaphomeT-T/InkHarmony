@@ -108,7 +108,9 @@ public class ServicioPerfil {
     
 
     public boolean actualizarPerfil(Perfil perfil, boolean borrarPreferencias, List<Genero> nuevosGeneros) {
-        if (perfil.getContrasenia() != null) {
+        // Solo encriptar si la contraseña *parece* estar en texto plano
+        if (perfil.getContrasenia() != null && !perfil.getContrasenia().startsWith("$2a$")) {
+            // Asumimos que si no empieza con "$2a$", no está encriptada
             String contraseniaEncriptada = encoder.encode(perfil.getContrasenia());
             perfil.setContrasenia(contraseniaEncriptada);
         }

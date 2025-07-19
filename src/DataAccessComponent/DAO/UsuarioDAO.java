@@ -45,7 +45,7 @@ public class UsuarioDAO extends SQLiteDataHelper {
      * @throws IllegalArgumentException Si el correo es null o está vacío, o si la lista de géneros es null
      * @throws RuntimeException Si ocurre un error de conexión con la base de datos
      */
-    public boolean guardarPreferencias(String correo, List<Genero> generos) {
+    public boolean guardarPreferencias(Perfil perfil, List<Genero> generos) {
         String sql = "UPDATE Usuario SET preferencias_musicales = ? WHERE correo = ?";
         try {
             Connection conn = openConnection();
@@ -63,7 +63,7 @@ public class UsuarioDAO extends SQLiteDataHelper {
             Usuario usuario = new Usuario();
             usuario.setPreferenciasMusicales(generos);
             pstmt.setString(1, usuario.toJSON());
-            pstmt.setString(2, correo);
+            pstmt.setString(2, perfil.getCorreo());
             pstmt.executeUpdate();
             return true;
         } catch (Exception e) {
@@ -87,13 +87,13 @@ public class UsuarioDAO extends SQLiteDataHelper {
      * @throws IllegalArgumentException Si el correo es null o está vacío
      * @throws RuntimeException Si ocurre un error de conexión con la base de datos
      */
-    public List<Genero> obtenerPreferencias(String correo) {
+    public List<Genero> obtenerPreferencias(Perfil perfil) {
         String sql = "SELECT preferencias_musicales FROM Usuario WHERE correo = ?";
         try {
             Connection conn = openConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql);
             
-            pstmt.setString(1, correo);
+            pstmt.setString(1, perfil.getCorreo());
             ResultSet rs = pstmt.executeQuery();
             
             if (rs.next()) {
@@ -111,6 +111,9 @@ public class UsuarioDAO extends SQLiteDataHelper {
     public boolean actualizarPerfil(Perfil perfil, boolean borrarPreferencias, List<Genero> nuevosGeneros) {
         StringBuilder sql = new StringBuilder("UPDATE Usuario SET ");
         List<Object> parametros = new ArrayList<>();
+        if (obtenerPreferencias(perfil) != null && nuevosGeneros != null) {
+            nuevosGeneros.addAll(obtenerPreferencias(perfil));
+        }
 
         if (perfil.getNombre() != null) {
             sql.append("nombre_usuario = ?, ");
