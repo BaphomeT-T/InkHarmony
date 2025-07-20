@@ -29,6 +29,7 @@ public class ServicioValidacion implements UnicoNombreValidable, AsociacionValid
 
     /**
      * Valida campos mínimos del artista.
+     *
      * @param artista El artista a validar
      * @return true si todos los campos requeridos están completos
      */
@@ -41,20 +42,25 @@ public class ServicioValidacion implements UnicoNombreValidable, AsociacionValid
 
     /**
      * Verifica si el nombre del artista ya existe.
+     *
      * @param nombre Nombre a validar
      * @return true si el nombre no se repite en la base
      */
     @Override
     public boolean esNombreUnico(String nombre) {
+
         try {
+            String nombreNormalizado = normalizarNombre(nombre);
+
             List<ArtistaDTO> artistas = artistaDAO.buscarTodo();
             for (ArtistaDTO a : artistas) {
-                if (a.getNombre().equalsIgnoreCase(nombre)) {
+                String nombreExistenteNormalizado = normalizarNombre(a.getNombre());
+                if (nombreExistenteNormalizado.equals(nombreNormalizado)) {
                     return false;
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace(); // Puede ser reemplazado con logs
+            e.printStackTrace();
         }
         return true;
     }
@@ -70,5 +76,25 @@ public class ServicioValidacion implements UnicoNombreValidable, AsociacionValid
     public boolean tieneElementosAsociados(ArtistaDTO artista) {
         return artistasConCanciones.contains(artista.getId())
                 || artistasEnPlaylist.contains(artista.getId());
+    }
+
+    /**
+     * Este método toma un nombre de artista y lo transforma en una versión estandarizada
+     * para facilitar la comparación, eliminando diferencias como mayúsculas, espacios y
+     * caracteres especiales.
+     *
+     * @param nombre Nombre ingresado para ser comparado
+     * @return El nombre del artista estandarizado.
+     */
+    private String normalizarNombre(String nombre) {
+        if (nombre == null) {
+            return "";
+        }
+        return nombre.toLowerCase()
+                .trim() //Elimina los espacios al inicio y al final
+                .replaceAll("\\s+", " ")
+                .replaceAll("[^a-z0-9 ]", "")
+                .replaceAll(" ", "");
+
     }
 }
