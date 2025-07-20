@@ -15,17 +15,7 @@ import java.util.Set;
  */
 public class ServicioValidacion implements UnicoNombreValidable, AsociacionValidable {
 
-    // Simulación temporal de asociaciones
-    private Set<Integer> artistasConCanciones = new HashSet<>();
-    private Set<Integer> artistasEnPlaylist = new HashSet<>();
-
     private ArtistaDAO artistaDAO = new ArtistaDAO();
-
-    public ServicioValidacion() {
-        // Simula que los artistas con ID 1 y 2 tienen relaciones activas
-        artistasConCanciones.add(1);
-        artistasEnPlaylist.add(2);
-    }
 
     /**
      * Valida campos mínimos del artista.
@@ -67,15 +57,18 @@ public class ServicioValidacion implements UnicoNombreValidable, AsociacionValid
 
     /**
      * Verifica si el artista tiene elementos asociados que impidan su eliminación.
-     * (Simulación temporal con IDs fijos).
      *
      * @param artista Artista a validar
      * @return true si tiene canciones o playlists asociadas
      */
     @Override
     public boolean tieneElementosAsociados(ArtistaDTO artista) {
-        return artistasConCanciones.contains(artista.getId())
-                || artistasEnPlaylist.contains(artista.getId());
+        try {
+            return artistaDAO.tieneCancionesAsociadas(artista.getId());
+        } catch (Exception e) {
+            e.printStackTrace(); // Puede ser reemplazado con logs
+            return true; // Por precaución, evitar borrar si hay error al verificar
+        }
     }
 
     /**
