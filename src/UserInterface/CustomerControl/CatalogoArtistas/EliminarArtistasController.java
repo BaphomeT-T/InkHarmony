@@ -1,6 +1,6 @@
 package UserInterface.CustomerControl.CatalogoArtistas;
 
-import DataAccessComponent.DTO.CatalogoArtistas.ArtistaDTO;
+import DataAccessComponent.DTO.ArtistaDTO;
 import BusinessLogic.ServicioValidacion;
 
 import javafx.event.ActionEvent;
@@ -40,45 +40,45 @@ public class EliminarArtistasController {
     }
 
     private void mostrarInformacionArtista() {
-        if (artista != null) {
-            nombreTextField.setText(artista.getNombre());
-            biografiaTextArea.setText(artista.getBiografia());
-            biografiaTextArea.setEditable(false);
-
-            if (artista.getGenero() != null && !artista.getGenero().isEmpty()) {
-                String generosTexto = artista.getGenero().stream()
-                        .map(this::formatearGenero)
-                        .reduce((a, b) -> a + ", " + b)
-                        .orElse("No definido");
-                generoMenuButton.setText(generosTexto);
-            } else {
-                generoMenuButton.setText("No definido");
-            }
-
-            if (artista.getImagen() != null) {
-                try {
-                    Image imagen = new Image("file:" + artista.getImagen());
-                    artistaImageView.setImage(imagen);
-                } catch (Exception e) {
-                    System.out.println("Error al cargar la imagen: " + e.getMessage());
-                }
-            }
-        }
+//        if (artista != null) {
+//            nombreTextField.setText(artista.getNombre());
+//            biografiaTextArea.setText(artista.getBiografia());
+//            biografiaTextArea.setEditable(false);
+//
+//            if (artista.getGenero() != null && !artista.getGenero().isEmpty()) {
+//                String generosTexto = artista.getGenero().stream()
+//                        .map(this::formatearGenero)
+//                        .reduce((a, b) -> a + ", " + b)
+//                        .orElse("No definido");
+//                generoMenuButton.setText(generosTexto);
+//            } else {
+//                generoMenuButton.setText("No definido");
+//            }
+//
+//            if (artista.getImagen() != null) {
+//                try {
+//                    Image imagen = new Image("file:" + artista.getImagen());
+//                    artistaImageView.setImage(imagen);
+//                } catch (Exception e) {
+//                    System.out.println("Error al cargar la imagen: " + e.getMessage());
+//                }
+//            }
+//        }
     }
 
-    private String formatearGenero(Genero genero) {
-        String nombre = genero.name().replace('_', ' ').toLowerCase();
-        String[] palabras = nombre.split(" ");
-        StringBuilder resultado = new StringBuilder();
-
-        for (String palabra : palabras) {
-            if (!palabra.isEmpty()) {
-                resultado.append(Character.toUpperCase(palabra.charAt(0)))
-                        .append(palabra.substring(1)).append(" ");
-            }
-        }
-        return resultado.toString().trim();
-    }
+//    private String formatearGenero(Genero genero) {
+//        String nombre = genero.name().replace('_', ' ').toLowerCase();
+//        String[] palabras = nombre.split(" ");
+//        StringBuilder resultado = new StringBuilder();
+//
+//        for (String palabra : palabras) {
+//            if (!palabra.isEmpty()) {
+//                resultado.append(Character.toUpperCase(palabra.charAt(0)))
+//                        .append(palabra.substring(1)).append(" ");
+//            }
+//        }
+//        return resultado.toString().trim();
+//    }
 
     @FXML
     void eliminarArtista(ActionEvent event) {

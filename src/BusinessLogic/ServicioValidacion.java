@@ -1,73 +1,74 @@
 package BusinessLogic;
 
-import DataAccessComponent.DTO.CatalogoArtistas.ArtistaDTO;
+import DataAccessComponent.DTO.ArtistaDTO;
+import DataAccessComponent.DAO.ArtistaDAO;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
+/**
+ * Clase de servicio para validaciones de artistas.
+ * Valida nombre único, campos requeridos y asociaciones con canciones o playlists.
+ *
+ * No accede directamente a la base de datos, sino a través del DAO.
+ */
 public class ServicioValidacion implements UnicoNombreValidable, AsociacionValidable {
 
-    // Simulación: artistas con canciones y playlists
+    // Simulación temporal de asociaciones
     private Set<Integer> artistasConCanciones = new HashSet<>();
     private Set<Integer> artistasEnPlaylist = new HashSet<>();
 
+    private ArtistaDAO artistaDAO = new ArtistaDAO();
+
     public ServicioValidacion() {
-        // Simula que los artistas con ID 1 y 2 tienen asociaciones
+        // Simula que los artistas con ID 1 y 2 tienen relaciones activas
         artistasConCanciones.add(1);
         artistasEnPlaylist.add(2);
     }
 
+    /**
+     * Valida campos mínimos del artista.
+     * @param artista El artista a validar
+     * @return true si todos los campos requeridos están completos
+     */
     public boolean validarCampos(ArtistaDTO artista) {
-        // Implementar validacion de campos
-        // Agregar
-        return true; // Temporal
+        return artista.getNombre() != null && !artista.getNombre().trim().isEmpty()
+                && artista.getBiografia() != null && !artista.getBiografia().trim().isEmpty()
+                && artista.getImagen() != null
+                && artista.getGenero() != null && !artista.getGenero().isEmpty();
     }
 
+    /**
+     * Verifica si el nombre del artista ya existe.
+     * @param nombre Nombre a validar
+     * @return true si el nombre no se repite en la base
+     */
+    @Override
     public boolean esNombreUnico(String nombre) {
-//        // Implementacion para verificar si el nombre es unico
-//        /*Aqui ponemos la consulta SQL que se va a realizar para buscar el
-//         * nombre en la base de datos
-//         */
-//        String sql = "SELECT COUNT(*) FROM Artista WHERE nombre = ?";
-//
-//        try (Connection conexion = ConexionBD.getConexion();
-//             PreparedStatement stmt = conexion.prepareStatement(sql)) {
-//            stmt.setString(1, nombre);
-//            ResultSet rs = stmt.executeQuery();
-//            if (rs.next()) {
-//                return rs.getInt(1) == 0; // true si no existe
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-        return false;
+        try {
+            List<ArtistaDTO> artistas = artistaDAO.buscarTodo();
+            for (ArtistaDTO a : artistas) {
+                if (a.getNombre().equalsIgnoreCase(nombre)) {
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // Puede ser reemplazado con logs
+        }
+        return true;
     }
 
-    //implementando todos los metodos de la interfaz
+    /**
+     * Verifica si el artista tiene elementos asociados que impidan su eliminación.
+     * (Simulación temporal con IDs fijos).
+     *
+     * @param artista Artista a validar
+     * @return true si tiene canciones o playlists asociadas
+     */
     @Override
     public boolean tieneElementosAsociados(ArtistaDTO artista) {
-//        int id = artista.getId();
-//
-//        String sqlCanciones = "SELECT COUNT(*) FROM Cancion WHERE artista_id = ?";
-//
-//        try (Connection conexion = ConexionBD.getConexion()) {
-//            // Verifica canciones asociadas
-//            try (PreparedStatement stmt1 = conexion.prepareStatement(sqlCanciones)) {
-//                stmt1.setInt(1, id);
-//                ResultSet rs1 = stmt1.executeQuery();
-//                if (rs1.next() && rs1.getInt(1) > 0) {
-//                    return true;
-//                }
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-
-        return false;
+        return artistasConCanciones.contains(artista.getId())
+                || artistasEnPlaylist.contains(artista.getId());
     }
-
 }

@@ -26,3 +26,5 @@ INSERT INTO Artista (nombre, biografia) VALUES
                                             ('Twice', 'Grupo femenino de K-pop'),
                                             ('Julio_Jaramillo', 'Cantante ecuatoriano'),
                                             ('Christian_Nodal', 'Cantante y compositor');
+
+
