@@ -34,7 +34,7 @@ import java.sql.SQLException;
 public abstract class SQLiteDataHelper {
     
     /** Ruta de conexión a la base de datos SQLite */
-    private static String DBPathConnection = "jdbc:sqlite:C:\\Users\\USUARIO\\Intellij Idea\\InkHarmony\\identifier.sqlite";
+    private static String DBPathConnection = "jdbc:sqlite:C:/Users/Salma Morales/IdeaProjects/InkHarmony/database/InkHarmony.sqlite";
     
     /** Instancia única de la conexión a la base de datos */
     private static Connection conn = null;
