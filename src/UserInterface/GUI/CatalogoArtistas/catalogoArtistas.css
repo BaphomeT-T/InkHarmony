@@ -23,14 +23,12 @@
     -fx-alignment: CENTER-LEFT;
 }
 
-/* Etiquetas de encabezado */
 .table-view .label {
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
 }
 
-/* Centrado para la columna de género (asegúrate de que el fx:id sea colGenero) */
 .table-view .table-cell:filled {
     -fx-alignment: CENTER-LEFT;
 }
@@ -38,7 +36,6 @@
     -fx-alignment: CENTER;
 }
 
-/* Filas */
 .table-row-cell {
     -fx-background-color: #1B1A55;
     -fx-text-fill: white;
@@ -49,7 +46,6 @@
     -fx-text-fill: white;
 }
 
-/* Hover y selección */
 .table-row-cell:hover {
     -fx-background-color: #2C2B75;
 }
@@ -57,7 +53,6 @@
     -fx-background-color: #3C3B90;
 }
 
-/* Scrollbar */
 .table-view .scroll-bar {
     -fx-background-color: transparent;
 }
