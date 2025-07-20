@@ -231,7 +231,7 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
 
             ps.executeUpdate();
 
-            // 🔄 Actualizar artistas
+            //Actualizar artistas
             String eliminarArtistas = "DELETE FROM Cancion_Artista WHERE id_cancion = ?";
             try (PreparedStatement psDelete = conn.prepareStatement(eliminarArtistas)) {
                 psDelete.setInt(1, entity.getIdCancion());
@@ -247,7 +247,7 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
                 }
             }
 
-            // 🔄 Actualizar géneros
+            //  Actualizar géneros
             String eliminarGeneros = "DELETE FROM Cancion_Genero WHERE id_cancion = ?";
             try (PreparedStatement psDelete = conn.prepareStatement(eliminarGeneros)) {
                 psDelete.setInt(1, entity.getIdCancion());
