@@ -50,9 +50,6 @@ public class CatalogoArtistasController {
     private TableColumn<ArtistaDTO, ArtistaDTO> colNombreConImagen;
 
     @FXML
-    private TableColumn<ArtistaDTO, String> colFechaNacimiento;
-
-    @FXML
     public void initialize() {
         try {
             configurarTabla();
@@ -96,10 +93,6 @@ public class CatalogoArtistasController {
         });
 
         colBiografia.setCellValueFactory(new PropertyValueFactory<>("biografia"));
-
-        colFechaNacimiento.setCellValueFactory(cellData ->
-                new SimpleStringProperty("01/01/2010")
-        );
 
         // Artista + imagen
         colNombreConImagen.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue()));
