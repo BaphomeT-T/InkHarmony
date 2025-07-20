@@ -6,7 +6,6 @@ import BusinessLogic.Genero;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableObjectValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -22,9 +21,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -36,16 +32,10 @@ public class CatalogoArtistasController {
     private TableView<ArtistaDTO> tableArtistas;
 
     @FXML
-    private TableColumn<ArtistaDTO, String> colNombre;
-
-    @FXML
     private TableColumn<ArtistaDTO, String> colGenero;
 
     @FXML
     private TableColumn<ArtistaDTO, String> colBiografia;
-
-    @FXML
-    private TableColumn<ArtistaDTO, ImageView> colImagen;
 
     @FXML
     private TableColumn<ArtistaDTO, Void> colAcciones;
@@ -67,7 +57,7 @@ public class CatalogoArtistasController {
         try {
             configurarTabla();
             cargarArtistas();
-            configurarBusqueda(); // <- nuevo
+            configurarBusqueda();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -93,7 +83,7 @@ public class CatalogoArtistasController {
         );
 
         tableArtistas.setItems(filtrados);
-        agregarColumnaAcciones();  // <-- Esto es clave
+        agregarColumnaAcciones();
     }
 
 
@@ -108,7 +98,7 @@ public class CatalogoArtistasController {
         colBiografia.setCellValueFactory(new PropertyValueFactory<>("biografia"));
 
         colFechaNacimiento.setCellValueFactory(cellData ->
-                new SimpleStringProperty("01/01/2010") // puedes mejorar esto luego
+                new SimpleStringProperty("01/01/2010")
         );
 
         // Artista + imagen
@@ -180,7 +170,7 @@ public class CatalogoArtistasController {
 
                 btnEditar.setOnAction(event -> {
                     ArtistaDTO artista = getTableView().getItems().get(getIndex());
-                    System.out.println("Editar artista: " + artista.getNombre());
+                    irAPantallaEditarArtista(artista);
                 });
 
                 btnEliminar.setOnAction(event -> {
@@ -207,27 +197,7 @@ public class CatalogoArtistasController {
             return new ImageView(new Image(getClass().getResourceAsStream(path), 18, 18, true, true));
         } catch (Exception e) {
             System.out.println("Imagen no encontrada: " + path);
-            return new ImageView(); // ícono vacío
-        }
-    }
-
-
-    private void eliminarArtista(ArtistaDTO artista) {
-        try {
-            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-            confirm.setHeaderText("¿Deseas eliminar al artista " + artista.getNombre() + "?");
-            confirm.showAndWait().ifPresent(response -> {
-                if (response == ButtonType.OK) {
-                    try {
-                        artistaBL.eliminar(artista.getId());
-                        listaObservable.remove(artista);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
+            return new ImageView();
         }
     }
 
@@ -255,13 +225,29 @@ public class CatalogoArtistasController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/CatalogoArtistas/PantallaEliminarArtista.fxml"));
             Parent root = loader.load();
 
-            // Enviar el artista al nuevo controlador si es necesario
             EliminarArtistasController controller = loader.getController();
             controller.setArtista(artista);
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Eliminar Artista");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void irAPantallaEditarArtista(ArtistaDTO artistaSeleccionado) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/CatalogoArtistas/PantallaEditarArtista.fxml"));
+            Parent root = loader.load();
+
+            EditarArtistasController controller = loader.getController();
+            controller.setArtista(artistaSeleccionado);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Editar Artista");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
