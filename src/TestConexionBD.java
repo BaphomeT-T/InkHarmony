@@ -47,7 +47,7 @@ public class TestConexionBD extends SQLiteDataHelper {
             // Cerrar recursos
             rs.close();
             stmt.close();
-            closeConnection();
+            //closeConnection();
             
             System.out.println("\n🎉 ¡Todos los tests pasaron! La conexión a la BD funciona correctamente.");
             

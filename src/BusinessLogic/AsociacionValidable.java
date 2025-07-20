@@ -1,6 +1,6 @@
 package BusinessLogic;
 
-import DataAccessComponent.DTO.CatalogoArtistas.ArtistaDTO;
+import DataAccessComponent.DTO.ArtistaDTO;
 
 public interface AsociacionValidable {
 

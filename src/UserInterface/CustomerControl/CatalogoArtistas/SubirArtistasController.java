@@ -1,4 +1,6 @@
 package UserInterface.CustomerControl.CatalogoArtistas;
+import BusinessLogic.Artista;
+import BusinessLogic.Genero;
 import DataAccessComponent.DAO.ArtistaDAO;
 import BusinessLogic.ServicioValidacion;
 
@@ -59,24 +61,22 @@ public class SubirArtistasController {
         generosSeleccionados = new ArrayList<>();
     }
 
+
     @FXML
     void publicar(ActionEvent event) {
         String nombre = nombreTextField.getText();
         String biografia = biografiaTextArea.getText();
 
-        // Validaciones simples
         if (nombre.isBlank() || biografia.isBlank() || artistaImageView.getImage() == null) {
             mostrarAlerta("Completa todos los campos antes de publicar.");
             return;
         }
 
-        // 1. Obtener géneros seleccionados
         List<Genero> generosSeleccionados = generoMenuButton.getItems().stream()
                 .filter(item -> item instanceof CheckMenuItem && ((CheckMenuItem) item).isSelected())
                 .map(item -> (Genero) item.getUserData())
                 .toList();
 
-        // 2. Obtener la imagen en formato byte[]
         byte[] imagenBytes = null;
         try {
             java.net.URI uri = new java.net.URI(artistaImageView.getImage().getUrl());
@@ -87,16 +87,30 @@ public class SubirArtistasController {
             return;
         }
 
+        // Validación usando ServicioValidacion
+        ServicioValidacion validador = new ServicioValidacion();
+        if (!validador.esNombreUnico(nombre)) {
+            mostrarAlerta("El nombre del artista ya existe.");
+            return;
+        }
 
-        // 3. Registrar en la BD
-        ArtistaDAO dao = new ArtistaDAO(); // tu constructor actual requiere un Artista, podrías cambiar eso
-        //dao.registrarArtista(nombre, generosSeleccionados, biografia, imagenBytes);
-        // Mostrar alerta de éxito
-        mostrarExito("Artista registrado con éxito.");
+        // Registrar con lógica de negocio
+        try {
+            Artista artistaLogic = new Artista();
+            boolean exito = artistaLogic.registrar(nombre, generosSeleccionados, biografia, imagenBytes);
 
-        // Limpiar campos
-        limpiarCampos();
+            if (exito) {
+                mostrarExito("Artista registrado con éxito.");
+                limpiarCampos();
+            } else {
+                mostrarAlerta("No se pudo registrar el artista.");
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al registrar el artista.");
+            e.printStackTrace();
+        }
     }
+
 
     private void mostrarExito(String mensaje) {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
