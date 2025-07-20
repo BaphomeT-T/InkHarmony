@@ -125,29 +125,38 @@ public class ArtistaDAO extends SQLiteDataHelper implements IDAO<ArtistaDTO> {
         }
     }
 
+
+    /**
+     * Elimina un artista y sus asociaciones con géneros musicales.
+     *
+     * @param id ID del artista a eliminar
+     * @return true si la eliminación fue exitosa
+     * @throws Exception si ocurre un error al eliminar el artista
+     */
     @Override
     public boolean eliminar(Integer id) throws Exception {
+        String sqlEliminarGeneros = "DELETE FROM Artista_Genero WHERE id_artista = ?";
+        String sqlEliminarArtista = "DELETE FROM Artista WHERE id_artista = ?";
 
-        String sql1 = "DELETE FROM Artista_Genero WHERE id_artista = ?";
-        String sql2 = "DELETE FROM Artista WHERE id_artista = ?";
-        Connection conn = null;
-        PreparedStatement ps1 = null;
-        PreparedStatement ps2 = null;
-        try  {
-                conn = openConnection();
-                ps1 = conn.prepareStatement(sql1);
-                ps2 = conn.prepareStatement(sql2);
-                ps1.setInt(1, id);
-                ps1.executeUpdate();
-                ps2.setInt(1, id);
-                ps2.executeUpdate();
-                return true;
-            } finally {
-                if (ps1 != null) ps1.close();
-                if (ps2 != null) ps2.close();
-                if (conn != null) conn.close();
+        try {
+            Connection conn = openConnection();
+
+            PreparedStatement ps1 = conn.prepareStatement(sqlEliminarGeneros);
+            ps1.setInt(1, id);
+            ps1.executeUpdate();
+
+            PreparedStatement ps2 = conn.prepareStatement(sqlEliminarArtista);
+            ps2.setInt(1, id);
+            ps2.executeUpdate();
+
+            return true;
+
+        } catch (Exception e) {
+            throw new Exception("Error al eliminar artista: " + e.getMessage(), e);
         }
     }
+
+
 
     private List<Genero> getGenerosPorArtista(int idArtista) throws Exception {
         List<Genero> generos = new ArrayList<>();
@@ -164,4 +173,32 @@ public class ArtistaDAO extends SQLiteDataHelper implements IDAO<ArtistaDTO> {
                 }
         return generos;
     }
+
+    /**
+     * Verifica si el artista con el ID especificado tiene canciones asociadas.
+     *
+     * @param idArtista ID del artista a verificar
+     * @return true si existen canciones asociadas al artista, false en caso contrario
+     * @throws Exception si ocurre un error durante la consulta
+     */
+    public boolean tieneCancionesAsociadas(int idArtista) throws Exception {
+        String sql = "SELECT COUNT(*) FROM Cancion_Artista WHERE id_artista = ?";
+
+        try {
+            Connection conn = openConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, idArtista);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            return false;
+
+        } catch (Exception e) {
+            throw new Exception("Error al verificar canciones asociadas: " + e.getMessage(), e);
+        }
+    }
+
+
 }

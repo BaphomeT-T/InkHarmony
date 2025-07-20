@@ -11,8 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="797.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" stylesheets="@catalogoArtistas.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.CatalogoArtistas.CatalogoArtistasController">
    <children>
       <AnchorPane layoutY="-13.0" prefHeight="168.0" prefWidth="1280.0" style="-fx-background-color: #08072C;">
          <children>
@@ -23,7 +22,7 @@
             </Label>
          </children>
       </AnchorPane>
-      <Button layoutX="56.0" layoutY="200.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="57.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+      <Button fx:id="btnSubir" layoutX="56.0" layoutY="200.0" mnemonicParsing="false" onAction="#handlePantallaSubirArtista" prefHeight="55.0" prefWidth="57.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
          <graphic>
             <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -34,7 +33,7 @@
       </Button>
       <HBox layoutX="144.0" layoutY="212.0" prefHeight="33.0" prefWidth="262.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
          <children>
-            <TextField alignment="BASELINE_CENTER" style="-fx-background-radius: 20; -fx-background-color: #9190C2;" text="Busca un artista por...">
+            <TextField fx:id="txtBuscar" alignment="BASELINE_CENTER" promptText="Busca un artista por..." style="-fx-background-radius: 20; -fx-background-color: #9190C2;">
                <font>
                   <Font size="14.0" />
                </font>
@@ -46,13 +45,12 @@
             </ImageView>
          </children>
       </HBox>
-      <TableView layoutX="56.0" layoutY="274.0" prefHeight="535.0" prefWidth="1170.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 20;">
+      <TableView fx:id="tableArtistas" layoutX="50.0" layoutY="260.0" prefHeight="489.0" prefWidth="1176.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 20;">
         <columns>
-          <TableColumn prefWidth="259.8965034484863" style="-fx-background-color: #;" text="Artista" />
-          <TableColumn minWidth="0.0" prefWidth="241.70352172851562" text="Género Musical" />
-            <TableColumn prefWidth="245.6290283203125" text="Fecha de nacimiento" />
-            <TableColumn prefWidth="303.9710693359375" text="Biografía" />
-            <TableColumn prefWidth="120.086181640625" />
+          <TableColumn fx:id="colNombreConImagen" minWidth="0.0" prefWidth="263.0092315673828" text="Artista" />
+            <TableColumn fx:id="colGenero" prefWidth="533.0" text="Genero Musical" />
+            <TableColumn fx:id="colBiografia" prefWidth="210.8905029296875" text="Biografia" />
+            <TableColumn fx:id="colAcciones" prefWidth="166.209228515625" />
         </columns>
       </TableView>
    </children>

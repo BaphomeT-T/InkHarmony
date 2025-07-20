@@ -6,7 +6,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="797.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.CatalogoArtistas.EliminarArtistasController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.CatalogoArtistas.EditarArtistasController">
     <children>
         <AnchorPane layoutX="156.0" layoutY="153.0" prefHeight="606.0" prefWidth="922.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 25;">
             <children>
@@ -22,7 +22,7 @@
                     <font><Font size="20.0" /></font>
                 </TextField>
 
-                <Button fx:id="eliminarButton" layoutX="304.0" layoutY="501.0" mnemonicParsing="false" onAction="#eliminarArtista" prefHeight="60.0" prefWidth="345.0" style="-fx-background-color: #9190C2; -fx-background-radius: 10;" text="Eliminar">
+                <Button fx:id="eliminarButton" layoutX="304.0" layoutY="501.0" mnemonicParsing="false" onAction="#editarArtista" prefHeight="60.0" prefWidth="345.0" style="-fx-background-color: #9190C2; -fx-background-radius: 10;" text="Actualizar">
                     <font><Font name="System Bold" size="26.0" /></font>
                 </Button>
 
@@ -50,11 +50,11 @@
             </children>
         </AnchorPane>
 
-        <Label layoutX="86.0" layoutY="55.0" text="ELIMINAR ARTISTA" textAlignment="CENTER" textFill="WHITE">
+        <Label layoutX="86.0" layoutY="55.0" text="EDITAR ARTISTA" textAlignment="CENTER" textFill="WHITE">
             <font><Font size="80.0" /></font>
         </Label>
 
-        <Button fx:id="cerrarButton" layoutX="3.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="83.0" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-weight: normal;" textFill="WHITE">
+        <Button fx:id="cerrarButton" layoutX="3.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="83.0" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-weight: normal;" text="X" textFill="WHITE">
             <font><Font size="40.0" /></font>
         </Button>
     </children>
