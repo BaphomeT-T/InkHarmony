@@ -215,6 +215,7 @@ public class EditarArtistasController implements Initializable{
     }
 
     public void setCatalogoController(CatalogoArtistasController controller) {
+
         this.catalogoController = controller;
     }
 

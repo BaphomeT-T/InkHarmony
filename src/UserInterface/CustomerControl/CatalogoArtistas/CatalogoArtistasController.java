@@ -199,6 +199,9 @@ public class CatalogoArtistasController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/CatalogoArtistas/PantallaSubirArtista.fxml"));
             Parent root = loader.load();
 
+            SubirArtistasController controller = loader.getController();
+            controller.setCatalogoController(this);
+
             Stage stage = new Stage();
             stage.setTitle("Subir Artista");
             stage.setScene(new Scene(root));
@@ -220,6 +223,7 @@ public class CatalogoArtistasController {
 
             EliminarArtistasController controller = loader.getController();
             controller.setArtista(artista);
+            controller.setCatalogoController(this);
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
