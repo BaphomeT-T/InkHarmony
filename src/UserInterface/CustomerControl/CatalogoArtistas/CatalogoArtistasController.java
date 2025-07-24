@@ -237,6 +237,7 @@ public class CatalogoArtistasController {
 
             EditarArtistasController controller = loader.getController();
             controller.setArtista(artistaSeleccionado);
+            controller.setCatalogoController(this);
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
@@ -247,6 +248,14 @@ public class CatalogoArtistasController {
         }
     }
 
+    public void actualizarTabla() {
+        try {
+            txtBuscar.clear();
+            cargarArtistas();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }
 
