@@ -42,7 +42,8 @@ public class LoginController {
         PerfilDTO PerfilDTO = perfilService.autenticar(correo, contraseniaIngresada);
 
         if (PerfilDTO != null) {
-            Sesion.iniciarSesion(PerfilDTO);
+            Sesion sesion = Sesion.getSesion();
+            sesion.iniciarSesion(PerfilDTO);
             mostrarAlerta("Correcto","Inicio correcto", Alert.AlertType.INFORMATION);
 
             // Mostrar nueva vista "Reproductor de Música"

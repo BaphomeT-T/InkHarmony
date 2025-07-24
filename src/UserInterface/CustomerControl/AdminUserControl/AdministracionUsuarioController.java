@@ -33,10 +33,10 @@ import javafx.beans.property.SimpleStringProperty;
 
 
 public class AdministracionUsuarioController {
-    // private Sesion session;
+    private Sesion sesion = Sesion.getSesion();
     private List<String> rutasImagenes = RecursosPerfil.obtenerRutasImagenes();
     private Administrador administrador = new Administrador();
-    private PerfilDTO administradorPerfil = new AdministradorDTO(Sesion.obtenerUsuarioActual());
+    private PerfilDTO administradorPerfil = new AdministradorDTO(sesion.obtenerUsuarioActual());
     private int indiceActual = Integer.parseInt(administradorPerfil.getFoto());
     @FXML
     private Button btnActivarCuenta;
@@ -186,7 +186,7 @@ public class AdministracionUsuarioController {
     }
 
     private void filtrarUsuariosPorCorreo(String filtro) {
-     
+
         if (filtro == null || filtro.trim().isEmpty()) {
             tblUsuarios.setItems(listaOriginalUsuarios);
         } else {
@@ -221,7 +221,7 @@ public class AdministracionUsuarioController {
             mostrarAlerta("Advertencia", "Debe seleccionar un usuario de la tabla", Alert.AlertType.WARNING);
             return;
         }
-        if (usuarioSeleccionado.getCorreo().equals(Sesion.obtenerUsuarioActual().getCorreo())) {
+        if (usuarioSeleccionado.getCorreo().equals(sesion.obtenerUsuarioActual().getCorreo())) {
             mostrarAlerta("Error", "No se puede desactivar la cuenta actual", Alert.AlertType.ERROR);
             return;
         } else {
@@ -237,7 +237,7 @@ public class AdministracionUsuarioController {
             mostrarAlerta("Advertencia", "Debe seleccionar un usuario de la tabla", Alert.AlertType.WARNING);
             return;
         }
-        if (usuarioSeleccionado.getCorreo().equals(Sesion.obtenerUsuarioActual().getCorreo())) {
+        if (usuarioSeleccionado.getCorreo().equals(sesion.obtenerUsuarioActual().getCorreo())) {
             mostrarAlerta("Error", "No se puede eliminar la cuenta actual", Alert.AlertType.ERROR);
             return;
         } else {
@@ -260,7 +260,7 @@ public class AdministracionUsuarioController {
             mostrarAlerta("Advertencia", "Debe seleccionar un usuario de la tabla", Alert.AlertType.WARNING);
             return;
         }
-        if (usuarioSeleccionado.getCorreo().equals(Sesion.obtenerUsuarioActual().getCorreo())) {
+        if (usuarioSeleccionado.getCorreo().equals(sesion.obtenerUsuarioActual().getCorreo())) {
             mostrarAlerta("Error", "No se puede cambiar el rol de la cuenta actual", Alert.AlertType.ERROR);
             return;
         } else {
@@ -271,7 +271,7 @@ public class AdministracionUsuarioController {
 
     @FXML
     void cerrarSesion(ActionEvent event) {
-        Sesion.cerrarSesion();
+        sesion.cerrarSesion();
         // Cerrar la ventana de registro y abrir de nuevo la ventana de login
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(

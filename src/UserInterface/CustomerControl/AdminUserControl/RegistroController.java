@@ -314,7 +314,8 @@ public class RegistroController {
 
     @FXML
     private void salirRegistro() {
-        Sesion.cerrarSesion();
+        Sesion sesion = Sesion.getSesion();
+        sesion.cerrarSesion();
         // Cerrar la ventana de registro y abrir de nuevo la ventana de login
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
