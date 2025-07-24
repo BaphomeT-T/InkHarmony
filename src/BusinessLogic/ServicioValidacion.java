@@ -3,9 +3,7 @@ package BusinessLogic;
 import DataAccessComponent.DTO.ArtistaDTO;
 import DataAccessComponent.DAO.ArtistaDAO;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Clase de servicio para validaciones de artistas.
@@ -40,11 +38,11 @@ public class ServicioValidacion implements UnicoNombreValidable, AsociacionValid
     public boolean esNombreUnico(String nombre) {
 
         try {
-            String nombreNormalizado = normalizarNombre(nombre);
+            String nombreNormalizado = validarCampos(nombre);
 
             List<ArtistaDTO> artistas = artistaDAO.buscarTodo();
             for (ArtistaDTO a : artistas) {
-                String nombreExistenteNormalizado = normalizarNombre(a.getNombre());
+                String nombreExistenteNormalizado = validarCampos(a.getNombre());
                 if (nombreExistenteNormalizado.equals(nombreNormalizado)) {
                     return false;
                 }
@@ -79,7 +77,7 @@ public class ServicioValidacion implements UnicoNombreValidable, AsociacionValid
      * @param nombre Nombre ingresado para ser comparado
      * @return El nombre del artista estandarizado.
      */
-    private String normalizarNombre(String nombre) {
+    private String validarCampos(String nombre) {
         if (nombre == null) {
             return "";
         }
