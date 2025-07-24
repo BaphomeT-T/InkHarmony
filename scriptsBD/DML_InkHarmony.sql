@@ -27,4 +27,12 @@ INSERT INTO Artista (nombre, biografia) VALUES
                                             ('Julio_Jaramillo', 'Cantante ecuatoriano'),
                                             ('Christian_Nodal', 'Cantante y compositor');
 
+INSERT INTO Artista_Genero(id_artista, id_genero) VALUES
+                                                      (1,2),
+                                                      (2,3),
+                                                      (3,13),
+                                                      (4,13),
+                                                      (5,16),
+                                                      (6,17),
+                                                      (7,6);
 

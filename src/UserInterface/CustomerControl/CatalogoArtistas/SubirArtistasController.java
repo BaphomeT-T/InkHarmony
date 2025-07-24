@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -102,6 +103,7 @@ public class SubirArtistasController {
             if (exito) {
                 mostrarExito("Artista registrado con éxito.");
                 limpiarCampos();
+                cerrarVentana(null);
             } else {
                 mostrarAlerta("No se pudo registrar el artista.");
             }
@@ -213,6 +215,10 @@ public class SubirArtistasController {
 
     }
 
+    public void cerrarVentana(ActionEvent actionEvent) {
+        Stage stage = (Stage) cerrarButton.getScene().getWindow();
+        stage.close();
+    }
     private void actualizarTextoMenuButton() {
         List<String> seleccionados = generoMenuButton.getItems().stream()
                 .filter(item -> item instanceof CheckMenuItem && ((CheckMenuItem) item).isSelected())
