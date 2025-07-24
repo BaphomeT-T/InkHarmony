@@ -38,7 +38,6 @@ public class Artista {
     public List<ArtistaDTO> buscarTodo() throws Exception {
         return artistaDAO.buscarTodo();
     }
-
     /**
      * Recupera un artista específico por su ID.
      *

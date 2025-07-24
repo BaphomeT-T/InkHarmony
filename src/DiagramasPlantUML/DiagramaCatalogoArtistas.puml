@@ -37,15 +37,15 @@ enum Genero {
 package CatalogoArtistas {
     class ArtistaDAO {
 
-        + registrarArtista(artista: Artista): void
-        + actualizarArtista(artista: Artista): void
-        + eliminarArtista(artista: Artista): void
+        + registrarArtista(artista: Artista): boolean
+        + actualizarArtista(artista: Artista): boolean
+        + eliminarArtista(id_artista: int): void
         + buscarArtista(): List<Artista>
-        + buscarArtistaID(artista: Artista): Artista
+        + buscarArtistaID(id_artista: int): Artista
     }
 
-    class ServicioValidacion {
-        + validarCampos(artista: Artista): boolean
+    class ServicioValidacionArtista {
+        + validarCampoNombre(nombre: string): String
         + esNombreUnico(nombre: string): boolean
         + tieneElementoAsociado(artista: Artista): boolean
     }
@@ -54,7 +54,6 @@ package CatalogoArtistas {
         - id: int
         - nombre: String
         - generos: List<Genero>
-        - fechaNacimiento: Date
         - biografia: String
         - imagen: BufferedImage
     }
@@ -71,9 +70,9 @@ package CatalogoArtistas {
 
 Administrador --> ArtistaDAO
 ArtistaDAO --> Artista
-ServicioValidacion --> Artista
-ServicioValidacion ..|> UnicoNombreValidable
-ServicioValidacion ..|> AsociacionValidable
-ArtistaDAO --> ServicioValidacion
+ServicioValidacionArtista --> Artista
+ServicioValidacionArtista ..|> UnicoNombreValidable
+ServicioValidacionArtista ..|> AsociacionValidable
+ArtistaDAO --> ServicioValidacionArtista
 Artista --> Genero
 @enduml
