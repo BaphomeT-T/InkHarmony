@@ -69,6 +69,15 @@ public class EditarArtistasController implements Initializable{
                 mostrarAlerta(Alert.AlertType.WARNING, "Datos incompletos", "El nombre y al menos un género son obligatorios.");
                 return;
             }
+
+            List<ArtistaDTO> existentes = artistaNuevo.buscarTodo();
+            for (ArtistaDTO a : existentes) {
+                if (a.getNombre().equalsIgnoreCase(nombre) && a.getId() != artista.getId()) {
+                    mostrarAlerta(Alert.AlertType.WARNING, "Nombre duplicado", "Ya existe otro artista con ese nombre.");
+                    return;
+                }
+            }
+
             artista.setNombre(nombre);
             artista.setBiografia(biografia);
             artista.setGeneros(generosSeleccionados);

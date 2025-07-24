@@ -134,7 +134,7 @@ public class CatalogoArtistasController {
 
     private Image loadDefaultImage() {
         try {
-            return new Image(getClass().getResourceAsStream("/UserInterface/Resources/img/CatalogoArtistas/blackpink.jpg"), 40, 40, true, true);
+            return new Image(getClass().getResourceAsStream("/UserInterface/Resources/img/CatalogoArtistas/usuario.png"), 40, 40, true, true);
         } catch (Exception e) {
             System.out.println("Imagen por defecto no encontrada.");
             return null;
@@ -144,7 +144,7 @@ public class CatalogoArtistasController {
     private void cargarArtistas() throws Exception {
         List<ArtistaDTO> lista = artistaBL.buscarTodo();
         System.out.println("Artistas cargados desde DAO:");
-        lista.forEach(System.out::println);  // <-- DEBUG
+        lista.forEach(System.out::println);
         listaObservable = FXCollections.observableArrayList(lista);
         tableArtistas.setItems(listaObservable);
     }
