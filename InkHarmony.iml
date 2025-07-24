@@ -7,15 +7,7 @@
     </content>
     <orderEntry type="jdk" jdkName="liberica-full-24" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="javafx.controls" level="project" />
-    <orderEntry type="library" name="javafx.fxml" level="project" />
-    <orderEntry type="library" name="javafx.graphics" level="project" />
-    <orderEntry type="library" name="javafx.media" level="project" />
-    <orderEntry type="library" name="javafx.swing" level="project" />
-    <orderEntry type="library" name="javafx.web" level="project" />
-    <orderEntry type="library" name="jdk.jsobject" level="project" />
-    <orderEntry type="library" name="jfx.incubator.input" level="project" />
-    <orderEntry type="library" name="jfx.incubator.richtext" level="project" />
     <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="library" name="lib1" level="project" />
   </component>
 </module>
