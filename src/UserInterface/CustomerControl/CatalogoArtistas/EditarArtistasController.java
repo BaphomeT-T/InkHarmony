@@ -36,6 +36,8 @@ public class EditarArtistasController implements Initializable{
     @FXML private Button actualizarButton;
     @FXML private Button cerrarButton;
 
+    private CatalogoArtistasController catalogoController;
+
     /**
      *
      * @param artista
@@ -94,6 +96,9 @@ public class EditarArtistasController implements Initializable{
             boolean exito = artistaNuevo.actualizar(artista);
             if (exito) {
                 mostrarExito("El artista se ha actualizado correctamente.");
+                if (catalogoController != null) {
+                    catalogoController.actualizarTabla();
+                }
                 cerrarVentana(null);
             } else {
                 mostrarAlerta("No se pudo actualizar el artista.");
@@ -208,4 +213,9 @@ public class EditarArtistasController implements Initializable{
             }
         }
     }
+
+    public void setCatalogoController(CatalogoArtistasController controller) {
+        this.catalogoController = controller;
+    }
+
 }
