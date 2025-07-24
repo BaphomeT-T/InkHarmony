@@ -15,7 +15,8 @@ public class ReproductorController {
 
     @FXML
     private void cerrarSesion() {
-        Sesion.cerrarSesion(); // Limpia la sesión
+        Sesion sesion = Sesion.getSesion();
+        sesion.cerrarSesion(); // Limpia la sesión
 
         try {
             // Cargar la vista de login

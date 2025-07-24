@@ -20,8 +20,33 @@ import DataAccessComponent.DTO.PerfilDTO;
  */
 public class Sesion {
     /** Perfil del usuario actualmente autenticado en el sistema */
-    private static PerfilDTO usuarioActual;
-    
+    private PerfilDTO usuarioActual;
+    /** Instancia única de Sesion*/
+    private static Sesion sesion;
+
+    /**
+     * Constructor privado para evitar la creación de múltiples instancias
+     */
+    private Sesion() {
+    }
+
+    /**
+     * Devuelve la instancia única de la clase {@code Sesion}.
+     *
+     * <p>Si la instancia aún no ha sido creada, se crea en ese momento </p>
+     *
+     * @return la instancia única de {@code Sesion}.
+     */
+    public static Sesion getSesion() {
+        if(sesion == null) {
+            sesion = new Sesion();
+        } else {
+            System.out.println("Ya existe una sesión activa");
+            return sesion;
+        }
+        return sesion;
+    }
+
     /**
      * Inicia la sesión para un usuario autenticado.
      * 
@@ -34,8 +59,11 @@ public class Sesion {
      * @throws IllegalArgumentException Si el usuarioLogeado es null
      * @throws RuntimeException Si ocurre un error durante el proceso de inicio de sesión
      */
-    public static void iniciarSesion(PerfilDTO usuarioLogeado) {
-        usuarioActual = usuarioLogeado;
+    public void iniciarSesion(PerfilDTO usuarioLogeado) {
+        if (usuarioLogeado == null) {
+            throw new IllegalArgumentException("El usuario no puede ser nulo");
+        }
+        this.usuarioActual = usuarioLogeado;
     }
     
     /**
@@ -50,25 +78,10 @@ public class Sesion {
      * 
      * @throws RuntimeException Si ocurre un error durante el proceso de cierre de sesión
      */
-    public static void cerrarSesion() {
-        usuarioActual = null;
+    public void cerrarSesion() {
+        this.usuarioActual = null;
     }
-    
-    /**
-     * Verifica si hay un usuario autenticado en la sesión actual.
-     * 
-     * <p>Este método comprueba si existe un usuario activo en la sesión.
-     * Es útil para determinar si el usuario debe autenticarse antes de
-     * acceder a ciertas funcionalidades de la aplicación.</p>
-     * 
-     * @return true si hay un usuario autenticado, false en caso contrario
-     * 
-     * @throws RuntimeException Si ocurre un error durante la verificación del estado de autenticación
-     */
-    public static boolean estaAutenticado() {
-        
-        return usuarioActual != null;
-    }
+
     
     /**
      * Obtiene el perfil del usuario actualmente autenticado.
@@ -84,7 +97,7 @@ public class Sesion {
      * 
      * @throws RuntimeException Si ocurre un error durante la obtención del usuario actual
      */
-    public static PerfilDTO obtenerUsuarioActual() {
-        return usuarioActual;
+    public PerfilDTO obtenerUsuarioActual() {
+        return this.usuarioActual;
     }
 } 

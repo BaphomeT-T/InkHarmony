@@ -1,6 +1,5 @@
 @startuml
 package "Administración de usuarios" {
-
   class Perfil {
     - nombre: String
     - apellido: String
@@ -26,7 +25,7 @@ package "Administración de usuarios" {
   }
 
   class ServicioPerfil {
-    - perfilDAO: PerfilDAO
+    - perfilDTO: PerfilDTO
     - {static} encoder: PasswordEncoder
     + registrarUsuario(nombre, apellido, correo, contrasenia, foto): void
     + autenticar(email, password): Perfil
@@ -37,10 +36,12 @@ package "Administración de usuarios" {
   USUARIO
   }
   class Sesion {
-    - {static} usuarioLogueado: Perfil
-    + {static} iniciarSesio(usarioLogueado: Perfil): void
-    + {static} obtenerUsuarioActual(): Perfil
-    + {static} cerrarSesion(): void
+    - usuarioActual: Perfil
+    - {static} sesion: Sesion
+    + {static} getSesion(): Sesion
+    + iniciarSesio(usarioLogueado: Perfil): void
+    + cerrarSesion(): void
+    + obtenerUsuarioActual(): Perfil
   }
 
   ServicioPerfil .> Perfil
@@ -48,8 +49,10 @@ package "Administración de usuarios" {
   Administrador --|> Perfil
   Usuario -> "*" Genero : preferenciasMusicales
   Perfil --> "1" TipoUsuario: tipoUsuario
-  ServicioPerfil --> Sesion
+  Sesion --> Perfil
 
 }
+
+
 
 @enduml
