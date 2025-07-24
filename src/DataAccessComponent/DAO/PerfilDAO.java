@@ -1,6 +1,6 @@
 package DataAccessComponent.DAO;
 
-import DataAccessComponent.DTO.Perfil;
+import DataAccessComponent.DTO.PerfilDTO;
 import DataAccessComponent.DTO.TipoUsuario;
 import DataAccessComponent.SQLiteDataHelper;
 import java.sql.*;
@@ -49,7 +49,7 @@ public class PerfilDAO extends SQLiteDataHelper {
      * @throws IllegalArgumentException Si el perfil es null o contiene datos inválidos
      * @throws RuntimeException Si ocurre un error de conexión con la base de datos
      */
-    public void guardar(Perfil perfil) {
+    public void guardar(PerfilDTO perfil) {
         String sql = """
                     INSERT INTO Usuario (
                                  nombre_usuario ,
@@ -95,7 +95,7 @@ public class PerfilDAO extends SQLiteDataHelper {
      * @throws IllegalArgumentException Si el correo es null o está vacío
      * @throws RuntimeException Si ocurre un error de conexión con la base de datos
      */
-    public Perfil buscarPorEmail(String correo) {
+    public PerfilDTO buscarPorEmail(String correo) {
         String sql = "SELECT * FROM Usuario WHERE correo = ?";
 
         try {
@@ -105,7 +105,7 @@ public class PerfilDAO extends SQLiteDataHelper {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                Perfil perfil = crearPerfilDesdeResultSet(rs);
+                PerfilDTO perfil = crearPerfilDesdeResultSet(rs);
                 rs.close();
                 pstmt.close();
                 return perfil;
@@ -130,8 +130,8 @@ public class PerfilDAO extends SQLiteDataHelper {
      * @throws SQLException Si ocurre un error durante la ejecución de la consulta SQL
      * @throws RuntimeException Si ocurre un error de conexión con la base de datos
      */
-    public List<Perfil> listarTodos() {
-        List<Perfil> perfiles = new ArrayList<>();
+    public List<PerfilDTO> listarTodos() {
+        List<PerfilDTO> perfiles = new ArrayList<>();
         String sql = "SELECT * FROM Usuario";
 
         try {
@@ -163,7 +163,7 @@ public class PerfilDAO extends SQLiteDataHelper {
      * @throws IllegalArgumentException Si el perfil es null o no tiene correo válido
      * @throws RuntimeException Si ocurre un error de conexión con la base de datos
      */
-    public void eliminar(Perfil perfil) {
+    public void eliminar(PerfilDTO perfil) {
         String sql = "DELETE FROM Usuario WHERE Correo = ?";
 
         try {
@@ -190,7 +190,7 @@ public class PerfilDAO extends SQLiteDataHelper {
      * @throws IllegalArgumentException Si el perfil es null o no tiene correo válido
      * @throws RuntimeException Si ocurre un error de conexión con la base de datos
      */
-    public void actualizar(Perfil perfil) {
+    public void actualizar(PerfilDTO perfil) {
         String sql = """
                     UPDATE Usuario
                     SET  
@@ -227,7 +227,7 @@ public class PerfilDAO extends SQLiteDataHelper {
      * @throws IllegalArgumentException Si el perfil es null o no tiene correo válido
      * @throws RuntimeException Si ocurre un error de conexión con la base de datos
      */
-    public void desactivar(Perfil perfil) {
+    public void desactivar(PerfilDTO perfil) {
         String sql = "UPDATE Usuario SET cuenta_activa = 0 WHERE Correo = ?";
 
         try {
@@ -254,9 +254,9 @@ public class PerfilDAO extends SQLiteDataHelper {
      * @throws SQLException Si ocurre un error al leer los datos del ResultSet
      * @throws IllegalArgumentException Si el ResultSet es null
      */
-    private Perfil crearPerfilDesdeResultSet(ResultSet rs) throws SQLException {
+    private PerfilDTO crearPerfilDesdeResultSet(ResultSet rs) throws SQLException {
 
-        Perfil perfil = new Perfil();
+        PerfilDTO perfil = new PerfilDTO();
         perfil.setNombre(rs.getString(2));
         perfil.setApellido(rs.getString(3));
         perfil.setCorreo(rs.getString(4));

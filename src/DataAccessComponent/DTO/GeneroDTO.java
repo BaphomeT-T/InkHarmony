@@ -1,7 +1,5 @@
 package DataAccessComponent.DTO;
 
-import DataAccessComponent.SQLiteDataHelper;
-
 /**
  * Clase DTO que representa un género musical en el sistema InkHarmony.
  * Extiende SQLiteDataHelper para aprovechar la funcionalidad de conexión
@@ -18,7 +16,7 @@ import DataAccessComponent.SQLiteDataHelper;
  * @version 1.0
  * @since 1.0
  */
-public class Genero extends SQLiteDataHelper {
+public class GeneroDTO {
     
     /** Nombre del género musical */
     private String nombreGenero;
@@ -27,7 +25,7 @@ public class Genero extends SQLiteDataHelper {
      * Constructor por defecto de Genero.
      * Crea una instancia vacía de Genero sin inicializar el nombre del género.
      */
-    public Genero() {
+    public GeneroDTO() {
     }
 
     /**
@@ -40,7 +38,7 @@ public class Genero extends SQLiteDataHelper {
      * 
      * @throws IllegalArgumentException Si el nombreGenero es null o está vacío
      */
-    public Genero(String nombreGenero) {
+    public GeneroDTO(String nombreGenero) {
         this.nombreGenero = nombreGenero;
     }
 

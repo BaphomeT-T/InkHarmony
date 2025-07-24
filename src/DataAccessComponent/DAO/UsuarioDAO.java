@@ -1,9 +1,8 @@
 package DataAccessComponent.DAO;
 
-import DataAccessComponent.DTO.Usuario;
+import DataAccessComponent.DTO.GeneroDTO;
+import DataAccessComponent.DTO.PerfilDTO;
 import DataAccessComponent.SQLiteDataHelper;
-import DataAccessComponent.DTO.Genero;
-import DataAccessComponent.DTO.Perfil;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -45,7 +44,7 @@ public class UsuarioDAO extends SQLiteDataHelper {
      * @throws IllegalArgumentException Si el correo es null o está vacío, o si la lista de géneros es null
      * @throws RuntimeException Si ocurre un error de conexión con la base de datos
      */
-    public boolean guardarPreferencias(Perfil perfil, List<Genero> generos) {
+    public boolean guardarPreferencias(PerfilDTO perfil, List<GeneroDTO> generos) {
         String sql = "UPDATE Usuario SET preferencias_musicales = ? WHERE correo = ?";
         try {
             Connection conn = openConnection();
@@ -53,16 +52,14 @@ public class UsuarioDAO extends SQLiteDataHelper {
             
             // Validar géneros contra la BD
             List<String> generosValidos = GeneroDAO.obtenerTodos();
-            for (Genero genero : generos) {
+            for (GeneroDTO genero : generos) {
                 if (!generosValidos.contains(genero.getNombreGenero())) {
                     throw new SQLException("Género no registrado: " + genero.getNombreGenero());
                 }
             }
 
             // Convertir a JSON y guardar
-            Usuario usuario = new Usuario();
-            usuario.setPreferenciasMusicales(generos);
-            pstmt.setString(1, usuario.toJSON());
+            pstmt.setString(1, BusinessLogic.Usuario.preferenciasToJSON(generos));
             pstmt.setString(2, perfil.getCorreo());
             pstmt.executeUpdate();
             return true;
@@ -87,7 +84,7 @@ public class UsuarioDAO extends SQLiteDataHelper {
      * @throws IllegalArgumentException Si el correo es null o está vacío
      * @throws RuntimeException Si ocurre un error de conexión con la base de datos
      */
-    public List<Genero> obtenerPreferencias(Perfil perfil) {
+    public List<GeneroDTO> obtenerPreferencias(PerfilDTO perfil) {
         String sql = "SELECT preferencias_musicales FROM Usuario WHERE correo = ?";
         try {
             Connection conn = openConnection();
@@ -98,7 +95,7 @@ public class UsuarioDAO extends SQLiteDataHelper {
             
             if (rs.next()) {
                 String json = rs.getString("preferencias_musicales");
-                return Usuario.fromJSON(json);
+                return BusinessLogic.Usuario.preferenciasFromJSON(json);
             }
             return List.of();
         } catch (Exception e) {
@@ -108,7 +105,7 @@ public class UsuarioDAO extends SQLiteDataHelper {
     }
 
 
-    public boolean actualizarPerfil(Perfil perfil, boolean borrarPreferencias, List<Genero> nuevosGeneros) {
+    public boolean actualizarPerfil(PerfilDTO perfil, boolean borrarPreferencias, List<GeneroDTO> nuevosGeneros) {
         StringBuilder sql = new StringBuilder("UPDATE Usuario SET ");
         List<Object> parametros = new ArrayList<>();
         if (obtenerPreferencias(perfil) != null && nuevosGeneros != null) {
@@ -140,7 +137,7 @@ public class UsuarioDAO extends SQLiteDataHelper {
             sql.append("preferencias_musicales = NULL, ");
         } else if (nuevosGeneros != null) {
             List<String> generosValidos = GeneroDAO.obtenerTodos();
-            for (Genero genero : nuevosGeneros) {
+            for (GeneroDTO genero : nuevosGeneros) {
                 if (!generosValidos.contains(genero.getNombreGenero())) {
                     System.err.println("Género inválido: " + genero.getNombreGenero());
                     return false;
@@ -155,7 +152,7 @@ public class UsuarioDAO extends SQLiteDataHelper {
             json.append("]");
 
             sql.append("preferencias_musicales = ?, ");
-            parametros.add(json.toString());
+            parametros.add(BusinessLogic.Usuario.preferenciasToJSON(nuevosGeneros));
         }
 
         if (parametros.isEmpty() && !borrarPreferencias) {

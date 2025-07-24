@@ -1,6 +1,6 @@
 package BusinessLogic;
 
-import DataAccessComponent.DTO.Perfil;
+import DataAccessComponent.DTO.PerfilDTO;
 
 /**
  * Clase que gestiona la sesión del usuario actual en el sistema.
@@ -20,7 +20,7 @@ import DataAccessComponent.DTO.Perfil;
  */
 public class Sesion {
     /** Perfil del usuario actualmente autenticado en el sistema */
-    private static Perfil usuarioActual;
+    private static PerfilDTO usuarioActual;
     
     /**
      * Inicia la sesión para un usuario autenticado.
@@ -34,7 +34,7 @@ public class Sesion {
      * @throws IllegalArgumentException Si el usuarioLogeado es null
      * @throws RuntimeException Si ocurre un error durante el proceso de inicio de sesión
      */
-    public static void iniciarSesion(Perfil usuarioLogeado) {
+    public static void iniciarSesion(PerfilDTO usuarioLogeado) {
         usuarioActual = usuarioLogeado;
     }
     
@@ -84,7 +84,7 @@ public class Sesion {
      * 
      * @throws RuntimeException Si ocurre un error durante la obtención del usuario actual
      */
-    public static Perfil obtenerUsuarioActual() {
+    public static PerfilDTO obtenerUsuarioActual() {
         return usuarioActual;
     }
 } 

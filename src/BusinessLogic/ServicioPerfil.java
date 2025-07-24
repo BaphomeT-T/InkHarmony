@@ -1,15 +1,12 @@
 package BusinessLogic;
 
 import DataAccessComponent.DAO.PerfilDAO;
-import DataAccessComponent.DAO.UsuarioDAO;
-import DataAccessComponent.DTO.Genero;
-import DataAccessComponent.DTO.Perfil;
+import DataAccessComponent.DTO.PerfilDTO;
 import DataAccessComponent.DTO.TipoUsuario;
-import DataAccessComponent.DTO.Usuario;
+import DataAccessComponent.DTO.UsuarioDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * Clase que maneja la lógica de negocio para la gestión de perfiles de usuario.
@@ -31,7 +28,6 @@ public class ServicioPerfil {
     /** Objeto DAO para el acceso a datos de perfiles */
     private final PerfilDAO perfilDAO = new PerfilDAO();
 
-    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
 
 
     /**
@@ -62,7 +58,7 @@ public class ServicioPerfil {
         }
         String contraseniaEncriptada = encoder.encode(contrasenia);
 
-        Usuario nuevoUsuario = new Usuario();
+        UsuarioDTO nuevoUsuario = new UsuarioDTO();
         nuevoUsuario.setNombre(nombre);
         nuevoUsuario.setApellido(apellido);
         nuevoUsuario.setCorreo(correo);
@@ -95,25 +91,13 @@ public class ServicioPerfil {
      * @throws IllegalArgumentException Si el correo o contraseña son null
      * @throws RuntimeException Si ocurre un error durante el proceso de autenticación
      */
-    public Perfil autenticar(String correo, String contraseniaIngresada) {
-        Perfil perfil = perfilDAO.buscarPorEmail(correo);
+    public PerfilDTO autenticar(String correo, String contraseniaIngresada) {
+        PerfilDTO perfil = perfilDAO.buscarPorEmail(correo);
         if (perfil != null && perfil.getEstado_cuenta().equalsIgnoreCase("activo")) {
             if(encoder.matches(contraseniaIngresada, perfil.getContrasenia())) {
                 return perfil;
             }
         }
         return null;
-    }
-
-    
-
-    public boolean actualizarPerfil(Perfil perfil, boolean borrarPreferencias, List<Genero> nuevosGeneros) {
-        // Solo encriptar si la contraseña *parece* estar en texto plano
-        if (perfil.getContrasenia() != null && !perfil.getContrasenia().startsWith("$2a$")) {
-            // Asumimos que si no empieza con "$2a$", no está encriptada
-            String contraseniaEncriptada = encoder.encode(perfil.getContrasenia());
-            perfil.setContrasenia(contraseniaEncriptada);
-        }
-        return usuarioDAO.actualizarPerfil(perfil, borrarPreferencias, nuevosGeneros);
     }
 }
