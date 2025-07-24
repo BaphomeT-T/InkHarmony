@@ -16,19 +16,6 @@ public class ServicioValidacion implements UnicoNombreValidable, AsociacionValid
     private ArtistaDAO artistaDAO = new ArtistaDAO();
 
     /**
-     * Valida campos mínimos del artista.
-     *
-     * @param artista El artista a validar
-     * @return true si todos los campos requeridos están completos
-     */
-    public boolean validarCampos(ArtistaDTO artista) {
-        return artista.getNombre() != null && !artista.getNombre().trim().isEmpty()
-                && artista.getBiografia() != null && !artista.getBiografia().trim().isEmpty()
-                && artista.getImagen() != null
-                && artista.getGenero() != null && !artista.getGenero().isEmpty();
-    }
-
-    /**
      * Verifica si el nombre del artista ya existe.
      *
      * @param nombre Nombre a validar
@@ -38,11 +25,11 @@ public class ServicioValidacion implements UnicoNombreValidable, AsociacionValid
     public boolean esNombreUnico(String nombre) {
 
         try {
-            String nombreNormalizado = validarCampos(nombre);
+            String nombreNormalizado = validarCampoNombre(nombre);
 
             List<ArtistaDTO> artistas = artistaDAO.buscarTodo();
             for (ArtistaDTO a : artistas) {
-                String nombreExistenteNormalizado = validarCampos(a.getNombre());
+                String nombreExistenteNormalizado = validarCampoNombre(a.getNombre());
                 if (nombreExistenteNormalizado.equals(nombreNormalizado)) {
                     return false;
                 }
@@ -52,7 +39,6 @@ public class ServicioValidacion implements UnicoNombreValidable, AsociacionValid
         }
         return true;
     }
-
     /**
      * Verifica si el artista tiene elementos asociados que impidan su eliminación.
      *
@@ -68,7 +54,6 @@ public class ServicioValidacion implements UnicoNombreValidable, AsociacionValid
             return true; // Por precaución, evitar borrar si hay error al verificar
         }
     }
-
     /**
      * Este método toma un nombre de artista y lo transforma en una versión estandarizada
      * para facilitar la comparación, eliminando diferencias como mayúsculas, espacios y
@@ -77,7 +62,7 @@ public class ServicioValidacion implements UnicoNombreValidable, AsociacionValid
      * @param nombre Nombre ingresado para ser comparado
      * @return El nombre del artista estandarizado.
      */
-    private String validarCampos(String nombre) {
+    private String validarCampoNombre(String nombre) {
         if (nombre == null) {
             return "";
         }
