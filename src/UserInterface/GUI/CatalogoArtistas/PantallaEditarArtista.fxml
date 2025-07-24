@@ -28,9 +28,20 @@
 
                 <AnchorPane layoutX="549.0" layoutY="171.0" prefHeight="264.0" prefWidth="264.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
                     <children>
-                        <ImageView fx:id="artistaImageView" fitHeight="264.0" fitWidth="306.0" pickOnBounds="true" preserveRatio="false" />
+                        <ImageView fx:id="artistaImageView" fitHeight="264.0" fitWidth="306.0" layoutY="1.0" pickOnBounds="true" preserveRatio="false">
+                            <image>
+                                <Image url="@../../Resources/img/CatalogoArtistas/camara.png" />
+                            </image>
+                        </ImageView>
+                        <Button fx:id="cargarImagenButton" layoutY="-25.0" onAction="#seleccionarImagen" opacity="0" prefHeight="264.0" prefWidth="306.0" />
+
                     </children>
                 </AnchorPane>
+                <Label fx:id="seleccionarLabel" layoutX="534.0" layoutY="105.0" opacity="0.48" prefHeight="21.0" prefWidth="337.0" text="Selecciona una imagen del artista (.png) (264x264)" textFill="#797990">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Label>
 
                 <Label layoutX="33.0" layoutY="363.0" text="Género" textFill="WHITE">
                     <font><Font size="24.0" /></font>
