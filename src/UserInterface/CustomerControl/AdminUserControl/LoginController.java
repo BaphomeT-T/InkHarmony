@@ -1,7 +1,7 @@
 package UserInterface.CustomerControl.AdminUserControl;
 
 import BusinessLogic.Sesion;
-import DataAccessComponent.DTO.Perfil;
+import DataAccessComponent.DTO.PerfilDTO;
 import DataAccessComponent.DTO.TipoUsuario;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -39,16 +39,16 @@ public class LoginController {
         String contraseniaIngresada = txtContrasenia.getText();
 
         ServicioPerfil perfilService = new ServicioPerfil();
-        Perfil perfil = perfilService.autenticar(correo, contraseniaIngresada);
+        PerfilDTO PerfilDTO = perfilService.autenticar(correo, contraseniaIngresada);
 
-        if (perfil != null) {
-            Sesion.iniciarSesion(perfil);
+        if (PerfilDTO != null) {
+            Sesion.iniciarSesion(PerfilDTO);
             mostrarAlerta("Correcto","Inicio correcto", Alert.AlertType.INFORMATION);
 
             // Mostrar nueva vista "Reproductor de Música"
             try {
                 javafx.fxml.FXMLLoader loader;
-                if (perfil.getTipoUsuario() == TipoUsuario.ADMINISTRADOR) {
+                if (PerfilDTO.getTipoUsuario() == TipoUsuario.ADMINISTRADOR) {
                     loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/administracion_Usuarios.fxml"));
                 } else {
                     loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/reproductor.fxml"));

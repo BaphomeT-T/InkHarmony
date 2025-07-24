@@ -2,9 +2,10 @@ package UserInterface.CustomerControl.AdminUserControl;
 
 import java.util.List;
 
+import BusinessLogic.Administrador;
 import BusinessLogic.Sesion;
-import DataAccessComponent.DTO.Administrador;
-import DataAccessComponent.DTO.Perfil;
+import DataAccessComponent.DTO.AdministradorDTO;
+import DataAccessComponent.DTO.PerfilDTO;
 import DataAccessComponent.DTO.TipoUsuario;
 import UserInterface.Utils.RecursosPerfil;
 import javafx.collections.FXCollections;
@@ -34,8 +35,9 @@ import javafx.beans.property.SimpleStringProperty;
 public class AdministracionUsuarioController {
     // private Sesion session;
     private List<String> rutasImagenes = RecursosPerfil.obtenerRutasImagenes();
-    private Perfil administrador = new Administrador(Sesion.obtenerUsuarioActual());
-    private int indiceActual = Integer.parseInt(administrador.getFoto());
+    private Administrador administrador = new Administrador();
+    private PerfilDTO administradorPerfil = new AdministradorDTO(Sesion.obtenerUsuarioActual());
+    private int indiceActual = Integer.parseInt(administradorPerfil.getFoto());
     @FXML
     private Button btnActivarCuenta;
     @FXML
@@ -67,22 +69,22 @@ public class AdministracionUsuarioController {
     @FXML
     private ComboBox<TipoUsuario> cmbRol;
     @FXML
-    private TableView<Perfil> tblUsuarios;
+    private TableView<PerfilDTO> tblUsuarios;
     @FXML
     private TextField txtBuscarCorreo;
 
     // Columnas de la tabla
     @FXML
-    private TableColumn<Perfil, String> colNombre;
+    private TableColumn<PerfilDTO, String> colNombre;
     @FXML
-    private TableColumn<Perfil, String> colApellido;
+    private TableColumn<PerfilDTO, String> colApellido;
     @FXML
-    private TableColumn<Perfil, String> colCorreo;
+    private TableColumn<PerfilDTO, String> colCorreo;
     @FXML
-    private TableColumn<Perfil, String> colRol;
+    private TableColumn<PerfilDTO, String> colRol;
 
     // Lista original para búsqueda
-    private ObservableList<Perfil> listaOriginalUsuarios = FXCollections.observableArrayList();
+    private ObservableList<PerfilDTO> listaOriginalUsuarios = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
@@ -142,8 +144,7 @@ public class AdministracionUsuarioController {
     }
 
     private void cargarUsuarios() {
-        Administrador administrador = new Administrador();
-        List<Perfil> usuarios = administrador.consultarUsuarios();
+        List<PerfilDTO> usuarios = administrador.consultarUsuarios();
         listaOriginalUsuarios.setAll(usuarios);
         tblUsuarios.setItems(listaOriginalUsuarios);
     
@@ -162,9 +163,9 @@ public class AdministracionUsuarioController {
 
     private void configurarEstiloFilas() {
         // Configurar el estilo de las filas según el estado de la cuenta
-        tblUsuarios.setRowFactory(tv -> new TableRow<Perfil>() {
+        tblUsuarios.setRowFactory(tv -> new TableRow<PerfilDTO>() {
             @Override
-            protected void updateItem(Perfil item, boolean empty) {
+            protected void updateItem(PerfilDTO item, boolean empty) {
                 super.updateItem(item, empty);
                 
                 if (empty || item == null) {
@@ -189,10 +190,10 @@ public class AdministracionUsuarioController {
         if (filtro == null || filtro.trim().isEmpty()) {
             tblUsuarios.setItems(listaOriginalUsuarios);
         } else {
-            ObservableList<Perfil> filtrados = FXCollections.observableArrayList();
+            ObservableList<PerfilDTO> filtrados = FXCollections.observableArrayList();
             String filtroLower = filtro.toLowerCase().trim();
             
-            for (Perfil perfil : listaOriginalUsuarios) {
+            for (PerfilDTO perfil : listaOriginalUsuarios) {
                 String correo = perfil.getCorreo();
                 if (correo != null && correo.toLowerCase().startsWith(filtroLower)) {
                     filtrados.add(perfil);
@@ -204,18 +205,18 @@ public class AdministracionUsuarioController {
 
     @FXML
     void activarCuenta(ActionEvent event) {
-        Perfil usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
+        PerfilDTO usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
         if (usuarioSeleccionado == null) {
             mostrarAlerta("Advertencia", "Debe seleccionar un usuario de la tabla", Alert.AlertType.WARNING);
             return;
         }
-        ((Administrador) administrador).activarCuenta(usuarioSeleccionado);
+       administrador.activarCuenta(usuarioSeleccionado);
         actualizarTablaUsuarios();
     }
 
     @FXML
     void desactivarCuenta(ActionEvent event) {
-        Perfil usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
+        PerfilDTO usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
         if (usuarioSeleccionado == null) {
             mostrarAlerta("Advertencia", "Debe seleccionar un usuario de la tabla", Alert.AlertType.WARNING);
             return;
@@ -224,14 +225,14 @@ public class AdministracionUsuarioController {
             mostrarAlerta("Error", "No se puede desactivar la cuenta actual", Alert.AlertType.ERROR);
             return;
         } else {
-            ((Administrador) administrador).desactivarCuenta(usuarioSeleccionado);
+            administrador.desactivarCuenta(usuarioSeleccionado);
             actualizarTablaUsuarios();
         }
     }
 
     @FXML
     void eliminarCuenta(ActionEvent event) {
-        Perfil usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
+        PerfilDTO usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
         if (usuarioSeleccionado == null) {
             mostrarAlerta("Advertencia", "Debe seleccionar un usuario de la tabla", Alert.AlertType.WARNING);
             return;
@@ -240,7 +241,7 @@ public class AdministracionUsuarioController {
             mostrarAlerta("Error", "No se puede eliminar la cuenta actual", Alert.AlertType.ERROR);
             return;
         } else {
-            ((Administrador) administrador).eliminarCuenta(usuarioSeleccionado);
+            administrador.eliminarCuenta(usuarioSeleccionado);
             actualizarTablaUsuarios();
         }
     }
@@ -254,7 +255,7 @@ public class AdministracionUsuarioController {
 
     @FXML
     void actualizarRol(ActionEvent event) {
-        Perfil usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
+        PerfilDTO usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
         if (usuarioSeleccionado == null) {
             mostrarAlerta("Advertencia", "Debe seleccionar un usuario de la tabla", Alert.AlertType.WARNING);
             return;
@@ -263,14 +264,14 @@ public class AdministracionUsuarioController {
             mostrarAlerta("Error", "No se puede cambiar el rol de la cuenta actual", Alert.AlertType.ERROR);
             return;
         } else {
-            ((Administrador) administrador).cambiarTipoUsuario(usuarioSeleccionado, cmbRol.getValue());
+          administrador.cambiarTipoUsuario(usuarioSeleccionado, cmbRol.getValue());
             actualizarTablaUsuarios();
         }
     }
 
     @FXML
     void cerrarSesion(ActionEvent event) {
-
+        Sesion.cerrarSesion();
         // Cerrar la ventana de registro y abrir de nuevo la ventana de login
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(

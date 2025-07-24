@@ -17,7 +17,7 @@ import java.util.Date;
  * @version 1.0
  * @since 1.0
  */
-public class Perfil {
+public class PerfilDTO {
     /** Nombre del usuario */
     private String nombre;
     
@@ -46,7 +46,7 @@ public class Perfil {
      * Constructor por defecto de Perfil.
      * Crea una instancia vacía de Perfil sin inicializar ningún campo.
      */
-    public Perfil() {}
+    public PerfilDTO() {}
 
     /**
      * Constructor completo de Perfil con todos los parámetros.
@@ -66,7 +66,7 @@ public class Perfil {
      * 
      * @throws IllegalArgumentException Si algún parámetro requerido es null
      */
-    public Perfil(String nombre, String apellido, String correo, String contrasenia, TipoUsuario tipoUsuario, Date fechaRegistro, String foto , String estadoCuenta) {
+    public PerfilDTO(String nombre, String apellido, String correo, String contrasenia, TipoUsuario tipoUsuario, Date fechaRegistro, String foto , String estadoCuenta) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
