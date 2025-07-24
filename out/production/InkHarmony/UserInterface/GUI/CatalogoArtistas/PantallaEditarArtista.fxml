@@ -42,8 +42,12 @@
                     <font><Font size="20.0" /></font>
                 </TextArea>
 
-                <MenuButton fx:id="generoMenuButton" layoutX="43.0" layoutY="410.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="198.0" style="-fx-background-color: #575a81; -fx-background-radius: 20;" text="Selecciona" textFill="WHITE">
-                    <font><Font size="20.0" /></font>
+                <MenuButton fx:id="generoMenuButton" layoutX="43.0" layoutY="410.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="198.0" style="-fx-background-color: #575a81; -fx-background-radius: 20;" text="Selecciona" textFill="#ddc5c5">
+                    <items>
+                    </items>
+                    <font>
+                        <Font size="20.0" />
+                    </font>
                 </MenuButton>
             </children>
         </AnchorPane>

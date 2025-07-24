@@ -52,6 +52,7 @@ public class EditarArtistasController implements Initializable{
             }
         }
         actualizarTextoGeneroButton();
+        actualizarTextoMenuButton();
     }
 
     public void actualizarArtista(ActionEvent actionEvent) {
@@ -66,14 +67,14 @@ public class EditarArtistasController implements Initializable{
                 }
             }
             if (nombre.trim().isEmpty() || generosSeleccionados.isEmpty()) {
-                mostrarAlerta(Alert.AlertType.WARNING, "Datos incompletos", "El nombre y al menos un género son obligatorios.");
+                mostrarAlerta("El nombre y al menos un género son obligatorios.");
                 return;
             }
 
             List<ArtistaDTO> existentes = artistaNuevo.buscarTodo();
             for (ArtistaDTO a : existentes) {
                 if (a.getNombre().equalsIgnoreCase(nombre) && a.getId() != artista.getId()) {
-                    mostrarAlerta(Alert.AlertType.WARNING, "Nombre duplicado", "Ya existe otro artista con ese nombre.");
+                    mostrarAlerta("El nombre y al menos un género son obligatorios.");
                     return;
                 }
             }
@@ -83,24 +84,47 @@ public class EditarArtistasController implements Initializable{
             artista.setGeneros(generosSeleccionados);
             boolean exito = artistaNuevo.actualizar(artista);
             if (exito) {
-                mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "El artista se ha actualizado correctamente.");
-                // 5. Cerrar la ventana
+                mostrarExito("El artista se ha actualizado correctamente.");
                 cerrarVentana(null);
             } else {
-                mostrarAlerta(Alert.AlertType.ERROR, "Error", "No se pudo actualizar el artista.");
+                mostrarAlerta("No se pudo actualizar el artista.");
             }
 
         } catch (Exception e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error de Sistema", "Ocurrió un error inesperado: " + e.getMessage());
+            mostrarAlerta("Ocurrió un error inesperado: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private void mostrarExito(String mensaje) {
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+        alerta.setTitle("Éxito");
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         for (Genero g: Genero.values()){
             CheckMenuItem menuItem = new CheckMenuItem(g.toString());
+            menuItem.setOnAction(e ->{
+                actualizarTextoMenuButton();
+            } );
             generoMenuButton.getItems().add(menuItem);
+        }
+    }
+
+    private void actualizarTextoMenuButton() {
+        String texto = generoMenuButton.getItems().stream()
+                .filter(item -> item instanceof CheckMenuItem && ((CheckMenuItem) item).isSelected())
+                .map(MenuItem::getText)
+                .collect(Collectors.joining(", "));
+
+        if (texto.isEmpty()) {
+            generoMenuButton.setText("Selecciona");
+        } else {
+            generoMenuButton.setText(texto);
         }
     }
 
@@ -120,11 +144,11 @@ public class EditarArtistasController implements Initializable{
             generoMenuButton.setText(texto);
         }
     }
-    private void mostrarAlerta(Alert.AlertType tipo, String titulo, String mensaje) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+    private void mostrarAlerta(String mensaje) {
+        Alert alerta = new Alert(Alert.AlertType.WARNING);
+        alerta.setTitle("Advertencia");
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
     }
 }
