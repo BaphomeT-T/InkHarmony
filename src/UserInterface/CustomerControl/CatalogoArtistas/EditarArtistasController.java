@@ -9,16 +9,21 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class EditarArtistasController implements Initializable{
+    private File nuevaImagenSeleccionada = null;
     private ArtistaDTO artista;
     private Artista artistaNuevo = new Artista();
     @FXML
@@ -31,10 +36,10 @@ public class EditarArtistasController implements Initializable{
     @FXML private Button actualizarButton;
     @FXML private Button cerrarButton;
 
-    public void editarArtista(ActionEvent actionEvent) {
-    }
-
-    // Temporal (se creo para conectar la pantalla)
+    /**
+     *
+     * @param artista
+     */
     public void setArtista(ArtistaDTO artista) {
         this.artista = artista;
         txtNombre.setText(artista.getNombre());
@@ -57,6 +62,10 @@ public class EditarArtistasController implements Initializable{
 
     public void actualizarArtista(ActionEvent actionEvent) {
         try {
+            if (nuevaImagenSeleccionada != null) {
+                byte[] imagenBytes = Files.readAllBytes(nuevaImagenSeleccionada.toPath());
+                artista.setImagen(imagenBytes);
+            }
             String nombre = txtNombre.getText();
             String biografia = txtBiografia.getText();
 
@@ -96,6 +105,10 @@ public class EditarArtistasController implements Initializable{
         }
     }
 
+    /**
+     *
+     * @param mensaje
+     */
     private void mostrarExito(String mensaje) {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setTitle("Éxito");
@@ -115,6 +128,9 @@ public class EditarArtistasController implements Initializable{
         }
     }
 
+    /**
+     *
+     */
     private void actualizarTextoMenuButton() {
         String texto = generoMenuButton.getItems().stream()
                 .filter(item -> item instanceof CheckMenuItem && ((CheckMenuItem) item).isSelected())
@@ -128,10 +144,18 @@ public class EditarArtistasController implements Initializable{
         }
     }
 
+    /**
+     *
+     * @param actionEvent
+     */
     public void cerrarVentana(ActionEvent actionEvent) {
         Stage stage = (Stage) cerrarButton.getScene().getWindow();
         stage.close();
     }
+
+    /**
+     *
+     */
     private void actualizarTextoGeneroButton() {
         String texto = generoMenuButton.getItems().stream()
                 .filter(item -> item instanceof CheckMenuItem && ((CheckMenuItem) item).isSelected())
@@ -144,11 +168,44 @@ public class EditarArtistasController implements Initializable{
             generoMenuButton.setText(texto);
         }
     }
+
+    /**
+     *
+     * @param mensaje
+     */
     private void mostrarAlerta(String mensaje) {
         Alert alerta = new Alert(Alert.AlertType.WARNING);
         alerta.setTitle("Advertencia");
         alerta.setHeaderText(null);
         alerta.setContentText(mensaje);
         alerta.showAndWait();
+    }
+
+    public void seleccionarImagen(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccionar imagen del artista");
+
+        // Permitir PNG, JPG y JPEG en un solo filtro
+        FileChooser.ExtensionFilter extFilterImagenes = new FileChooser.ExtensionFilter(
+                "Imágenes (*.png, *.jpg, *.jpeg)", "*.png", "*.jpg", "*.jpeg"
+        );
+        fileChooser.getExtensionFilters().add(extFilterImagenes);
+
+        File archivoSeleccionado = fileChooser.showOpenDialog(null);
+        if (archivoSeleccionado != null) {
+            try {
+                Image imagen = new Image(archivoSeleccionado.toURI().toString());
+
+                if (imagen.getWidth() == 264 && imagen.getHeight() == 264) {
+                    artistaImageView.setImage(imagen);
+                    this.nuevaImagenSeleccionada = archivoSeleccionado;
+                    System.out.println("Imagen cargada correctamente: " + archivoSeleccionado.getAbsolutePath());
+                } else {
+                    mostrarAlerta("La imagen debe tener exactamente 264x264 píxeles.");
+                }
+            } catch (Exception e) {
+                mostrarAlerta("Error al cargar la imagen.");
+            }
+        }
     }
 }
