@@ -37,6 +37,8 @@ public class EliminarArtistasController {
     private final ServicioValidacion servicioValidacion = new ServicioValidacion();
     private final ArtistaDAO artistaDAO = new ArtistaDAO();
 
+    private CatalogoArtistasController catalogoController;
+
     public void setArtista(ArtistaDTO artista) {
         this.artista = artista;
         mostrarInformacionArtista();
@@ -106,6 +108,9 @@ public class EliminarArtistasController {
                     boolean eliminado = artistaDAO.eliminar(artista.getId());
                     if (eliminado) {
                         mostrarAlerta("El artista fue eliminado correctamente.");
+                        if (catalogoController != null) {
+                            catalogoController.actualizarTabla(); // 🔁 Actualizar catálogo
+                        }
                         cerrarVentana();
                     } else {
                         mostrarAlerta("No se pudo eliminar el artista. Intente de nuevo.");
@@ -150,4 +155,9 @@ public class EliminarArtistasController {
         alerta.setContentText(mensaje);
         alerta.showAndWait();
     }
+
+    public void setCatalogoController(CatalogoArtistasController controller) {
+        this.catalogoController = controller;
+    }
+
 }

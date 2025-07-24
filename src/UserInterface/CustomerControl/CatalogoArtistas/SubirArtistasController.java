@@ -56,6 +56,7 @@ public class SubirArtistasController {
     @FXML
     private Label seleccionarLabel;
 
+    private CatalogoArtistasController catalogoController;
     private List<Genero> generosSeleccionados;
 
     public SubirArtistasController() {
@@ -103,6 +104,9 @@ public class SubirArtistasController {
             if (exito) {
                 mostrarExito("Artista registrado con éxito.");
                 limpiarCampos();
+                if (catalogoController != null) {
+                    catalogoController.actualizarTabla(); // 🔁 Recargar la tabla del catálogo
+                }
                 cerrarVentana(null);
             } else {
                 mostrarAlerta("No se pudo registrar el artista.");
@@ -243,6 +247,8 @@ public class SubirArtistasController {
         return resultado.toString().trim();
     }
 
-
+    public void setCatalogoController(CatalogoArtistasController controller) {
+        this.catalogoController = controller;
+    }
 
 }
