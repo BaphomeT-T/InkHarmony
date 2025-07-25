@@ -1,3 +1,4 @@
+-- database: ../database/InkHarmony.sqlite
 -- Borrar tablas en orden seguro
 DROP TABLE IF EXISTS Reproduccion;
 DROP TABLE IF EXISTS Playlist_Cancion;
@@ -17,9 +18,12 @@ CREATE TABLE Usuario (
                          nombre_usuario VARCHAR(20) NOT NULL,
                          apellido_usuario VARCHAR(20),
                          correo VARCHAR(20) UNIQUE NOT NULL,
-                         contraseña VARCHAR(20) NOT NULL,
+                         contraseña VARCHAR(255) NOT NULL,
                          fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                         tipo_usuario BOOLEAN NOT NULL DEFAULT 0
+                         id_foto_Perfil VARCHAR(20) NOT NULL,
+                         estado_cuenta VARCHAR(20) NOT NULL,
+                         preferencias_musicales JSON,
+                         tipo_usuario VARCHAR(20) NOT NULL
 );
 
 -- Tabla Genero
@@ -53,7 +57,7 @@ CREATE TABLE Cancion (
                          titulo VARCHAR(20) NOT NULL,
                          archivo_mp3 BLOB,
                          duracion REAL,
-                         fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                         fecha_registro DATETIME NOT NULL ,
                          portada BLOB
 );
 
