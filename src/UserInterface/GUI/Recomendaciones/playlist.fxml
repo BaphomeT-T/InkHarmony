@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 
-<AnchorPane prefHeight="500" prefWidth="700" style="-fx-background-color: #0A0E27;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.RecomendacionesControl.PlaylistController">
+<AnchorPane prefHeight="500" prefWidth="700" style="-fx-background-color: #0A0E27;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.Recomendaciones.PlaylistController">
 
    <children>
 
