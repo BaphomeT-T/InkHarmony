@@ -1,4 +1,4 @@
-package UserInterface.CustomerControl.RecomendacionesControl;
+package UserInterface.CustomerControl.Recomendaciones;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
