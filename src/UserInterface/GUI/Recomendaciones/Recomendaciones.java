@@ -11,7 +11,7 @@ public class Recomendaciones extends Application {
     public void start(Stage primaryStage) throws Exception {
         // Cargar el FXML
         Parent root = FXMLLoader.load(getClass().getResource(
-                "/UserInterface/GUI/RecomendacionesUI/recomendaciones.fxml"));
+                "/UserInterface/GUI/Recomendaciones/recomendaciones.fxml"));
 
         Scene scene = new Scene(root);
         primaryStage.setTitle("Administración de Usuarios");

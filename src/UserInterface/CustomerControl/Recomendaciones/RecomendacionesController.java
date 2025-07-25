@@ -27,7 +27,7 @@ public class RecomendacionesController {
 
     private void cargarVista(String fxml) {
         try {
-            AnchorPane vista = FXMLLoader.load(getClass().getResource("/UserInterface/GUI/RecomendacionesUI/" + fxml));
+            AnchorPane vista = FXMLLoader.load(getClass().getResource("/UserInterface/GUI/Recomendaciones/" + fxml));
 
             contentPane.getChildren().setAll(vista);
         } catch (IOException e) {
