@@ -153,5 +153,15 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
             return false; // En caso de error, se asume que el nombre no es único
         }
     }
+    public boolean esTituloCancionUnico(String titulo) {
+        // Verifica si ya existe una canción con este título
+        return !cancionDAO.existeCancionConTitulo(titulo);
+    }
+    // Necesitarás inyectar o acceder a tu DAO de playlists
+    private final PlaylistDAO playlistDAO = new PlaylistDAO();
 
+    public boolean tieneElementosAsociados(CancionDTO cancion) {
+        // Verificar si la canción está en alguna playlist
+        return playlistDAO.existeCancionEnPlaylists(cancion.getIdCancion());
+    }
 }

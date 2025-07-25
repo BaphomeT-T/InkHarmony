@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 // Clase principal del controlador del catálogo de canciones
 public class CatalogoCancionesController {
 
@@ -107,7 +108,7 @@ public class CatalogoCancionesController {
     private void configurarTabla() {
         // Columna de géneros (pueden ser varios)
         colGenero.setCellValueFactory(cellData -> {
-            List<Genero> generos = cellData.getValue().getGenero();
+            List<Genero> generos = cellData.getValue().getGeneros();
             String texto = generos.stream().map(Enum::name).collect(Collectors.joining(", "));
             return SimpleStringProperty.stringExpression(
                     Bindings.createStringBinding(() -> texto));

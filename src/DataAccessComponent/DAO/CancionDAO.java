@@ -340,4 +340,23 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
         }
         return lista;
     }
+    public boolean existeCancionConTitulo(String titulo) {
+        String sql = "SELECT COUNT(*) FROM Cancion WHERE Titulo = ? AND Estado = 'A'";
+
+        try (Connection conn = openConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, titulo);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            return false;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

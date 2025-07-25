@@ -11,7 +11,6 @@ package BusinessLogic;
 
 import DataAccessComponent.DAO.CancionDAO;
 import DataAccessComponent.DTO.CancionDTO;
-import DataAccessComponent.DTO.ArtistaDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -82,9 +81,9 @@ public class Cancion {
      * @return true si el registro fue exitoso.
      * @throws Exception si ocurre algún error en el DAO.
      */
-    public boolean registrar(String titulo, int anio,
-                             byte[] archivoMP3, byte[] portada,
-                             List<ArtistaDTO> artistas, List<Genero> generos) throws Exception {
+    public boolean registrar(String titulo, String anio,
+                             String archivoMP3, List<Genero> portada,
+                             String artistas, byte[] generos) throws Exception {
 
         LocalDateTime fechaRegistro = LocalDateTime.now();
         double duracion = obtenerDuracionDesdeMP3(archivoMP3);

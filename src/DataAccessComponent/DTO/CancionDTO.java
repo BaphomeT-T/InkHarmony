@@ -102,7 +102,7 @@ public class CancionDTO {
         this.titulo = titulo;
     }
 
-    public double getDuracion() {
+    public String getDuracion() {
         return duracion;
     }
 
@@ -142,7 +142,7 @@ public class CancionDTO {
         this.portada = portada;
     }
 
-    public List<ArtistaDTO> getArtistas() {
+    public String getArtistas() {
         return artistas;
     }
 
