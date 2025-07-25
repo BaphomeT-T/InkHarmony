@@ -1,4 +1,4 @@
-package UserInterface.CustomerControl.RecomendacionesControl;
+package UserInterface.CustomerControl.Recomendaciones;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
