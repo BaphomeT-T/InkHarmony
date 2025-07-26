@@ -14,6 +14,8 @@ public class RecomendacionesController {
     @FXML private Button btnPersonalizadas;
     @FXML private Button btnEstrenos;
 
+    @FXML private Button btnVolver;
+
     @FXML private StackPane contentPane;
 
     @FXML
