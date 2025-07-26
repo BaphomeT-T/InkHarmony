@@ -8,6 +8,10 @@ import java.util.List;
 public class ServicioRecomendaciones {
     private final CancionDAO cancionDAO;
 
+    public ServicioRecomendaciones() {
+        this(new CancionDAO());
+    }
+    
     public ServicioRecomendaciones(CancionDAO cancionDAO) {
         this.cancionDAO = cancionDAO;
     }
