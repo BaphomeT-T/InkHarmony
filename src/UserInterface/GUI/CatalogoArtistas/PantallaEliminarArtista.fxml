@@ -54,8 +54,12 @@
             <font><Font size="80.0" /></font>
         </Label>
 
-        <Button fx:id="cerrarButton" layoutX="3.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="83.0" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-weight: normal;" textFill="WHITE">
-            <font><Font size="40.0" /></font>
+        <Button fx:id="cerrarButton" layoutX="14.0" layoutY="14.0"
+                mnemonicParsing="false" onAction="#cerrarVentana"
+                style="-fx-background-color: transparent; -fx-cursor: hand;"
+                text="✕" textFill="WHITE">
+            <font><Font name="System Bold" size="28.0" /></font>
         </Button>
+
     </children>
 </AnchorPane>
