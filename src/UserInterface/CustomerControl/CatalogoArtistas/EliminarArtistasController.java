@@ -100,28 +100,51 @@ public class EliminarArtistasController {
      */
     @FXML
     void eliminarArtista(ActionEvent event) {
-        if (artista != null) {
-            if (servicioValidacion.tieneElementosAsociados(artista)) {
-                mostrarAlerta("No se puede eliminar: el artista tiene elementos asociados (canciones o playlists).");
-            } else {
-                try {
-                    boolean eliminado = artistaDAO.eliminar(artista.getId());
-                    if (eliminado) {
-                        mostrarAlerta("El artista fue eliminado correctamente.");
-                        if (catalogoController != null) {
-                            catalogoController.actualizarTabla(); // 🔁 Actualizar catálogo
-                        }
-                        cerrarVentana();
+        try {
+            if (artista == null) return;
+            // Cuadro de confirmación sin ícono
+            Alert confirmacion = new Alert(Alert.AlertType.NONE);
+            confirmacion.getDialogPane().setPrefWidth(435);
+            confirmacion.getDialogPane().setPrefHeight(100);
+
+            confirmacion.setTitle("Confirmar eliminación");
+            confirmacion.setContentText("¿Está seguro de que desea eliminar al artista?");
+
+            ButtonType botonSi = new ButtonType("Sí", ButtonBar.ButtonData.OK_DONE);
+            ButtonType botonNo = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+            confirmacion.getButtonTypes().setAll(botonSi, botonNo);
+            confirmacion.showAndWait().ifPresent(respuesta -> {
+                if (respuesta == botonSi) {
+                    if (servicioValidacion.tieneElementosAsociados(artista)) {
+                        mostrarAlerta("No se puede eliminar: el artista tiene elementos asociados (canciones o playlists).");
                     } else {
-                        mostrarAlerta("No se pudo eliminar el artista. Intente de nuevo.");
+                        try {
+                            boolean eliminado = artistaDAO.eliminar(artista.getId());
+                            if (eliminado) {
+                                mostrarAlerta("El artista fue eliminado correctamente.");
+                                if (catalogoController != null) {
+                                    catalogoController.actualizarTabla(); // Actualizar catálogo
+                                }
+                                cerrarVentana();
+                            } else {
+                                mostrarAlerta("No se pudo eliminar el artista. Intente de nuevo.");
+                            }
+                        } catch (Exception e) {
+                            mostrarAlerta("Error al eliminar el artista: " + e.getMessage());
+                            e.printStackTrace();
+                        }
                     }
-                } catch (Exception e) {
-                    mostrarAlerta("Error al eliminar el artista: " + e.getMessage());
-                    e.printStackTrace();
+                } else {
+                    System.out.println("Eliminación cancelada por el usuario.");
                 }
-            }
+            });
+        } catch (Exception ex) {
+            mostrarAlerta("Ocurrió un error inesperado: " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
+
+
 
     /**
      * Inicializa los componentes de la interfaz deshabilitando campos no editables.
