@@ -1,8 +1,7 @@
 package UserInterface.CustomerControl.CatalogoArtistas;
 import BusinessLogic.Artista;
 import BusinessLogic.Genero;
-import DataAccessComponent.DAO.ArtistaDAO;
-import BusinessLogic.ServicioValidacion;
+import BusinessLogic.ServicioValidacionArtista;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -90,7 +89,7 @@ public class SubirArtistasController {
         }
 
         // Validación usando ServicioValidacion
-        ServicioValidacion validador = new ServicioValidacion();
+        ServicioValidacionArtista validador = new ServicioValidacionArtista();
         if (!validador.esNombreUnico(nombre)) {
             mostrarAlerta("El nombre del artista ya existe.");
             return;
@@ -198,8 +197,8 @@ public class SubirArtistasController {
         // Validación del nombre único mientras se esta escribiendo
         nombreTextField.textProperty().addListener((obs, oldText, newText) -> {
             if (newText != null && !newText.trim().isEmpty()) {
-                ServicioValidacion servicioValidacion = new ServicioValidacion();
-                boolean esUnico = servicioValidacion.esNombreUnico(newText);
+                ServicioValidacionArtista servicioValidacionArtista = new ServicioValidacionArtista();
+                boolean esUnico = servicioValidacionArtista.esNombreUnico(newText);
                 if (!esUnico) {
                     mensajeNombreLabel.setText("El nombre del artista ya está en uso");
                     mensajeNombreLabel.setStyle("-fx-text-fill: red;");

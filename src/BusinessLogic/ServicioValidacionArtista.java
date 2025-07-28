@@ -11,7 +11,7 @@ import java.util.List;
  *
  * No accede directamente a la base de datos, sino a través del DAO.
  */
-public class ServicioValidacion implements UnicoNombreValidable, AsociacionValidable {
+public class ServicioValidacionArtista implements UnicoNombreValidable, AsociacionValidable {
 
     private ArtistaDAO artistaDAO = new ArtistaDAO();
 

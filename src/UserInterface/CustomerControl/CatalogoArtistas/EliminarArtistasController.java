@@ -2,7 +2,7 @@ package UserInterface.CustomerControl.CatalogoArtistas;
 
 import DataAccessComponent.DTO.ArtistaDTO;
 import DataAccessComponent.DAO.ArtistaDAO;
-import BusinessLogic.ServicioValidacion;
+import BusinessLogic.ServicioValidacionArtista;
 import BusinessLogic.Genero;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -34,7 +34,7 @@ public class EliminarArtistasController {
     private Button cerrarButton;
 
     private ArtistaDTO artista;
-    private final ServicioValidacion servicioValidacion = new ServicioValidacion();
+    private final ServicioValidacionArtista servicioValidacionArtista = new ServicioValidacionArtista();
     private final ArtistaDAO artistaDAO = new ArtistaDAO();
 
     private CatalogoArtistasController catalogoController;
@@ -115,7 +115,7 @@ public class EliminarArtistasController {
             confirmacion.getButtonTypes().setAll(botonSi, botonNo);
             confirmacion.showAndWait().ifPresent(respuesta -> {
                 if (respuesta == botonSi) {
-                    if (servicioValidacion.tieneElementosAsociados(artista)) {
+                    if (servicioValidacionArtista.tieneElementosAsociados(artista)) {
                         mostrarAlerta("No se puede eliminar: el artista tiene elementos asociados (canciones o playlists).");
                     } else {
                         try {
