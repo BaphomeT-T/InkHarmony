@@ -185,7 +185,7 @@ public class SubirCancionesController {
                 if (imagen.getWidth() == 264.0 && imagen.getHeight() == 264.0) {
                     this.caratulaImageView.setImage(imagen);
                                     System.out.println("Caratula cargada correctamente: " +
-                        archivoSeleccionado.getAbsolutePath());
+                            archivoSeleccionado.getAbsolutePath());
                 } else {
                     this.mostrarAlerta("La carátula debe tener exactamente 264x264 píxeles.");
                 }

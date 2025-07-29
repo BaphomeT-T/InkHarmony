@@ -34,6 +34,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.lang.Thread;
 
 /**
  * Clase CatalogoCancionesController que gestiona la interfaz gráfica del catálogo de canciones.
@@ -267,8 +268,8 @@ public class CatalogoCancionesController {
         btnEditar.setFocusTraversable(false);
         btnEliminar.setFocusTraversable(false);
         
-        System.out.println("Botones configurados - deshabilitados hasta seleccionar canción");
-        System.out.println("Color de ambos botones: #9190C2 (violeta claro)");
+        System.out.println("Botones configurados - Editar y Eliminar deshabilitados hasta seleccionar canción");
+        System.out.println("Color de los botones: #9190C2 (violeta claro)");
     }
 
     /**
@@ -320,6 +321,7 @@ public class CatalogoCancionesController {
      */
     public void refrescarTabla() {
         System.out.println("=== REFRESCANDO TABLA DE CANCIONES ===");
+        System.out.println("Ejecutando en hilo de JavaFX...");
         
         // Asegurar que se ejecute en el hilo de la interfaz de usuario
         javafx.application.Platform.runLater(() -> {
@@ -330,10 +332,27 @@ public class CatalogoCancionesController {
                 
                 // Forzar la actualización visual de la tabla
                 tableCanciones.refresh();
+                System.out.println("Actualización visual de la tabla completada");
+                System.out.println("Total de canciones en la tabla: " + (listaObservable != null ? listaObservable.size() : "null"));
                 
             } catch (Exception e) {
                 System.out.println("Error al refrescar tabla: " + e.getMessage());
                 e.printStackTrace();
+                
+                // Intentar reconectar si es un error de conexión
+                if (e.getMessage().contains("database connection closed") || 
+                    e.getMessage().contains("connection")) {
+                    System.out.println("Intentando reconectar a la base de datos...");
+                    try {
+                        // Forzar una nueva conexión
+                        Thread.sleep(1000); // Esperar un segundo
+                        cargarCanciones();
+                        tableCanciones.refresh();
+                        System.out.println("Reconexión exitosa");
+                    } catch (Exception reconnectError) {
+                        System.out.println("Error en reconexión: " + reconnectError.getMessage());
+                    }
+                }
             }
         });
     }
@@ -383,6 +402,8 @@ public class CatalogoCancionesController {
             System.out.println("No hay canción seleccionada para eliminar");
         }
     }
+    
+
     
 
 

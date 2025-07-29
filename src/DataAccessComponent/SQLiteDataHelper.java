@@ -66,10 +66,21 @@ public abstract class SQLiteDataHelper {
      */
     protected static synchronized Connection openConnection() throws Exception {
         try {
-            if (conn == null)
+            // Verificar si la conexión existe y está cerrada
+            if (conn == null || conn.isClosed()) {
                 conn = DriverManager.getConnection(DBPathConnection);
+                System.out.println("Nueva conexión a la base de datos establecida");
+            }
         } catch (SQLException e) {
-            throw e;
+            System.out.println("Error al abrir conexión: " + e.getMessage());
+            // Si hay error, intentar crear una nueva conexión
+            try {
+                conn = DriverManager.getConnection(DBPathConnection);
+                System.out.println("Conexión recreada después del error");
+            } catch (SQLException e2) {
+                System.out.println("Error al recrear conexión: " + e2.getMessage());
+                throw e2;
+            }
         }
         return conn;
     }
@@ -89,9 +100,14 @@ public abstract class SQLiteDataHelper {
      */
     protected static void closeConnection() throws Exception {
         try {
-            if (conn != null)
+            if (conn != null && !conn.isClosed()) {
                 conn.close();
+                System.out.println("Conexión a la base de datos cerrada");
+            }
+            conn = null; // Establecer en null para permitir nueva conexión
         } catch (SQLException e) {
+            System.out.println("Error al cerrar conexión: " + e.getMessage());
+            conn = null; // Establecer en null incluso si hay error
             throw e;
         }
     }

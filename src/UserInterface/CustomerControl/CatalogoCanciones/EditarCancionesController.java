@@ -20,10 +20,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
+import BusinessLogic.Genero;
+import java.util.List;
 
 /**
  * Controlador de la vista de edición de canciones.
@@ -43,6 +48,9 @@ public class EditarCancionesController {
 
     @FXML
     private TextField nombreTextField1;
+    
+    @FXML
+    private MenuButton generoMenuButton;
 
     /**
      * Método invocado al hacer clic en el botón "Editar".
@@ -81,16 +89,26 @@ public class EditarCancionesController {
         }
         
         try {
+            // Obtener los géneros seleccionados del MenuButton
+            List<Genero> generosSeleccionados = generoMenuButton.getItems().stream()
+                    .filter(item -> item instanceof CheckMenuItem && ((CheckMenuItem)item).isSelected())
+                    .map(item -> (Genero)item.getUserData())
+                    .toList();
+            
+            // Validar que al menos un género esté seleccionado
+            if (generosSeleccionados.isEmpty()) {
+                mostrarAlerta("Debes seleccionar al menos un género musical.");
+                return;
+            }
+            
             // Actualizar el objeto canción con los nuevos valores
             cancion.setTitulo(nuevoTitulo);
             cancion.setAnio(anio);
+            cancion.setGeneros(new ArrayList<>(generosSeleccionados));
             
-            // Asegurar que los artistas y géneros no sean null para evitar errores en el DAO
+            // Asegurar que los artistas no sean null para evitar errores en el DAO
             if (cancion.getArtistas() == null) {
                 cancion.setArtistas(new ArrayList<>());
-            }
-            if (cancion.getGeneros() == null) {
-                cancion.setGeneros(new ArrayList<>());
             }
             
             // Guardar los cambios en la base de datos
@@ -133,7 +151,7 @@ public class EditarCancionesController {
         alerta.setContentText(mensaje);
         alerta.showAndWait();
     }
-    
+
     /**
      * Muestra una alerta de éxito con el mensaje especificado.
      */
@@ -163,7 +181,72 @@ public class EditarCancionesController {
         nombreTextField.setText(cancion.getTitulo());
         nombreTextField1.setText(String.valueOf(cancion.getAnio())); // Campo para año
         
+        // Configurar géneros en el MenuButton
+        configurarGeneros();
+        
         System.out.println("Cargando canción para editar: " + cancion.getTitulo());
+    }
+    
+    /**
+     * Configura los géneros musicales en el MenuButton y marca los seleccionados.
+     */
+    private void configurarGeneros() {
+        // Limpiar items existentes
+        generoMenuButton.getItems().clear();
+        
+        // Configurar todos los géneros disponibles
+        for (Genero genero : Genero.values()) {
+            CheckMenuItem item = new CheckMenuItem(formatearGenero(genero));
+            item.setUserData(genero);
+            
+            // Marcar como seleccionado si la canción ya tiene este género
+            if (cancion.getGeneros() != null && cancion.getGeneros().contains(genero)) {
+                item.setSelected(true);
+            }
+            
+            // Agregar listener para actualizar el texto del botón
+            item.setOnAction(e -> {
+                e.consume();
+                actualizarTextoMenuButton();
+            });
+            
+            generoMenuButton.getItems().add(item);
+        }
+        
+        // Actualizar el texto inicial del botón
+        actualizarTextoMenuButton();
+    }
+    
+    /**
+     * Actualiza el texto del MenuButton con los géneros seleccionados.
+     */
+    private void actualizarTextoMenuButton() {
+        List<String> seleccionados = generoMenuButton.getItems().stream()
+                .filter(item -> item instanceof CheckMenuItem && ((CheckMenuItem)item).isSelected())
+                .map(item -> ((CheckMenuItem)item).getText())
+                .toList();
+
+        generoMenuButton.setText(seleccionados.isEmpty() ? "Selecciona" : String.join(", ", seleccionados));
+    }
+    
+    /**
+     * Formatea el nombre del género para mostrarlo correctamente.
+     */
+    private String formatearGenero(Genero genero) {
+        String nombre = genero.name().replace('_', ' ').toLowerCase();
+        String[] palabras = nombre.split(" ");
+        StringBuilder resultado = new StringBuilder();
+
+        for (String palabra : palabras) {
+            if (!palabra.isEmpty()) {
+                // Capitalizar la primera letra de cada palabra
+                resultado.append(Character.toUpperCase(palabra.charAt(0)))
+                        .append(palabra.substring(1))
+                        .append(" ");
+            }
+        }
+
+        return resultado.toString().trim();
     }
     
     // Referencia al controlador del catálogo para actualizar la tabla

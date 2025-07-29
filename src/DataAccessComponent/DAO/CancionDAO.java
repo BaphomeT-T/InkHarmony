@@ -61,23 +61,23 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
 
                 // Inserta relaciones con artistas (solo si no es null)
                 if (cancion.getArtistas() != null) {
-                    for (ArtistaDTO artista : cancion.getArtistas()) {
-                        String insertArtista = "INSERT INTO Cancion_Artista(id_cancion, id_artista) VALUES (?, ?)";
-                        PreparedStatement psa = conn.prepareStatement(insertArtista);
-                        psa.setInt(1, idGenerado);
-                        psa.setInt(2, artista.getIdArtista());
-                        psa.executeUpdate();
+                for (ArtistaDTO artista : cancion.getArtistas()) {
+                    String insertArtista = "INSERT INTO Cancion_Artista(id_cancion, id_artista) VALUES (?, ?)";
+                    PreparedStatement psa = conn.prepareStatement(insertArtista);
+                    psa.setInt(1, idGenerado);
+                    psa.setInt(2, artista.getIdArtista());
+                    psa.executeUpdate();
                     }
                 }
 
                 // Inserta relaciones con géneros (solo si no es null)
                 if (cancion.getGeneros() != null) {
-                    for (Genero genero : cancion.getGeneros()) {
-                        String insertGenero = "INSERT INTO Cancion_Genero(id_cancion, id_genero) VALUES (?, ?)";
-                        PreparedStatement psg = conn.prepareStatement(insertGenero);
-                        psg.setInt(1, idGenerado);
-                        psg.setInt(2, genero.ordinal() + 1); // Se asume que el ID en BD coincide con el orden del enum
-                        psg.executeUpdate();
+                for (Genero genero : cancion.getGeneros()) {
+                    String insertGenero = "INSERT INTO Cancion_Genero(id_cancion, id_genero) VALUES (?, ?)";
+                    PreparedStatement psg = conn.prepareStatement(insertGenero);
+                    psg.setInt(1, idGenerado);
+                    psg.setInt(2, genero.ordinal() + 1); // Se asume que el ID en BD coincide con el orden del enum
+                    psg.executeUpdate();
                     }
                 }
             }
@@ -98,10 +98,15 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
     public List<CancionDTO> buscarTodo() throws Exception {
         List<CancionDTO> lista = new ArrayList<>();
         String query = "SELECT id_cancion, titulo, duracion, anio, fecha_registro, archivo_mp3, portada FROM Cancion";
+        
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        
         try {
-            Connection conn = openConnection();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
+            conn = openConnection();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(query);
 
             while (rs.next()) {
                 int id = rs.getInt("id_cancion");
@@ -119,9 +124,23 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
                 cancion.setIdCancion(id);
                 lista.add(cancion);
             }
+            
+            System.out.println("BuscarTodo completado exitosamente. Canciones encontradas: " + lista.size());
+            
         } catch (Exception e) {
+            System.out.println("Error en buscarTodo: " + e.getMessage());
             throw e;
+        } finally {
+            // Cerrar recursos en orden inverso
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                // No cerramos la conexión aquí para mantenerla disponible
+            } catch (SQLException e) {
+                System.out.println("Error al cerrar recursos: " + e.getMessage());
+            }
         }
+        
         return lista;
     }
 
