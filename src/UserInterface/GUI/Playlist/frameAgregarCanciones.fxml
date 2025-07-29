@@ -10,12 +10,12 @@
             <font><Font size="36.0"/></font>
         </Label>
         
-        <!-- INSTRUCCIONES -->
+        <!-- INSTRUCCIONE -->
         <Label layoutX="40.0" layoutY="80.0" text="Selecciona las canciones que quieras con el botón ⊕ y cuando estés listo, dale a Agregar canciones :)" textFill="WHITE">
             <font><Font size="14.0"/></font>
         </Label>
         
-        <!-- BARRA DE BÚSQUEDA -->
+        <!-- BARRA DE BUSQUEDA -->
         <HBox layoutX="40.0" layoutY="120.0" prefHeight="40.0" prefWidth="400.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
             <children>
                 <TextField fx:id="txtBuscarCancion" alignment="BASELINE_CENTER" prefWidth="350.0"

@@ -11,7 +11,7 @@
             fx:controller="UserInterface.CustomerControl.Playlist.CatalogoPlaylistController">
 
     <children>
-        <!-- HEADER -->
+        <!-- HEADER P-->
         <AnchorPane layoutY="-13.0" prefHeight="168.0" prefWidth="1280.0" style="-fx-background-color: #08072C;">
             <children>
                 <Label layoutX="56.0" layoutY="81.0" maxHeight="118.0" maxWidth="452.0"

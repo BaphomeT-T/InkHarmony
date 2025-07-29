@@ -1,8 +1,9 @@
 package UserInterface.CustomerControl.Playlist;
 
-import java.io.ByteArrayInputStream;
+import BusinessLogic.ElementoCancion;
+import BusinessLogic.Playlist;
+import BusinessLogic.PlaylistDAO;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.table.TableColumn;
 import javax.swing.text.TableView;
@@ -21,7 +22,7 @@ public class VistaPlaylistController {
     @FXML private TableColumn<ElementoCancion, String> colTituloCancion;
     @FXML private TableColumn<ElementoCancion, String> colArtistaCancion;
     @FXML private TableColumn<ElementoCancion, String> colFechaAgregado;
-    @FXML private TableColumn<ElementoCancion, String> colAnioCancion;
+    @FXML private TableColumn<ElementoCancion, Integer> colAnioCancion;
     @FXML private TableColumn<ElementoCancion, String> colDuracionCancion;
     @FXML private TableColumn<ElementoCancion, Void> colAccionesCancion;
     @FXML private VBox vboxPlaylistVacia;
@@ -35,6 +36,7 @@ public class VistaPlaylistController {
         this.playlist = playlist;
         cargarInformacionPlaylist();
         cargarCancionesPlaylist();
+        actualizarVistaPlaylistVacia();
     }
 
     @FXML
@@ -45,56 +47,30 @@ public class VistaPlaylistController {
 
     private void configurarTabla() {
         colPortadaCancion.setCellValueFactory(cellData -> {
-            ElementoCancion elemento = cellData.getValue();
-            ImageView img = new ImageView();
-            if (elemento.getCancion().getPortada() != null) {
-                try {
-                    img.setImage(new Image(new ByteArrayInputStream(elemento.getCancion().getPortada())));
-                } catch (Exception e) {
-                    img.setImage(new Image("/UserInterface/Resources/img/CatalogoCanciones/camara.png"));
-                }
-            } else {
-                img.setImage(new Image("/UserInterface/Resources/img/CatalogoCanciones/camara.png"));
-            }
-            img.setFitHeight(40);
-            img.setFitWidth(40);
+            // Placeholder para imagen de canción
+            ImageView img = new ImageView(new Image("/UserInterface/Resources/img/something.png", 40, 40, true, true));
             return new SimpleObjectProperty<>(img);
         });
-
-        colTituloCancion.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCancion().getTitulo()));
-        colArtistaCancion.setCellValueFactory(cellData -> {
-            String artistas = "";
-            if (cellData.getValue().getCancion().getArtistas() != null && !cellData.getValue().getCancion().getArtistas().isEmpty()) {
-                artistas = cellData.getValue().getCancion().getArtistas().get(0).getNombre();
-            }
-            return new SimpleStringProperty(artistas);
-        });
-        colFechaAgregado.setCellValueFactory(cellData -> {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            return new SimpleStringProperty(sdf.format(cellData.getValue().getFechaAgregado()));
-        });
-        colAnioCancion.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCancion().getAnio())));
-        colDuracionCancion.setCellValueFactory(cellData -> {
-            double duracion = cellData.getValue().getCancion().getDuracion();
-            int minutos = (int) (duracion / 60);
-            int segundos = (int) (duracion % 60);
-            return new SimpleStringProperty(String.format("%d:%02d", minutos, segundos));
-        });
-
-        // Columna de acciones (quitar canción)
+        
+        colTituloCancion.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitulo()));
+        colArtistaCancion.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getArtista()));
+        colFechaAgregado.setCellValueFactory(cellData -> new SimpleStringProperty("20/06/2025")); // Placeholder
+        colAnioCancion.setCellValueFactory(cellData -> new SimpleObjectProperty<>(2025)); // Placeholder
+        colDuracionCancion.setCellValueFactory(cellData -> new SimpleStringProperty("3:45")); // Placeholder
+        
         colAccionesCancion.setCellFactory(param -> new TableCell<>() {
             private final Button btnQuitar = new Button("Quitar");
-            private final HBox hbox = new HBox(btnQuitar);
-            
             {
-                btnQuitar.setStyle("-fx-background-color: #FF6B6B; -fx-text-fill: white; -fx-background-radius: 10;");
-                btnQuitar.setOnAction(event -> quitarCancion(getTableView().getItems().get(getIndex())));
+                btnQuitar.setOnAction(event -> {
+                    ElementoCancion elemento = getTableView().getItems().get(getIndex());
+                    quitarCancion(elemento);
+                });
             }
             
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : hbox);
+                setGraphic(empty ? null : btnQuitar);
             }
         });
     }
@@ -110,9 +86,10 @@ public class VistaPlaylistController {
             lblTituloPlaylist.setText(playlist.getTitulo());
             lblDescripcion.setText(playlist.getDescripcion());
             
-            // Cargar portada si existe
+            // Cargar imagen de portada si existe
             if (playlist.getImagenPortada() != null) {
                 // TODO: Convertir BufferedImage a ImageView
+                // Por ahora usamos imagen por defecto
             }
             
             actualizarInformacionPlaylist();
@@ -122,16 +99,8 @@ public class VistaPlaylistController {
     private void cargarCancionesPlaylist() {
         if (playlist != null) {
             List<ElementoCancion> elementos = playlist.getComponentes();
-            listaObservable = FXCollections.observableArrayList();
-            
-            for (ElementoCancion elemento : elementos) {
-                if (elemento instanceof ElementoCancion) {
-                    listaObservable.add(elemento);
-                }
-            }
-            
+            listaObservable = FXCollections.observableArrayList(elementos);
             tablaCancionesPlaylist.setItems(listaObservable);
-            actualizarVistaPlaylistVacia();
         }
     }
 
@@ -142,15 +111,16 @@ public class VistaPlaylistController {
             int horas = (int) (duracionTotal / 3600);
             int minutos = (int) ((duracionTotal % 3600) / 60);
             
-            String info = String.format("%d canciones • %dh %dm", cantidadCanciones, horas, minutos);
-            lblInfoPlaylist.setText(info);
+            lblInfoPlaylist.setText(String.format("%d canciones • %dh %dm", cantidadCanciones, horas, minutos));
         }
     }
 
     private void actualizarVistaPlaylistVacia() {
-        boolean estaVacia = listaObservable.isEmpty();
-        tablaCancionesPlaylist.setVisible(!estaVacia);
-        vboxPlaylistVacia.setVisible(estaVacia);
+        if (playlist != null) {
+            boolean playlistVacia = playlist.calcularCantidadCanciones() == 0;
+            tablaCancionesPlaylist.setVisible(!playlistVacia);
+            vboxPlaylistVacia.setVisible(playlistVacia);
+        }
     }
 
     @FXML
@@ -171,10 +141,10 @@ public class VistaPlaylistController {
             stage.setOnCloseRequest(e -> {
                 cargarCancionesPlaylist();
                 actualizarInformacionPlaylist();
+                actualizarVistaPlaylistVacia();
             });
-            
         } catch (IOException e) {
-            mostrarAlerta("Error al abrir la pantalla de agregar canciones: " + e.getMessage(), Alert.AlertType.ERROR);
+            mostrarAlerta("Error al abrir la ventana de agregar canciones: " + e.getMessage(), Alert.AlertType.ERROR);
             e.printStackTrace();
         }
     }
@@ -184,31 +154,25 @@ public class VistaPlaylistController {
             try {
                 playlist.eliminar(elemento);
                 playlistDAO.actualizarPlaylist(playlist);
-                
                 cargarCancionesPlaylist();
                 actualizarInformacionPlaylist();
-                
+                actualizarVistaPlaylistVacia();
                 mostrarAlerta("Canción removida de la playlist", Alert.AlertType.INFORMATION);
             } catch (Exception e) {
-                mostrarAlerta("Error al quitar la canción: " + e.getMessage(), Alert.AlertType.ERROR);
+                mostrarAlerta("Error al remover la canción: " + e.getMessage(), Alert.AlertType.ERROR);
                 e.printStackTrace();
             }
         }
     }
 
     private void reproducirTodas() {
-        if (listaObservable.isEmpty()) {
-            mostrarAlerta("La playlist está vacía", Alert.AlertType.WARNING);
-            return;
-        }
-        
         // TODO: Implementar reproducción de todas las canciones
-        mostrarAlerta("Reproduciendo todas las canciones...", Alert.AlertType.INFORMATION);
+        mostrarAlerta("Función de reproducción en desarrollo", Alert.AlertType.INFORMATION);
     }
 
     private void mostrarAlerta(String mensaje, Alert.AlertType tipo) {
         Alert alert = new Alert(tipo);
-        alert.setTitle("Playlist");
+        alert.setTitle("Vista de Playlist");
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();

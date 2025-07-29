@@ -1,5 +1,7 @@
 package UserInterface.CustomerControl.Playlist;
 
+import BusinessLogic.Playlist;
+import BusinessLogic.PlaylistDAO;
 import java.io.IOException;
 import java.util.List;
 import javax.swing.table.TableColumn;

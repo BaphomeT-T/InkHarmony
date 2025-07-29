@@ -1,5 +1,8 @@
 package UserInterface.CustomerControl.Playlist;
 
+import BusinessLogic.Playlist;
+import BusinessLogic.PlaylistDAO;
+
 public class EliminarPlaylistController {
     @FXML private Label lblTitulo;
     @FXML private Label lblDescripcion;

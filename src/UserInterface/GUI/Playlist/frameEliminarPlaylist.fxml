@@ -11,7 +11,7 @@
         
         <AnchorPane layoutX="40.0" layoutY="100.0" prefHeight="300.0" prefWidth="620.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 25;">
             <children>
-                <!-- ADVERTENCIA -->
+                <!-- ADVERTENCIAS -->
                 <Label layoutX="40.0" layoutY="30.0" text="⚠️ ADVERTENCIA" textFill="#FF6B6B">
                     <font><Font size="24.0" style="BOLD"/></font>
                 </Label>
