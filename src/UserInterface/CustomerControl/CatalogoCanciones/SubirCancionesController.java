@@ -27,6 +27,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 
 public class SubirCancionesController {
@@ -40,12 +41,18 @@ public class SubirCancionesController {
     @FXML private Label tituloLabel;
     @FXML private TextField tituloTextField;
     @FXML private TextField artistaTextField;
+    @FXML private TextField anioTextField;
     @FXML private TextField duracionTextField;
     @FXML private Label mensajeTituloLabel;
     @FXML private Button publicarButton;
+    @FXML private Button buscarArtistaButton;
+    @FXML private Button seleccionarArchivoButton;
     @FXML private Label seleccionarLabel;
 
     private List<Genero> generosSeleccionados = new ArrayList<>(); // Lista de géneros seleccionados
+    
+    // Referencia al controlador del catálogo para actualizar la tabla
+    private CatalogoCancionesController catalogoController;
 
     // Método para manejar la publicación de la canción
     @FXML
@@ -53,11 +60,12 @@ public class SubirCancionesController {
         // Obtener los valores de los campos
         String titulo = this.tituloTextField.getText();
         String artista = this.artistaTextField.getText();
+        String anio = this.anioTextField.getText();
         String duracion = this.duracionTextField.getText();
         String letra = this.letraTextArea.getText();
 
         // Validar que todos los campos estén completos
-        if (!titulo.isBlank() && !artista.isBlank() && !duracion.isBlank() &&
+        if (!titulo.isBlank() && !artista.isBlank() && !anio.isBlank() && !duracion.isBlank() &&
                 !letra.isBlank() && this.caratulaImageView.getImage() != null) {
 
             // Obtener los géneros seleccionados del menú
@@ -65,6 +73,12 @@ public class SubirCancionesController {
                     .filter(item -> item instanceof CheckMenuItem && ((CheckMenuItem)item).isSelected())
                     .map(item -> (Genero)item.getUserData())
                     .toList();
+
+            // Validar que al menos un género esté seleccionado
+            if (generosSeleccionados.isEmpty()) {
+                this.mostrarAlerta("Debes seleccionar al menos un género musical.");
+                return;
+            }
 
             byte[] imagenBytes = null;
 
@@ -80,7 +94,7 @@ public class SubirCancionesController {
 
             // Validar que el título sea único
             ServicioValidacionCancion validador = new ServicioValidacionCancion();
-            if (!validador.esTituloCancionUnico(titulo)) {
+            if (!validador.validarTitulo(titulo)) {
                 this.mostrarAlerta("El título de la canción ya existe.");
             } else {
                 try {
@@ -88,7 +102,7 @@ public class SubirCancionesController {
                     Cancion cancionLogic = new Cancion();
                     boolean exito = cancionLogic.registrar(
                             titulo,
-                            artista,
+                            anio,
                             duracion,
                             generosSeleccionados,
                             letra,
@@ -97,7 +111,13 @@ public class SubirCancionesController {
 
                     if (exito) {
                         this.mostrarExito("Canción subida con éxito.");
-                        this.limpiarCampos(); // Limpiar los campos después de subir
+                        
+                        // Actualizar el catálogo si existe la referencia
+                        if (this.catalogoController != null) {
+                            this.catalogoController.refrescarTabla();
+                        }
+                        
+                        this.cerrarVentana(); // Cerrar la ventana después de subir exitosamente
                     } else {
                         this.mostrarAlerta("No se pudo subir la canción.");
                     }
@@ -124,6 +144,7 @@ public class SubirCancionesController {
     private void limpiarCampos() {
         this.tituloTextField.clear();
         this.artistaTextField.clear();
+        this.anioTextField.clear();
         this.duracionTextField.clear();
         this.letraTextArea.clear();
         // Restablecer la imagen por defecto
@@ -163,8 +184,8 @@ public class SubirCancionesController {
                 // Validar las dimensiones de la imagen
                 if (imagen.getWidth() == 264.0 && imagen.getHeight() == 264.0) {
                     this.caratulaImageView.setImage(imagen);
-                    System.out.println("Carátula cargada correctamente: " +
-                            archivoSeleccionado.getAbsolutePath());
+                                    System.out.println("Caratula cargada correctamente: " +
+                        archivoSeleccionado.getAbsolutePath());
                 } else {
                     this.mostrarAlerta("La carátula debe tener exactamente 264x264 píxeles.");
                 }
@@ -181,6 +202,38 @@ public class SubirCancionesController {
         alerta.setHeaderText(null);
         alerta.setContentText(mensaje);
         alerta.showAndWait();
+    }
+
+    // Método para cerrar la ventana actual
+    @FXML
+    void cerrarVentana() {
+        Stage stage = (Stage)this.cerrarButton.getScene().getWindow();
+        stage.close();
+    }
+
+    // Método para buscar artista
+    @FXML
+    void buscarArtista(ActionEvent event) {
+        this.mostrarAlerta("Funcionalidad de búsqueda de artistas no implementada aún.");
+    }
+
+    // Método para seleccionar archivo de audio
+    @FXML
+    void seleccionarArchivo(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccionar archivo de audio");
+        // Filtro para mostrar solo archivos de audio
+        FileChooser.ExtensionFilter extFilterAudio = new FileChooser.ExtensionFilter(
+                "Archivos de audio (*.mp3, *.wav, *.flac)",
+                new String[]{"*.mp3", "*.wav", "*.flac"}
+        );
+        fileChooser.getExtensionFilters().add(extFilterAudio);
+        File archivoSeleccionado = fileChooser.showOpenDialog(null);
+
+        if (archivoSeleccionado != null) {
+            System.out.println("Archivo de audio seleccionado: " + archivoSeleccionado.getAbsolutePath());
+            this.mostrarExito("Archivo de audio seleccionado: " + archivoSeleccionado.getName());
+        }
     }
 
     // Método de inicialización del controlador
@@ -201,7 +254,7 @@ public class SubirCancionesController {
         this.tituloTextField.textProperty().addListener((obs, oldText, newText) -> {
             if (newText != null && !newText.trim().isEmpty()) {
                 ServicioValidacionCancion servicioValidacionCancion = new ServicioValidacionCancion();
-                boolean esUnico = servicioValidacionCancion.esTituloCancionUnico(newText);
+                boolean esUnico = servicioValidacionCancion.validarTitulo(newText);
                 if (!esUnico) {
                     this.mensajeTituloLabel.setText("El título de la canción ya está en uso");
                     this.mensajeTituloLabel.setStyle("-fx-text-fill: red;");
@@ -246,5 +299,15 @@ public class SubirCancionesController {
         }
 
         return resultado.toString().trim();
+    }
+    
+    /**
+     * Establece la referencia al controlador del catálogo para poder actualizar la tabla
+     * cuando se registre una nueva canción.
+     * 
+     * @param catalogoController Referencia al controlador del catálogo
+     */
+    public void setCatalogoController(CatalogoCancionesController catalogoController) {
+        this.catalogoController = catalogoController;
     }
 }

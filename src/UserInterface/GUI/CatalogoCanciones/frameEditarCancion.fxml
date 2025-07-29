@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="797.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.CatalogoCanciones.SubirCancionController">
+<AnchorPane prefHeight="797.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.CatalogoCanciones.EditarCancionesController">
     <children>
         <AnchorPane layoutX="156.0" layoutY="153.0" prefHeight="606.0" prefWidth="922.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 25;" AnchorPane.leftAnchor="156.0" AnchorPane.rightAnchor="202.0">
             <children>
@@ -29,7 +29,7 @@
                         <Font size="20.0" />
                     </font>
                 </TextField>
-                <Button fx:id="registrarButton" layoutX="302.0" layoutY="520.0" mnemonicParsing="false" onAction="#registrarCancion" prefHeight="60.0" prefWidth="345.0" style="-fx-background-color: #9190C2; -fx-background-radius: 10;" text="Editar">
+                <Button fx:id="registrarButton" layoutX="302.0" layoutY="520.0" mnemonicParsing="false" onAction="#editarCancion" prefHeight="60.0" prefWidth="345.0" style="-fx-background-color: #9190C2; -fx-background-radius: 10;" text="Editar">
                     <font>
                         <Font name="System Bold" size="26.0" />
                     </font>
@@ -39,7 +39,7 @@
                 </Button>
                 <AnchorPane layoutX="549.0" layoutY="171.0" prefHeight="264.0" prefWidth="264.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
                <children>
-                        <Button fx:id="cargarImagenButton" layoutX="35.0" layoutY="-2.0" onAction="#seleccionarImagen" opacity="0" prefHeight="232.0" prefWidth="283.0" />
+                        <Button fx:id="cargarImagenButton" layoutX="35.0" layoutY="-2.0" opacity="0" prefHeight="232.0" prefWidth="283.0" />
                </children>
                 </AnchorPane>
                 <Label fx:id="seleccionarLabel" layoutX="526.0" layoutY="102.0" opacity="0.48" prefHeight="35.0" prefWidth="366.0" text="Selecciona una imagen de la canción  (.png) (264x264)" textFill="WHITE">
@@ -97,7 +97,7 @@
                 <Font size="80.0" />
             </font>
         </Label>
-        <Button fx:id="cerrarButton" layoutX="3.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="83.0" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-weight: normal;" text="X" textFill="WHITE">
+        <Button fx:id="cerrarButton" layoutX="3.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="47.0" prefWidth="83.0" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-weight: normal;" text="X" textFill="WHITE">
             <font>
                 <Font size="40.0" />
             </font>

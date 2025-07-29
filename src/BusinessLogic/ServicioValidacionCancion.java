@@ -32,6 +32,7 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
         }
         return true;
     }
+
     public boolean validarAnio(int anio) {
         // Verifica que el año sea un valor positivo
         if (anio <= 0) {
@@ -44,6 +45,7 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
         }
         return true;
     }
+
     public boolean validarArtistas(List<ArtistaDTO> artistas) {
         // Verifica que la lista de artistas no sea nula ni vacía
         if (artistas == null || artistas.isEmpty()) {
@@ -51,6 +53,7 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
         }
         return true;
     }
+
     public boolean validarGeneros(List<Genero> generos) {
         // Verifica que la lista de géneros no sea nula ni vacía
         if (generos == null || generos.isEmpty()) {
@@ -133,7 +136,6 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
     }
 
 
-
     @Override
     public boolean esNombreUnico(String nombre) {
         try {
@@ -153,15 +155,24 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
             return false; // En caso de error, se asume que el nombre no es único
         }
     }
-    public boolean esTituloCancionUnico(String titulo) {
-        // Verifica si ya existe una canción con este título
-        return !cancionDAO.existeCancionConTitulo(titulo);
-    }
-    // Necesitarás inyectar o acceder a tu DAO de playlists
-    private final PlaylistDAO playlistDAO = new PlaylistDAO();
-
-    public boolean tieneElementosAsociados(CancionDTO cancion) {
-        // Verificar si la canción está en alguna playlist
-        return playlistDAO.existeCancionEnPlaylists(cancion.getIdCancion());
-    }
 }
+
+/*
+-------------------------------------------------------------------------------------------------------------------
+ */
+
+//    public boolean esTituloCancionUnico(String titulo) {
+//        // Verifica si ya existe una canción con este título
+//        return !cancionDAO.existeCancionConTitulo(titulo);
+//    }
+//}
+
+
+//    // Necesitarás inyectar o acceder a tu DAO de playlists
+//    private final PlaylistDAO playlistDAO = new PlaylistDAO();
+//
+//    public boolean tieneElementosAsociados(CancionDTO cancion) {
+//        // Verificar si la canción está en alguna playlist
+//        return playlistDAO.existeCancionEnPlaylists(cancion.getIdCancion());
+//   }
+//}

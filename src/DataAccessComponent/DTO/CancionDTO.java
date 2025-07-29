@@ -57,7 +57,7 @@ public class CancionDTO {
     /**
      * Constructor vacío.
      */
-    public CancionDTO() {}
+    public CancionDTO(String titulo, double duracion, String anio, LocalDateTime fechaRegistro, String archivoMP3, List<Genero> portada, String artistas, byte[] generos) {}
 
     /**
      * Constructor para crear una canción sin ID, útil para inserciones.
@@ -102,7 +102,12 @@ public class CancionDTO {
         this.titulo = titulo;
     }
 
-    public String getDuracion() {
+
+    /*
+    java: incompatible types: double cannot be converted to java.lang.String --> duracion No se puede retornar como
+    string porque duracion es double no string
+     */
+    public double getDuracion() {
         return duracion;
     }
 
@@ -141,9 +146,11 @@ public class CancionDTO {
     public void setPortada(byte[] portada) {
         this.portada = portada;
     }
-
-    public String getArtistas() {
-        return artistas;
+/*
+Artista es de tipo List<ArtistaDTO> tampoco se puede retornar como string
+ */
+    public List<ArtistaDTO> getArtistas() {
+    return artistas;
     }
 
     public void setArtistas(List<ArtistaDTO> artistas) {

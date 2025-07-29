@@ -59,22 +59,26 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
                 int idGenerado = rs.getInt(1);
                 cancion.setIdCancion(idGenerado);
 
-                // Inserta relaciones con artistas
-                for (ArtistaDTO artista : cancion.getArtistas()) {
-                    String insertArtista = "INSERT INTO Cancion_Artista(id_cancion, id_artista) VALUES (?, ?)";
-                    PreparedStatement psa = conn.prepareStatement(insertArtista);
-                    psa.setInt(1, idGenerado);
-                    psa.setInt(2, artista.getIdArtista());
-                    psa.executeUpdate();
+                // Inserta relaciones con artistas (solo si no es null)
+                if (cancion.getArtistas() != null) {
+                    for (ArtistaDTO artista : cancion.getArtistas()) {
+                        String insertArtista = "INSERT INTO Cancion_Artista(id_cancion, id_artista) VALUES (?, ?)";
+                        PreparedStatement psa = conn.prepareStatement(insertArtista);
+                        psa.setInt(1, idGenerado);
+                        psa.setInt(2, artista.getIdArtista());
+                        psa.executeUpdate();
+                    }
                 }
 
-                // Inserta relaciones con géneros (usando ordinal del enum + 1)
-                for (Genero genero : cancion.getGeneros()) {
-                    String insertGenero = "INSERT INTO Cancion_Genero(id_cancion, id_genero) VALUES (?, ?)";
-                    PreparedStatement psg = conn.prepareStatement(insertGenero);
-                    psg.setInt(1, idGenerado);
-                    psg.setInt(2, genero.ordinal() + 1); // Se asume que el ID en BD coincide con el orden del enum
-                    psg.executeUpdate();
+                // Inserta relaciones con géneros (solo si no es null)
+                if (cancion.getGeneros() != null) {
+                    for (Genero genero : cancion.getGeneros()) {
+                        String insertGenero = "INSERT INTO Cancion_Genero(id_cancion, id_genero) VALUES (?, ?)";
+                        PreparedStatement psg = conn.prepareStatement(insertGenero);
+                        psg.setInt(1, idGenerado);
+                        psg.setInt(2, genero.ordinal() + 1); // Se asume que el ID en BD coincide con el orden del enum
+                        psg.executeUpdate();
+                    }
                 }
             }
 
@@ -100,16 +104,19 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
             ResultSet rs = stmt.executeQuery(query);
 
             while (rs.next()) {
-                CancionDTO cancion = new CancionDTO();
-                cancion.setIdCancion(rs.getInt("id_cancion"));
-                cancion.setTitulo(rs.getString("titulo"));
-                cancion.setDuracion(rs.getDouble("duracion"));
-                cancion.setAnio(rs.getInt("anio"));
-                cancion.setFechaRegistro(LocalDateTime.parse(rs.getString("fecha_registro")));
-                cancion.setArchivoMP3(rs.getBytes("archivo_mp3"));
-                cancion.setPortada(rs.getBytes("portada"));
-                cancion.setArtistas(getArtistasPorCancion(cancion.getIdCancion()));
-                cancion.setGeneros(getGenerosPorCancion(cancion.getIdCancion()));
+                int id = rs.getInt("id_cancion");
+                String titulo = rs.getString("titulo");
+                double duracion = rs.getDouble("duracion");
+                int anio = rs.getInt("anio");
+                LocalDateTime fechaRegistro = LocalDateTime.parse(rs.getString("fecha_registro"));
+                byte[] archivoMP3 = rs.getBytes("archivo_mp3");
+                byte[] portada = rs.getBytes("portada");
+
+                List<ArtistaDTO> artistas = getArtistasPorCancion(id);
+                List<Genero> generos = getGenerosPorCancion(id);
+
+                CancionDTO cancion = new CancionDTO(titulo, duracion, anio, fechaRegistro, archivoMP3, portada, artistas, generos);
+                cancion.setIdCancion(id);
                 lista.add(cancion);
             }
         } catch (Exception e) {
@@ -126,7 +133,6 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
      */
     @Override
     public CancionDTO buscarPorId(Integer id) throws Exception {
-        CancionDTO cancion = new CancionDTO();
         String query = "SELECT id_cancion, titulo, duracion, anio, fecha_registro, archivo_mp3, portada FROM Cancion WHERE id_cancion = ?";
         try {
             Connection conn = openConnection();
@@ -135,21 +141,27 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                cancion.setIdCancion(rs.getInt("id_cancion"));
-                cancion.setTitulo(rs.getString("titulo"));
-                cancion.setDuracion(rs.getDouble("duracion"));
-                cancion.setAnio(rs.getInt("anio"));
-                cancion.setFechaRegistro(LocalDateTime.parse(rs.getString("fecha_registro")));
-                cancion.setArchivoMP3(rs.getBytes("archivo_mp3"));
-                cancion.setPortada(rs.getBytes("portada"));
-                cancion.setArtistas(getArtistasPorCancion(id));
-                cancion.setGeneros(getGenerosPorCancion(id));
+                String titulo = rs.getString("titulo");
+                double duracion = rs.getDouble("duracion");
+                int anio = rs.getInt("anio");
+                LocalDateTime fechaRegistro = LocalDateTime.parse(rs.getString("fecha_registro"));
+                byte[] archivoMP3 = rs.getBytes("archivo_mp3");
+                byte[] portada = rs.getBytes("portada");
+
+                List<ArtistaDTO> artistas = getArtistasPorCancion(id);
+                List<Genero> generos = getGenerosPorCancion(id);
+
+                CancionDTO cancion = new CancionDTO(titulo, duracion, anio, fechaRegistro, archivoMP3, portada, artistas, generos);
+                cancion.setIdCancion(id);
+                return cancion;
+            } else {
+                return null;
             }
         } catch (Exception e) {
             throw e;
         }
-        return cancion;
     }
+
 
     /**
      * Busca canciones por coincidencia exacta de su título.
@@ -168,16 +180,19 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                CancionDTO cancion = new CancionDTO();
-                cancion.setIdCancion(rs.getInt("id_cancion"));
-                cancion.setTitulo(rs.getString("titulo"));
-                cancion.setDuracion(rs.getDouble("duracion"));
-                cancion.setAnio(rs.getInt("anio"));
-                cancion.setFechaRegistro(LocalDateTime.parse(rs.getString("fecha_registro")));
-                cancion.setArchivoMP3(rs.getBytes("archivo_mp3"));
-                cancion.setPortada(rs.getBytes("portada"));
-                cancion.setArtistas(getArtistasPorCancion(cancion.getIdCancion()));
-                cancion.setGeneros(getGenerosPorCancion(cancion.getIdCancion()));
+                int id = rs.getInt("id_cancion");
+                String titulo = rs.getString("titulo");
+                double duracion = rs.getDouble("duracion");
+                int anio = rs.getInt("anio");
+                LocalDateTime fechaRegistro = LocalDateTime.parse(rs.getString("fecha_registro"));
+                byte[] archivoMP3 = rs.getBytes("archivo_mp3");
+                byte[] portada = rs.getBytes("portada");
+
+                List<ArtistaDTO> artistas = getArtistasPorCancion(id);
+                List<Genero> generos = getGenerosPorCancion(id);
+
+                CancionDTO cancion = new CancionDTO(titulo, duracion, anio, fechaRegistro, archivoMP3, portada, artistas, generos);
+                cancion.setIdCancion(id);
                 lista.add(cancion);
             }
 

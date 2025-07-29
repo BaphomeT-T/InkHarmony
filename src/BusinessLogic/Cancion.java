@@ -14,6 +14,7 @@ import DataAccessComponent.DTO.CancionDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.Header;
 import java.io.ByteArrayInputStream;
@@ -73,24 +74,44 @@ public class Cancion {
      * y luego lo pasa al DAO para su almacenamiento.
      *
      * @param titulo Título de la canción.
-     * @param anio Año de publicación.
-     * @param archivoMP3 Archivo de audio en formato MP3.
-     * @param portada Imagen de portada.
-     * @param artistas Lista de artistas asociados.
+     * @param anio Año de lanzamiento.
+     * @param duracion Duración de la canción.
      * @param generos Lista de géneros asociados.
+     * @param letra Letra de la canción.
+     * @param portada Imagen de portada.
      * @return true si el registro fue exitoso.
      * @throws Exception si ocurre algún error en el DAO.
      */
     public boolean registrar(String titulo, String anio,
-                             String archivoMP3, List<Genero> portada,
-                             String artistas, byte[] generos) throws Exception {
+                             String duracion, List<Genero> generos,
+                             String letra, byte[] portada) throws Exception {
 
         LocalDateTime fechaRegistro = LocalDateTime.now();
-        double duracion = obtenerDuracionDesdeMP3(archivoMP3);
-        CancionDTO nuevaCancion = new CancionDTO(titulo, duracion, anio, fechaRegistro,
-                archivoMP3, portada, artistas, generos);
+        
+        // Convertir duración de formato "3:45" a segundos
+        String[] duracionParts = duracion.split(":");
+        double duracionSegundos = 0;
+        if (duracionParts.length == 2) {
+            duracionSegundos = Integer.parseInt(duracionParts[0]) * 60 + Integer.parseInt(duracionParts[1]);
+        }
+        
+        // Crear DTO con constructor correcto
+        CancionDTO nuevaCancion = new CancionDTO(
+            titulo, 
+            duracionSegundos, 
+            Integer.parseInt(anio), // Convertir año de String a int
+            fechaRegistro,
+            null, // archivoMP3 - no se está manejando aún
+            portada,
+            new ArrayList<>(), // artistas - lista vacía por ahora
+            generos
+        );
+        
         return cancionDAO.registrar(nuevaCancion);
     }
+    /*
+    Se refactorizo este metodo para solucionar problemas de compatibilidad
+     */
 
     /**
      * Actualiza los datos de una canción ya existente.
