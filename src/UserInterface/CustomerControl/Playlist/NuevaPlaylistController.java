@@ -1,5 +1,8 @@
 package UserInterface.CustomerControl.Playlist;
 
+import BusinessLogic.Playlist;
+import BusinessLogic.PlaylistDAO;
+import BusinessLogic.ServicioValidacionPlaylist;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
@@ -102,10 +105,8 @@ public class NuevaPlaylistController {
             
             mostrarAlerta("¡Playlist creada exitosamente!", Alert.AlertType.INFORMATION);
             
-            // Limpiar campos
+            // Limpiar campos y cerrar ventana
             limpiarCampos();
-            
-            // Cerrar ventana
             cerrarVentana();
             
         } catch (Exception e) {
@@ -120,10 +121,6 @@ public class NuevaPlaylistController {
         comboTipo.setValue("Pública");
         imgPortada.setImage(new Image("/UserInterface/Resources/img/CatalogoCanciones/camara.png"));
         imagenSeleccionada = null;
-        
-        // Restaurar estilos
-        txtTitulo.setStyle("-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;");
-        txtDescripcion.setStyle("-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;");
     }
 
     private void cerrarVentana() {
@@ -133,7 +130,7 @@ public class NuevaPlaylistController {
 
     private void mostrarAlerta(String mensaje, Alert.AlertType tipo) {
         Alert alert = new Alert(tipo);
-        alert.setTitle("Playlist");
+        alert.setTitle("Nueva Playlist");
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();

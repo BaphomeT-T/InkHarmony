@@ -1,33 +1,48 @@
 package BusinessLogic;
 
-import java.util.*;
+import DataAccessComponent.DTO.CancionDTO;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 public class ElementoCancion implements ComponentePlaylist {
-    private Cancion cancion;
+    private CancionDTO cancion;
     private Date fechaAgregado;
     private int orden;
 
-    public ElementoCancion(Cancion cancion) {
+    public ElementoCancion(CancionDTO cancion) {
         this.cancion = cancion;
         this.fechaAgregado = new Date();
         this.orden = 0;
     }
 
-    public ElementoCancion(Cancion cancion, int orden) {
+    public ElementoCancion(CancionDTO cancion, int orden) {
         this.cancion = cancion;
         this.fechaAgregado = new Date();
         this.orden = orden;
     }
 
-    public Cancion getCancion() { return cancion; }
+    public CancionDTO getCancion() { return cancion; }
     public Date getFechaAgregado() { return fechaAgregado; }
     public int getOrden() { return orden; }
     public void setOrden(int orden) { this.orden = orden; }
 
+    // Métodos de conveniencia para acceder a información de la canción
+    public String getTitulo() { 
+        return cancion != null ? cancion.getTitulo() : ""; 
+    }
+    
+    public String getArtista() { 
+        if (cancion != null && cancion.getArtistas() != null && !cancion.getArtistas().isEmpty()) {
+            return cancion.getArtistas().get(0).getNombre();
+        }
+        return "";
+    }
+
     @Override
     public void mostrarInformacion() {
-        System.out.println("Canción: " + cancion.getTituloCancion() +
+        System.out.println("Canción: " + cancion.getTitulo() +
                 " - Duración: " + cancion.getDuracion() + " min" +
                 " - Orden: " + orden);
     }

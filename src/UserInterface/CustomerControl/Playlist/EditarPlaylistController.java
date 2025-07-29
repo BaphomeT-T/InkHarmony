@@ -1,5 +1,8 @@
 package UserInterface.CustomerControl.Playlist;
 
+import BusinessLogic.Playlist;
+import BusinessLogic.PlaylistDAO;
+import BusinessLogic.ServicioValidacionPlaylist;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
