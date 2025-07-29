@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<AnchorPane prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.Playlist.NuevaPlaylistController">
+    <children>
+        <Label layoutX="60.0" layoutY="40.0" text="NUEVA PLAYLIST" textFill="WHITE">
+            <font><Font size="48.0"/></font>
+        </Label>
+        <AnchorPane layoutX="60.0" layoutY="120.0" prefHeight="400.0" prefWidth="780.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 25;">
+            <children>
+                <Label layoutX="40.0" layoutY="40.0" text="Título de la playlist" textFill="WHITE">
+                    <font><Font size="20.0"/></font>
+                </Label>
+                <TextField fx:id="txtTitulo" layoutX="40.0" layoutY="70.0" prefWidth="300.0" promptText="Ingresa el título aquí" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;">
+                    <font><Font size="16.0"/></font>
+                </TextField>
+                <Label layoutX="40.0" layoutY="120.0" text="Descripción de la playlist" textFill="WHITE">
+                    <font><Font size="20.0"/></font>
+                </Label>
+                <TextField fx:id="txtDescripcion" layoutX="40.0" layoutY="150.0" prefWidth="300.0" promptText="Ingresa la descripción aquí" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;">
+                    <font><Font size="16.0"/></font>
+                </TextField>
+                <Label layoutX="40.0" layoutY="200.0" text="Tipo Playlist" textFill="WHITE">
+                    <font><Font size="20.0"/></font>
+                </Label>
+                <ComboBox fx:id="comboTipo" layoutX="40.0" layoutY="230.0" prefWidth="300.0" promptText="Seleccione" style="-fx-background-radius: 20; -fx-background-color: #9190C2;"/>
+                <Label layoutX="400.0" layoutY="40.0" text="Seleccione la Portada" textFill="WHITE">
+                    <font><Font size="20.0"/></font>
+                </Label>
+                <AnchorPane layoutX="400.0" layoutY="70.0" prefHeight="180.0" prefWidth="180.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+                    <children>
+                        <ImageView fx:id="imgPortada" fitHeight="180.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../../Resources/img/CatalogoCanciones/camara.png"/></image>
+                        </ImageView>
+                        <Button fx:id="btnSeleccionarImagen" layoutX="0.0" layoutY="0.0" opacity="0" prefHeight="180.0" prefWidth="180.0"/>
+                    </children>
+                </AnchorPane>
+                <Button fx:id="btnCrear" layoutX="240.0" layoutY="320.0" onAction="#crearPlaylist" prefWidth="300.0" prefHeight="50.0" text="Crear Playlist" style="-fx-background-color: #9190C2; -fx-background-radius: 10;">
+                    <font><Font size="22.0"/></font>
+                </Button>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane> 

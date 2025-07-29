@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.Playlist.VistaPlaylistController">
+    <children>
+        <!-- HEADER DE LA PLAYLIST -->
+        <AnchorPane layoutX="0.0" layoutY="0.0" prefHeight="200.0" prefWidth="1200.0" style="-fx-background-color: #1B1A55;">
+            <children>
+                <!-- PORTADA DE LA PLAYLIST -->
+                <ImageView fx:id="imgPortadaPlaylist" layoutX="40.0" layoutY="40.0" fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+                    <image><Image url="@../../Resources/img/CatalogoCanciones/camara.png"/></image>
+                </ImageView>
+                
+                <!-- INFORMACIÓN DE LA PLAYLIST -->
+                <Label fx:id="lblTituloPlaylist" layoutX="180.0" layoutY="40.0" text="Nombre de la Playlist" textFill="WHITE">
+                    <font><Font size="32.0" style="BOLD"/></font>
+                </Label>
+                
+                <Label fx:id="lblInfoPlaylist" layoutX="180.0" layoutY="80.0" text="0 canciones • 0h 0m" textFill="#CCCCCC">
+                    <font><Font size="16.0"/></font>
+                </Label>
+                
+                <Label fx:id="lblDescripcion" layoutX="180.0" layoutY="110.0" text="Descripción de la playlist" textFill="#CCCCCC">
+                    <font><Font size="14.0"/></font>
+                </Label>
+                
+                <!-- BOTONES DE ACCIÓN -->
+                <Button fx:id="btnAgregarMas" layoutX="800.0" layoutY="60.0" prefWidth="120.0" prefHeight="40.0" text="Agregar más" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+                    <font><Font size="14.0"/></font>
+                </Button>
+                
+                <Button fx:id="btnPlayAll" layoutX="940.0" layoutY="60.0" prefWidth="120.0" prefHeight="40.0" text="Play All" style="-fx-background-color: #4CAF50; -fx-background-radius: 20;">
+                    <font><Font size="14.0"/></font>
+                </Button>
+            </children>
+        </AnchorPane>
+        
+        <!-- TABLA DE CANCIONES -->
+        <TableView fx:id="tablaCancionesPlaylist" layoutX="40.0" layoutY="220.0" prefHeight="500.0" prefWidth="1120.0"
+                   style="-fx-background-color: #1B1A55; -fx-background-radius: 20;">
+            <columns>
+                <TableColumn fx:id="colPortadaCancion" prefWidth="60.0" text="Portada" />
+                <TableColumn fx:id="colTituloCancion" prefWidth="300.0" text="Título" />
+                <TableColumn fx:id="colArtistaCancion" prefWidth="250.0" text="Artista" />
+                <TableColumn fx:id="colFechaAgregado" prefWidth="150.0" text="Fecha de agregación" />
+                <TableColumn fx:id="colAnioCancion" prefWidth="120.0" text="Año" />
+                <TableColumn fx:id="colDuracionCancion" prefWidth="100.0" text="Duración" />
+                <TableColumn fx:id="colAccionesCancion" prefWidth="100.0" text="Acciones" />
+            </columns>
+        </TableView>
+        
+        <!-- MENSAJE SI LA PLAYLIST ESTÁ VACÍA -->
+        <VBox fx:id="vboxPlaylistVacia" layoutX="400.0" layoutY="400.0" alignment="CENTER" visible="false">
+            <children>
+                <Label text="La playlist está vacía, agrega canciones para empezar." textFill="WHITE" textAlignment="CENTER">
+                    <font><Font size="18.0"/></font>
+                </Label>
+                <Button fx:id="btnAgregarPrimeraCancion" layoutX="0.0" layoutY="20.0" onAction="#agregarCanciones" 
+                        prefWidth="200.0" prefHeight="40.0" text="Agregar canciones" 
+                        style="-fx-background-color: #9190C2; -fx-background-radius: 10;">
+                    <font><Font size="14.0"/></font>
+                </Button>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane> 
