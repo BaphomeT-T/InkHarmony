@@ -1,4 +1,4 @@
-import javazoom.jl.player.advanced.PlaybackEvent;
+  import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
 
 import java.io.ByteArrayInputStream;
@@ -15,7 +15,7 @@ import java.util.List;
  * usando un hilo dedicado y la clase `AdvancedPlayerAcc` como motor de reproducción.</p>
  *
  * @author Grupo B
- * @version 1.0
+ * @version 1.1
  * @since 25-07-2025
  */
 public class ReproductorMP3 {
@@ -122,12 +122,12 @@ public class ReproductorMP3 {
                 player.setPlayBackListener(new PlaybackListener() {
                     @Override
                     public void playbackFinished(PlaybackEvent evt) {
-                        frameActual = player.getLastPosition(); // Guardar último frame reproducido
-                        indiceActual = (indiceActual + 1) % cancionesBytes.size(); // Avanza a siguiente canción
-                        iniciarReproduccionDesde(0); // Reproducir siguiente automáticamente
+                        frameActual = player.getLastPosition(); 
+                        indiceActual = (indiceActual + 1) % cancionesBytes.size(); 
+                        iniciarReproduccionDesde(0); 
                     }
                 });
-                player.play(frameInicial, Integer.MAX_VALUE); // Inicia reproducción
+                player.play(frameInicial, Integer.MAX_VALUE); 
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -142,65 +142,45 @@ public class ReproductorMP3 {
         try {
             if (player != null) player.close();
             if (hiloReproduccion != null && hiloReproduccion.isAlive()) {
-                hiloReproduccion.join(); // Espera a que el hilo termine
+                hiloReproduccion.join(); 
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // --- Getters y Setters auxiliares ---
-
     /**
-     * Retorna el frame actual de reproducción.
+     * Mueve la reproducción a un nuevo frame y continúa desde ese punto.
+     * Este método puede ser llamado desde la interfaz gráfica al mover un deslizador.
      *
-     * @return Frame actual.
+     * @param nuevoFrame Frame al que se desea saltar y continuar la reproducción.
      */
+    public void moverAFrame(int nuevoFrame) {
+        cerrarReproduccion();             
+        setFrameActual(nuevoFrame);       
+        iniciarReproduccionDesde(nuevoFrame);
+        }
+
     public int getFrameActual() {
         return frameActual;
     }
 
-    /**
-     * Establece el frame actual de reproducción.
-     *
-     * @param frameActual Frame a establecer.
-     */
     public void setFrameActual(int frameActual) {
         this.frameActual = frameActual;
     }
 
-    /**
-     * Retorna el objeto `AdvancedPlayerAcc` activo.
-     *
-     * @return Reproductor activo.
-     */
     public AdvancedPlayerAcc getPlayer() {
         return player;
     }
 
-    /**
-     * Retorna el índice actual de la canción que se está reproduciendo.
-     *
-     * @return Índice de la canción.
-     */
     public int getIndiceActual() {
         return indiceActual;
     }
 
-    /**
-     * Establece el índice de la canción a reproducir.
-     *
-     * @param indice Índice nuevo.
-     */
     public void setIndiceActual(int indice) {
         this.indiceActual = indice;
     }
 
-    /**
-     * Devuelve la lista completa de canciones en forma de arreglos de bytes.
-     *
-     * @return Lista de canciones.
-     */
     public List<byte[]> getCancionesBytes() {
         return cancionesBytes;
     }
