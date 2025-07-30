@@ -9,13 +9,13 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * Clase Bussinness.ReproductorMP3 que representa el controlador principal de reproducción de audio.
+ * Clase BusinessLogic.ReproductorMP3 que representa el controlador principal de reproducción de audio.
  *
  * <p>Utiliza el patrón Singleton para asegurar que exista una única instancia global,
  * y el patrón State para manejar distintos comportamientos (detenido, reproduciendo, pausado).</p>
  *
  * <p>Administra la reproducción de una lista de canciones representadas como arreglos de bytes (MP3),
- * usando un hilo dedicado y la clase `Bussinness.utilities.AdvancedPlayerAcc` como motor de reproducción.</p>
+ * usando un hilo dedicado y la clase `BusinessLogic.utilities.AdvancedPlayerAcc` como motor de reproducción.</p>
  *
  * @author Grupo B
  * @version 1.1
@@ -23,25 +23,25 @@ import java.util.List;
  */
 public class ReproductorMP3 {
 
-    /** Instancia única */
+    /** Instancia única (patrón Singleton). */
     private static ReproductorMP3 instancia;
 
-    /** Lista de canciones como arreglos de bytes (MP3) */
+    /** Lista de canciones como arreglos de bytes (MP3). */
     private List<byte[]> cancionesBytes;
 
-    /** Índice actual de la canción en reproducción */
+    /** Índice actual de la canción en reproducción. */
     private int indiceActual = 0;
 
-    /** Reproductor MP3 extendido basado en JLayer */
+    /** Reproductor MP3 extendido basado en JLayer. */
     private AdvancedPlayerAcc player;
 
-    /** Hilo de ejecución de la reproducción */
+    /** Hilo de ejecución de la reproducción. */
     private Thread hiloReproduccion;
 
-    /** Frame actual en la canción (posición de reproducción) */
+    /** Frame actual en la canción (posición de reproducción). */
     private int frameActual = 0;
 
-    /** Estado actual del reproductor (detenido, pausado, reproduciendo) */
+    /** Estado actual del reproductor (detenido, pausado, reproduciendo). */
     private EstadoReproductor estadoActual;
 
     /**
@@ -58,7 +58,7 @@ public class ReproductorMP3 {
      * Obtiene la instancia única del reproductor (Singleton).
      *
      * @param cancionesBytes Lista de canciones (solo usada en la primera llamada).
-     * @return Instancia única de Bussinness.ReproductorMP3.
+     * @return Instancia única de BusinessLogic.ReproductorMP3.
      */
     public static ReproductorMP3 getInstancia(List<byte[]> cancionesBytes) {
         if (instancia == null) {
@@ -79,7 +79,7 @@ public class ReproductorMP3 {
     /**
      * Obtiene el estado actual del reproductor.
      *
-     * @return Bussinness.EstadoReproductor actual.
+     * @return EstadoReproductor actual.
      */
     public EstadoReproductor getEstado() {
         return estadoActual;
@@ -87,26 +87,44 @@ public class ReproductorMP3 {
 
     // --- Métodos públicos del reproductor, delegados al estado actual ---
 
+    /**
+     * Solicita iniciar la reproducción. Delegado al estado actual.
+     */
     public void reproducir() {
         estadoActual.reproducir();
     }
 
+    /**
+     * Solicita pausar la reproducción. Delegado al estado actual.
+     */
     public void pausar() {
         estadoActual.pausar();
     }
 
+    /**
+     * Solicita reanudar la reproducción. Delegado al estado actual.
+     */
     public void reanudar() {
         estadoActual.reanudar();
     }
 
+    /**
+     * Solicita detener la reproducción. Delegado al estado actual.
+     */
     public void detener() {
         estadoActual.detener();
     }
 
+    /**
+     * Solicita avanzar a la siguiente canción. Delegado al estado actual.
+     */
     public void siguiente() {
         estadoActual.siguiente();
     }
 
+    /**
+     * Solicita retroceder a la canción anterior. Delegado al estado actual.
+     */
     public void anterior() {
         estadoActual.anterior();
     }
@@ -162,7 +180,8 @@ public class ReproductorMP3 {
         cerrarReproduccion();
         setFrameActual(nuevoFrame);
         iniciarReproduccionDesde(nuevoFrame);
-        }
+    }
+
     /**
      * Reestablece la lista de canciones, detiene la reproducción actual y reinicia el estado.
      *
@@ -177,27 +196,56 @@ public class ReproductorMP3 {
         this.estadoActual = new EstadoDetenido(this);
     }
 
-
+    /**
+     * Obtiene el frame actual (posición de reproducción).
+     *
+     * @return Frame actual.
+     */
     public int getFrameActual() {
         return frameActual;
     }
 
+    /**
+     * Establece el frame actual (posición de reproducción).
+     *
+     * @param frameActual Nuevo valor del frame actual.
+     */
     public void setFrameActual(int frameActual) {
         this.frameActual = frameActual;
     }
 
+    /**
+     * Obtiene la instancia actual del reproductor avanzado.
+     *
+     * @return Objeto AdvancedPlayerAcc utilizado.
+     */
     public AdvancedPlayerAcc getPlayer() {
         return player;
     }
 
+    /**
+     * Obtiene el índice actual de la canción que se está reproduciendo.
+     *
+     * @return Índice de la canción actual.
+     */
     public int getIndiceActual() {
         return indiceActual;
     }
 
+    /**
+     * Establece el índice actual de la canción a reproducir.
+     *
+     * @param indice Nuevo índice de canción.
+     */
     public void setIndiceActual(int indice) {
         this.indiceActual = indice;
     }
 
+    /**
+     * Obtiene la lista actual de canciones en formato binario.
+     *
+     * @return Lista de canciones (bytes).
+     */
     public List<byte[]> getCancionesBytes() {
         return cancionesBytes;
     }
