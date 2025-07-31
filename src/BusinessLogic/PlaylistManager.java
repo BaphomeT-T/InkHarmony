@@ -12,10 +12,10 @@ class PlaylistManager {
             Playlist miPlaylist = new Playlist("Playlist", "Las mejores canciones del año", usuario);
 
             // Agregar canciones
-            Cancion cancion1 = new Cancion(1, "Canción 1", 3.5);
-            Cancion cancion2 = new Cancion(2, "Canción 2", 4.2);
-            miPlaylist.agregar(new ElementoCancion(cancion1, 1));
-            miPlaylist.agregar(new ElementoCancion(cancion2, 2));
+            Cancion cancion1 = new Cancion(1, "Canción 1", 3.5, 1);
+            Cancion cancion2 = new Cancion(2, "Canción 2", 4.2, 2);
+            miPlaylist.agregar(cancion1);
+            miPlaylist.agregar(cancion2);
 
             dao.registrarPlaylist(miPlaylist);
 

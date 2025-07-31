@@ -57,10 +57,10 @@ public class PlaylistDAO {
 
             int orden = 1;
             for (ComponentePlaylist componente : playlist.getComponentes()) {
-                if (componente instanceof ElementoCancion) {
-                    ElementoCancion elemento = (ElementoCancion) componente;
+                if (componente instanceof Cancion) {
+                    Cancion cancion = (Cancion) componente;
                     pstmt.setInt(1, playlist.getIdPlaylist());
-                    pstmt.setInt(2, elemento.getCancion().getIdCancion());
+                    pstmt.setInt(2, cancion.getCancion().getIdCancion());
                     pstmt.setInt(3, orden++);
                     pstmt.executeUpdate();
                 }
@@ -231,11 +231,10 @@ public class PlaylistDAO {
                     Cancion cancion = new Cancion(
                             rs.getInt("id_cancion"),
                             "Canción " + rs.getInt("id_cancion"),
-                            3.5
+                            3.5,
+                            rs.getInt("orden_elemento")
                     );
-
-                    ElementoCancion elemento = new ElementoCancion(cancion, rs.getInt("orden_elemento"));
-                    playlist.agregar(elemento);
+                    playlist.agregar(cancion);
                 }
             }
         }

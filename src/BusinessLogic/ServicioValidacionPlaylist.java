@@ -24,9 +24,9 @@ public class ServicioValidacionPlaylist {
     private boolean verificarDuplicadosRecursivo(List<ComponentePlaylist> componentes,
                                                  Set<String> cancionesVistas) {
         for (ComponentePlaylist componente : componentes) {
-            if (componente instanceof ElementoCancion) {
-                ElementoCancion elemento = (ElementoCancion) componente;
-                String idCancion = String.valueOf(elemento.getCancion().getIdCancion());
+            if (componente instanceof Cancion) {
+                Cancion cancion = (Cancion) componente;
+                String idCancion = String.valueOf(cancion.getCancion().getIdCancion());
 
                 if (cancionesVistas.contains(idCancion)) {
                     return true; // Duplicado encontrado

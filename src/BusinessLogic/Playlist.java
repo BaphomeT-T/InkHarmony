@@ -58,7 +58,7 @@ public class Playlist implements ComponentePlaylist {
     public int calcularCantidadCanciones() {
         int contador = 0;
         for (ComponentePlaylist componente : componentes) {
-            if (componente instanceof ElementoCancion) {
+            if (componente instanceof Cancion) {
                 contador++;
             } else if (componente instanceof Playlist) {
                 contador += ((Playlist) componente).calcularCantidadCanciones();
