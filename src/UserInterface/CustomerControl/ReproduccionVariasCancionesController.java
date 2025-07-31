@@ -25,6 +25,11 @@ public class ReproduccionVariasCancionesController {
     }
 
     @FXML
+    void clickBuscarBiblioteca(ActionEvent event) {
+        System.out.println("Escoja la biblioteca de la lista.");
+    }
+
+    @FXML
     void clickBuscarCancion(ActionEvent event) {
         System.out.println("Ingrese la cancion a buscar.");
     }
