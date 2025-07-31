@@ -57,7 +57,7 @@ CREATE TABLE Cancion (
                          titulo VARCHAR(20) NOT NULL,
                          archivo_mp3 BLOB,
                          duracion REAL,
-                         fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                         fecha_registro DATETIME NOT NULL ,
                          portada BLOB
 );
 
@@ -106,6 +106,7 @@ CREATE TABLE Reproduccion (
                               fecha_hora DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                               FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
                               FOREIGN KEY (id_cancion) REFERENCES Cancion(id_cancion)
+<<<<<<< HEAD
 );
     -- Borrar tablas en orden seguro
     DROP TABLE IF EXISTS Reproduccion;
@@ -212,3 +213,6 @@ CREATE TABLE Reproduccion (
                                   FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
                                   FOREIGN KEY (id_cancion) REFERENCES Cancion(id_cancion)
     );
+=======
+);
+>>>>>>> adcb48c002832e4c9e16b0560b19b794d3ea2ec7
