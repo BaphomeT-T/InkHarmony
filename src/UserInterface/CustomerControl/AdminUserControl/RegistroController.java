@@ -3,13 +3,13 @@ package UserInterface.CustomerControl.AdminUserControl;
 import UserInterface.Utils.*;
 import BusinessLogic.ServicioPerfil;
 import BusinessLogic.Sesion;
-import DataAccessComponent.DAO.GeneroDAO;
+import BusinessLogic.Genero;
 import DataAccessComponent.DAO.PerfilDAO;
 import DataAccessComponent.DAO.UsuarioDAO;
-import DataAccessComponent.DTO.GeneroDTO;
 import DataAccessComponent.DTO.PerfilDTO;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,9 +35,10 @@ public class RegistroController {
     private List<String> rutasImagenes = RecursosPerfil.obtenerRutasImagenes();
     private int indiceActual = 0;
 
-    private List<String> todosLosGeneros;
-    private List<String> generosMostrados;
-    private List<String> generosSeleccionados = new ArrayList<>();
+    private List<Genero> todosLosGeneros;
+    private List<Genero> generosMostrados;
+    private List<Genero> generosSeleccionados = new ArrayList<>();
+
 
     @FXML
     private Polyline btnAnterior;
@@ -131,14 +132,11 @@ public class RegistroController {
             servicioPerfil.registrarUsuario(nombre, apellido, correo, contrasena, String.valueOf(indiceActual));
             PerfilDTO usuario = perfilDAO.buscarPorEmail(correo);
             
-            // 5. Guardar preferencias
+            // 5. Guardar preferencias directamente con enum Genero
             UsuarioDAO usuarioDAO = new UsuarioDAO();
-            List<GeneroDTO> generos = generosSeleccionados.stream()
-                    .map(GeneroDTO::new)
-                    .collect(Collectors.toList());
-            if (!usuarioDAO.guardarPreferencias(usuario, generos)) {
+            if (!usuarioDAO.guardarPreferencias(usuario, generosSeleccionados)) {
                 // Si fallan las preferencias, eliminar perfil
-                perfilDAO.eliminar(perfilDAO.buscarPorEmail(correo));
+                perfilDAO.eliminar(usuario);
                 throw new RuntimeException("No se pudieron guardar las preferencias");
             }
             
@@ -149,6 +147,7 @@ public class RegistroController {
             mostrarAlerta("Error", "No se completó el registro: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
+
 
 
     private boolean validarCampos(String nombre, String apellido, String correo, 
@@ -166,6 +165,14 @@ public class RegistroController {
         if (hayVacios) {
             mostrarAlerta("Campos incompletos", camposVacios.toString(), 
                 Alert.AlertType.WARNING);
+            return false;
+        }
+
+        // Validar que el nombre y apellido no contengan números ni espacios
+        if (!nombre.matches("[a-zA-Z]+") || !apellido.matches("[a-zA-Z]+")) {
+            mostrarAlerta("Nombre o Apellido inválido", 
+                "El nombre y apellido solo pueden contener letras.",
+                Alert.AlertType.ERROR);
             return false;
         }
 
@@ -230,7 +237,7 @@ public class RegistroController {
         int columna = 0;
         int fila = 0;
         
-        for (String genero : generosMostrados) {
+        for (Genero genero : generosMostrados) {
             if (columna >= 3) { // Máximo 3 columnas
                 columna = 0;
                 fila++;
@@ -257,18 +264,17 @@ public class RegistroController {
     }
 
     private void cargarGenerosMusicales() {
-        // Obtener géneros desde la base de datos
-        todosLosGeneros = GeneroDAO.obtenerTodos();
-        
-        // Mostrar los primeros 6 géneros inicialmente
+        todosLosGeneros = Arrays.asList(Genero.values());
+
         generosMostrados = new ArrayList<>(todosLosGeneros.subList(0, Math.min(6, todosLosGeneros.size())));
         actualizarBotonesGeneros();
     }
 
-    private Button crearBotonGenero(String genero) {
-        Button boton = new Button(genero);
+    private Button crearBotonGenero(Genero genero) {
+        Button boton = new Button(genero.name().replace('_', ' ')); // Opcional: mostrar nombre legible
         boton.setMaxWidth(120);
         boton.setMaxHeight(40);
+        // resto igual, pero comparando con generosSeleccionados de tipo Genero
         boton.setStyle("-fx-background-color: " + 
                     (generosSeleccionados.contains(genero) ? "#9190C2" : "#575a81") + 
                     "; -fx-text-fill: white; -fx-background-radius: 15;");
@@ -287,6 +293,7 @@ public class RegistroController {
         return boton;
     }
 
+
     private Button crearBotonVacio() {
         Button boton = new Button();
         boton.setMaxWidth(Double.MAX_VALUE);
@@ -304,7 +311,7 @@ public class RegistroController {
             } else {
                 // Filtrar géneros y tomar los primeros 6 coincidentes
                 generosMostrados = todosLosGeneros.stream()
-                    .filter(genero -> genero.toLowerCase().contains(newValue.toLowerCase()))
+                    .filter(g -> g.name().toLowerCase().contains(newValue.toLowerCase()))
                     .limit(6)
                     .collect(Collectors.toList());
             }
