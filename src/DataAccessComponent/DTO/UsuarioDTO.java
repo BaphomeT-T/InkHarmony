@@ -3,6 +3,8 @@ package DataAccessComponent.DTO;
 import java.util.Date;
 import java.util.List;
 
+import BusinessLogic.Genero;
+
 /**
  * Clase DTO que representa un usuario en el sistema InkHarmony.
  * <p>
@@ -17,7 +19,7 @@ public class UsuarioDTO extends PerfilDTO {
     /**
      * Lista de géneros musicales preferidos por el usuario.
      */
-    private List<GeneroDTO> preferenciasMusicales;
+    private List<Genero> preferenciasMusicales;
 
     /**
      * Constructor por defecto de UsuarioDTO.
@@ -42,7 +44,7 @@ public class UsuarioDTO extends PerfilDTO {
      */
     public UsuarioDTO(String nombre, String apellido, String correo, String contrasenia, 
                    TipoUsuario tipoUsuario, Date fechaRegistro, String foto, 
-                   String estadoCuenta, List<GeneroDTO> preferenciasMusicales) {
+                   String estadoCuenta, List<Genero> preferenciasMusicales) {
         super(nombre, apellido, correo, contrasenia, tipoUsuario, fechaRegistro, foto, estadoCuenta);
         this.preferenciasMusicales = preferenciasMusicales;
     }
@@ -52,7 +54,7 @@ public class UsuarioDTO extends PerfilDTO {
      *
      * @return Lista de géneros musicales preferidos
      */
-    public List<GeneroDTO> getPreferenciasMusicales() {
+    public List<Genero> getPreferenciasMusicales() {
         return preferenciasMusicales;
     }
 
@@ -61,7 +63,7 @@ public class UsuarioDTO extends PerfilDTO {
      *
      * @param preferenciasMusicales Lista de géneros musicales preferidos
      */
-    public void setPreferenciasMusicales(List<GeneroDTO> preferenciasMusicales) {
+    public void setPreferenciasMusicales(List<Genero> preferenciasMusicales) {
         this.preferenciasMusicales = preferenciasMusicales;
     }
 }

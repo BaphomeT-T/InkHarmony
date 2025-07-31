@@ -1,12 +1,15 @@
 package DataAccessComponent.DAO;
 
-import DataAccessComponent.DTO.GeneroDTO;
 import DataAccessComponent.DTO.PerfilDTO;
 import DataAccessComponent.SQLiteDataHelper;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+
+import BusinessLogic.Genero;
 
 /**
  * Clase DAO (Data Access Object) para la gestión de preferencias musicales de usuarios.
@@ -44,21 +47,13 @@ public class UsuarioDAO extends SQLiteDataHelper {
      * @throws IllegalArgumentException Si el correo es null o está vacío, o si la lista de géneros es null
      * @throws RuntimeException Si ocurre un error de conexión con la base de datos
      */
-    public boolean guardarPreferencias(PerfilDTO perfil, List<GeneroDTO> generos) {
+    public boolean guardarPreferencias(PerfilDTO perfil, List<Genero> generos) {
         String sql = "UPDATE Usuario SET preferencias_musicales = ? WHERE correo = ?";
         try {
             Connection conn = openConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql);
             
             // Validar géneros contra la BD
-            List<String> generosValidos = GeneroDAO.obtenerTodos();
-            for (GeneroDTO genero : generos) {
-                if (!generosValidos.contains(genero.getNombreGenero())) {
-                    throw new SQLException("Género no registrado: " + genero.getNombreGenero());
-                }
-            }
-
-            // Convertir a JSON y guardar
             pstmt.setString(1, BusinessLogic.Usuario.preferenciasToJSON(generos));
             pstmt.setString(2, perfil.getCorreo());
             pstmt.executeUpdate();
@@ -84,7 +79,7 @@ public class UsuarioDAO extends SQLiteDataHelper {
      * @throws IllegalArgumentException Si el correo es null o está vacío
      * @throws RuntimeException Si ocurre un error de conexión con la base de datos
      */
-    public List<GeneroDTO> obtenerPreferencias(PerfilDTO perfil) {
+    public List<Genero> obtenerPreferencias(PerfilDTO perfil) {
         String sql = "SELECT preferencias_musicales FROM Usuario WHERE correo = ?";
         try {
             Connection conn = openConnection();
@@ -105,12 +100,18 @@ public class UsuarioDAO extends SQLiteDataHelper {
     }
 
 
-    public boolean actualizarPerfil(PerfilDTO perfil, boolean borrarPreferencias, List<GeneroDTO> nuevosGeneros) {
+    public boolean actualizarPerfil(PerfilDTO perfil, boolean borrarPreferencias, List<Genero> nuevosGeneros) {
         StringBuilder sql = new StringBuilder("UPDATE Usuario SET ");
         List<Object> parametros = new ArrayList<>();
-        if (obtenerPreferencias(perfil) != null && nuevosGeneros != null) {
-            nuevosGeneros.addAll(obtenerPreferencias(perfil));
+
+        List<Genero> preferenciasActuales = obtenerPreferencias(perfil);
+        if (preferenciasActuales != null && nuevosGeneros != null) {
+            Set<Genero> combinado = new LinkedHashSet<>(preferenciasActuales);
+            combinado.addAll(nuevosGeneros); // agrega solo los que no están repetidos
+            nuevosGeneros = new ArrayList<>(combinado); // vuelve a lista por si lo necesitas como lista después
         }
+
+        
 
         if (perfil.getNombre() != null) {
             sql.append("nombre_usuario = ?, ");
@@ -135,22 +136,7 @@ public class UsuarioDAO extends SQLiteDataHelper {
 
         if (borrarPreferencias) {
             sql.append("preferencias_musicales = NULL, ");
-        } else if (nuevosGeneros != null) {
-            List<String> generosValidos = GeneroDAO.obtenerTodos();
-            for (GeneroDTO genero : nuevosGeneros) {
-                if (!generosValidos.contains(genero.getNombreGenero())) {
-                    System.err.println("Género inválido: " + genero.getNombreGenero());
-                    return false;
-                }
-            }
-
-            StringBuilder json = new StringBuilder("[");
-            for (int i = 0; i < nuevosGeneros.size(); i++) {
-                json.append("\"").append(nuevosGeneros.get(i).getNombreGenero()).append("\"");
-                if (i < nuevosGeneros.size() - 1) json.append(",");
-            }
-            json.append("]");
-
+        } else if (nuevosGeneros != null && !nuevosGeneros.isEmpty()) {
             sql.append("preferencias_musicales = ?, ");
             parametros.add(BusinessLogic.Usuario.preferenciasToJSON(nuevosGeneros));
         }
@@ -163,7 +149,7 @@ public class UsuarioDAO extends SQLiteDataHelper {
         // Quitar la última coma y espacio
         sql.setLength(sql.length() - 2);
         sql.append(" WHERE correo = ?");
-        parametros.add(perfil.getCorreo());  // Ojo: si quieres permitir cambiar el correo, ajusta este parámetro
+        parametros.add(perfil.getCorreo());  // Si permites cambiar el correo, este valor se debe ajustar
 
         try {
             Connection conn = openConnection();

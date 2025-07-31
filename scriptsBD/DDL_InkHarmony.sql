@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS Artista_Genero;
 DROP TABLE IF EXISTS Playlist;
 DROP TABLE IF EXISTS Cancion;
 DROP TABLE IF EXISTS Artista;
-DROP TABLE IF EXISTS Genero;
+-- DROP TABLE IF EXISTS Genero;
 DROP TABLE IF EXISTS Usuario;
 
 
@@ -27,10 +27,10 @@ CREATE TABLE Usuario (
 );
 
 -- Tabla Genero
-CREATE TABLE Genero (
-                        id_genero INTEGER PRIMARY KEY AUTOINCREMENT,
-                        nombre_genero VARCHAR(20) NOT NULL
-);
+-- CREATE TABLE Genero (
+--                         id_genero INTEGER PRIMARY KEY AUTOINCREMENT,
+--                         nombre_genero VARCHAR(20) NOT NULL
+-- );
 
 -- Tabla Artista
 CREATE TABLE Artista (
