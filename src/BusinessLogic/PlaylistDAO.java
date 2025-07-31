@@ -10,7 +10,6 @@ public class PlaylistDAO {
     public PlaylistDAO() {
         this.dbConnection = DatabaseConnection.getInstance();
         this.validador = new ServicioValidacionPlaylist();
-        // Crear tablas si no existen
         dbConnection.crearTablas();
     }
 
@@ -37,8 +36,6 @@ public class PlaylistDAO {
                 try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         playlist.setIdPlaylist(generatedKeys.getInt(1));
-
-                        // Guardar componentes si los hay
                         guardarComponentes(playlist);
                     }
                 }
@@ -75,7 +72,7 @@ public class PlaylistDAO {
 
         String sql = """
             UPDATE playlists 
-            SET titulo_playlist = ?, descripcion = ?, fecha_modificacion = CURRENT_TIMESTAMP 
+            SET titulo_playlist = ?, descripcion = ? 
             WHERE id_playlist = ?
         """;
 
@@ -88,7 +85,6 @@ public class PlaylistDAO {
 
             pstmt.executeUpdate();
 
-            // Actualizar componentes
             eliminarComponentes(playlist.getIdPlaylist());
             guardarComponentes(playlist);
         }
@@ -118,7 +114,7 @@ public class PlaylistDAO {
 
     public List<Playlist> buscarPlaylist() throws SQLException {
         List<Playlist> playlists = new ArrayList<>();
-        String sql = "SELECT * FROM playlists ORDER BY fecha_creacion DESC";
+        String sql = "SELECT * FROM playlists ORDER BY id_playlist DESC";
 
         try (Connection conn = dbConnection.getConnection();
              Statement stmt = conn.createStatement();
@@ -177,7 +173,7 @@ public class PlaylistDAO {
 
     public List<Playlist> obtenerPlaylistPorUsuario(Perfil usuario) throws SQLException {
         List<Playlist> playlists = new ArrayList<>();
-        String sql = "SELECT * FROM playlists WHERE propietario_correo = ? ORDER BY fecha_creacion DESC";
+        String sql = "SELECT * FROM playlists WHERE propietario_correo = ? ORDER BY id_playlist DESC";
 
         try (Connection conn = dbConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -197,24 +193,21 @@ public class PlaylistDAO {
     }
 
     private Playlist crearPlaylistDesdeResultSet(ResultSet rs) throws SQLException {
-        // Crear un perfil temporal (en implementación real vendría del módulo correspondiente)
         Perfil propietario = new Perfil("Usuario", rs.getString("propietario_correo"));
 
         Playlist playlist = new Playlist(
-                rs.getInt("id_playlist"),
                 rs.getString("titulo_playlist"),
                 rs.getString("descripcion"),
-                propietario,
-                rs.getTimestamp("fecha_creacion"),
-                rs.getTimestamp("fecha_modificacion")
+                propietario
         );
+        playlist.setIdPlaylist(rs.getInt("id_playlist"));
 
         return playlist;
     }
 
     private void cargarComponentes(Playlist playlist) throws SQLException {
         String sql = """
-            SELECT id_cancion, orden_elemento, fecha_agregado 
+            SELECT id_cancion, orden_elemento 
             FROM playlist_elementos 
             WHERE id_playlist = ? 
             ORDER BY orden_elemento
@@ -227,7 +220,6 @@ public class PlaylistDAO {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    // Crear canción temporal (en implementación real vendría del módulo correspondiente)
                     Cancion cancion = new Cancion(
                             rs.getInt("id_cancion"),
                             "Canción " + rs.getInt("id_cancion"),
