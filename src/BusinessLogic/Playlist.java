@@ -1,15 +1,13 @@
 package BusinessLogic;
 
 import java.awt.image.BufferedImage;
-import java.util.*;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Playlist implements ComponentePlaylist {
     private int idPlaylist;
     private String tituloPlaylist;
     private String descripcion;
-    private Date fechaCreacion;
-    private Date fechaModificacion;
     private Perfil propietario;
     private BufferedImage imagenPortada;
     private List<ComponentePlaylist> componentes;
@@ -18,41 +16,43 @@ public class Playlist implements ComponentePlaylist {
         this.tituloPlaylist = titulo;
         this.descripcion = descripcion;
         this.propietario = propietario;
-        this.fechaCreacion = new Date();
-        this.fechaModificacion = new Date();
         this.componentes = new ArrayList<>();
     }
 
-    public Playlist(int id, String titulo, String descripcion, Perfil propietario,
-                    Date fechaCreacion, Date fechaModificacion) {
-        this.idPlaylist = id;
-        this.tituloPlaylist = titulo;
-        this.descripcion = descripcion;
-        this.propietario = propietario;
-        this.fechaCreacion = fechaCreacion;
-        this.fechaModificacion = fechaModificacion;
-        this.componentes = new ArrayList<>();
+    public int getIdPlaylist() {
+        return idPlaylist;
     }
 
-    public int getIdPlaylist() { return idPlaylist; }
-    public void setIdPlaylist(int idPlaylist) { this.idPlaylist = idPlaylist; }
-    public String getTitulo() { return tituloPlaylist; }
+    public void setIdPlaylist(int idPlaylist) {
+        this.idPlaylist = idPlaylist;
+    }
+
+    public String getTitulo() {
+        return tituloPlaylist;
+    }
+
     public void setTitulo(String titulo) {
         this.tituloPlaylist = titulo;
-        this.fechaModificacion = new Date();
     }
-    public String getDescripcion() { return descripcion; }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
-        this.fechaModificacion = new Date();
     }
-    public Perfil getPropietario() { return propietario; }
-    public Date getFechaCreacion() { return fechaCreacion; }
-    public Date getFechaModificacion() { return fechaModificacion; }
-    public BufferedImage getImagenPortada() { return imagenPortada; }
+
+    public Perfil getPropietario() {
+        return propietario;
+    }
+
+    public BufferedImage getImagenPortada() {
+        return imagenPortada;
+    }
+
     public void setImagenPortada(BufferedImage imagenPortada) {
         this.imagenPortada = imagenPortada;
-        this.fechaModificacion = new Date();
     }
 
     public int calcularCantidadCanciones() {
@@ -75,7 +75,6 @@ public class Playlist implements ComponentePlaylist {
         System.out.println("Propietario: " + propietario.getNombre());
         System.out.println("Canciones: " + calcularCantidadCanciones());
         System.out.println("Duración total: " + obtenerDuracion() + " min");
-        System.out.println("Fecha creación: " + fechaCreacion);
         System.out.println("Componentes:");
         for (ComponentePlaylist componente : componentes) {
             componente.mostrarInformacion();
@@ -95,15 +94,12 @@ public class Playlist implements ComponentePlaylist {
     public void agregar(ComponentePlaylist componente) {
         if (componente != null && !componentes.contains(componente)) {
             componentes.add(componente);
-            fechaModificacion = new Date();
         }
     }
 
     @Override
     public void eliminar(ComponentePlaylist componente) {
-        if (componentes.remove(componente)) {
-            fechaModificacion = new Date();
-        }
+        componentes.remove(componente);
     }
 
     @Override
