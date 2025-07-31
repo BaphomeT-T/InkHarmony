@@ -1,21 +1,39 @@
 package UserInterface.CustomerControl.Playlist;
 
-import BusinessLogic.ElementoCancion;
+import BusinessLogic.Cancion;
 import BusinessLogic.Playlist;
 import BusinessLogic.PlaylistDAO;
 import DataAccessComponent.DAO.CancionDAO;
 import DataAccessComponent.DTO.CancionDTO;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+
 import java.io.ByteArrayInputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.swing.table.TableColumn;
-import javax.swing.text.TableView;
-import javax.swing.text.TableView.TableCell;
-import javax.swing.text.html.ImageView;
+import javafx.scene.control.TableView;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.paint.ImagePattern;
+import javafx.stage.Stage;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 
 public class AgregarCancionesController {
-    @FXML private TableView<CancionDTO> tablaCanciones;
+    @FXML 
+    private TableView<CancionDTO> tablaCanciones;
     @FXML private TableColumn<CancionDTO, ImageView> colPortada;
     @FXML private TableColumn<CancionDTO, String> colTitulo;
     @FXML private TableColumn<CancionDTO, String> colArtista;
@@ -143,8 +161,8 @@ public class AgregarCancionesController {
         
         try {
             for (CancionDTO cancionDTO : cancionesSeleccionadas) {
-                // Crear ElementoCancion y agregarlo a la playlist
-                ElementoCancion elemento = new ElementoCancion(cancionDTO);
+                // Crear Cancion y agregarlo a la playlist
+                Cancion elemento = new Cancion(cancionDTO);
                 playlistDestino.agregar(elemento);
             }
             

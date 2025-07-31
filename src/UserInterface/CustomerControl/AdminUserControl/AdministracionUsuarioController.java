@@ -293,7 +293,7 @@ public class AdministracionUsuarioController {
     @FXML
     void agregarCancionesFxml() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/registro.fxml"));// colocar la ruta de la ventana
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/CatalogoCanciones/frameCatalogoCanciones.fxml"));// colocar la ruta de la ventana
             Parent root = loader.load();
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
@@ -313,7 +313,7 @@ public class AdministracionUsuarioController {
     @FXML
     void agregarArtistaFxml() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/registro.fxml"));// colocar la ruta de la ventana
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/CatalogoArtistas/PantallaCatalogoArtista.fxml"));// colocar la ruta de la ventana
             Parent root = loader.load();
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
