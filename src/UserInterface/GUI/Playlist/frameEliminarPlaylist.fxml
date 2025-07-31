@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<AnchorPane prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.Playlist.EliminarPlaylistController">
+    <children>
+        <Label layoutX="40.0" layoutY="40.0" text="ELIMINAR PLAYLIST" textFill="WHITE">
+            <font><Font size="36.0"/></font>
+        </Label>
+        
+        <AnchorPane layoutX="40.0" layoutY="100.0" prefHeight="300.0" prefWidth="620.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 25;">
+            <children>
+                <!-- ADVERTENCIAS -->
+                <Label layoutX="40.0" layoutY="30.0" text="⚠️ ADVERTENCIA" textFill="#FF6B6B">
+                    <font><Font size="24.0" style="BOLD"/></font>
+                </Label>
+                
+                <Label layoutX="40.0" layoutY="70.0" text="Estás a punto de eliminar la siguiente playlist:" textFill="WHITE">
+                    <font><Font size="16.0"/></font>
+                </Label>
+                
+                <!-- INFORMACIÓN DE LA PLAYLIST -->
+                <Label layoutX="40.0" layoutY="110.0" text="Título:" textFill="#CCCCCC">
+                    <font><Font size="14.0"/></font>
+                </Label>
+                <Label fx:id="lblTitulo" layoutX="120.0" layoutY="110.0" text="Nombre de la playlist" textFill="WHITE">
+                    <font><Font size="14.0" style="BOLD"/></font>
+                </Label>
+                
+                <Label layoutX="40.0" layoutY="140.0" text="Descripción:" textFill="#CCCCCC">
+                    <font><Font size="14.0"/></font>
+                </Label>
+                <Label fx:id="lblDescripcion" layoutX="140.0" layoutY="140.0" text="Descripción de la playlist" textFill="WHITE">
+                    <font><Font size="14.0"/></font>
+                </Label>
+                
+                <Label layoutX="40.0" layoutY="170.0" text="Canciones:" textFill="#CCCCCC">
+                    <font><Font size="14.0"/></font>
+                </Label>
+                <Label fx:id="lblCanciones" layoutX="130.0" layoutY="170.0" text="0 canciones" textFill="WHITE">
+                    <font><Font size="14.0"/></font>
+                </Label>
+                
+                <Label layoutX="40.0" layoutY="200.0" text="Duración:" textFill="#CCCCCC">
+                    <font><Font size="14.0"/></font>
+                </Label>
+                <Label fx:id="lblDuracion" layoutX="130.0" layoutY="200.0" text="0h 0m" textFill="WHITE">
+                    <font><Font size="14.0"/></font>
+                </Label>
+                
+                <!-- MENSAJE DE CONFIRMACIÓN -->
+                <Label layoutX="40.0" layoutY="240.0" text="Esta acción no se puede deshacer. ¿Estás seguro de que quieres continuar?" textFill="#FF6B6B">
+                    <font><Font size="14.0" style="BOLD"/></font>
+                </Label>
+                
+                <!-- BOTONES -->
+                <Button fx:id="btnCancelar" layoutX="200.0" layoutY="280.0" onAction="#cancelarEliminacion" 
+                        prefWidth="120.0" prefHeight="40.0" text="Cancelar" 
+                        style="-fx-background-color: #575a81; -fx-background-radius: 10;">
+                    <font><Font size="14.0"/></font>
+                </Button>
+                
+                <Button fx:id="btnEliminar" layoutX="340.0" layoutY="280.0" onAction="#confirmarEliminacion" 
+                        prefWidth="120.0" prefHeight="40.0" text="Eliminar" 
+                        style="-fx-background-color: #FF6B6B; -fx-background-radius: 10;">
+                    <font><Font size="14.0"/></font>
+                </Button>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane> 
