@@ -10,5 +10,8 @@
 
 # Ignorar archivos de configuración de IntelliJ IDEA
 .idea/
+<<<<<<< HEAD
 *.iml
+=======
+>>>>>>> 99ad51713fc8d125dc23b0091cc2affbf0dc4df4
 

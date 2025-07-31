@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="797.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" stylesheets="@catalogoArtistas.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.CatalogoArtistas.CatalogoArtistasController">
+   <children>
+      <AnchorPane layoutY="-13.0" prefHeight="168.0" prefWidth="1280.0" style="-fx-background-color: #08072C;">
+         <children>
+            <Label layoutX="56.0" layoutY="81.0" maxHeight="63.0" maxWidth="407.0" prefHeight="118.0" prefWidth="364.0" text="ARTISTA" textFill="WHITE">
+               <font>
+                  <Font size="80.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <Button fx:id="btnSubir" layoutX="56.0" layoutY="200.0" mnemonicParsing="false" onAction="#handlePantallaSubirArtista" prefHeight="45.0" prefWidth="54.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+         <graphic>
+            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../Resources/img/CatalogoArtistas/subir.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <HBox layoutX="132.0" layoutY="206.0" prefHeight="33.0" prefWidth="262.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+         <children>
+            <TextField fx:id="txtBuscar" alignment="BASELINE_CENTER" promptText="Busca un artista por..." style="-fx-background-radius: 20; -fx-background-color: #9190C2;">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <ImageView fitHeight="34.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" translateX="45.0" translateY="1.0" translateZ="5.0">
+               <image>
+                  <Image url="@../../Resources/img/CatalogoArtistas/Lupa.png" />
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
+      <TableView fx:id="tableArtistas" layoutX="50.0" layoutY="260.0" prefHeight="489.0" prefWidth="1176.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 20;">
+        <columns>
+          <TableColumn fx:id="colNombreConImagen" minWidth="0.0" prefWidth="263.0092315673828" text="Artista" />
+            <TableColumn fx:id="colGenero" prefWidth="533.0" text="Genero Musical" />
+            <TableColumn fx:id="colBiografia" prefWidth="210.8905029296875" text="Biografia" />
+            <TableColumn fx:id="colAcciones" prefWidth="166.209228515625" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>
