@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="UserInterface.CustomerControl.Recomendaciones.PlaylistItemController"
+      prefHeight="150.0" prefWidth="150.0"
+      spacing="5"
+      style="-fx-background-color: #1D1F4E; -fx-border-color: #B0BAC3; -fx-padding: 8; -fx-background-radius: 10;">
+
+    <children>
+        <GridPane fx:id="grillaImagenes" hgap="2" vgap="2">
+            <columnConstraints>
+                <ColumnConstraints prefWidth="75"/>
+                <ColumnConstraints prefWidth="75"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints prefHeight="70"/>
+                <RowConstraints prefHeight="70"/>
+            </rowConstraints>
+            <children>
+                <ImageView fx:id="imagen1" fitWidth="70.0" fitHeight="70.0" preserveRatio="true"/>
+                <ImageView fx:id="imagen2" fitWidth="70.0" fitHeight="70.0" GridPane.columnIndex="1" preserveRatio="true"/>
+                <ImageView fx:id="imagen3" fitWidth="70.0" fitHeight="70.0" GridPane.rowIndex="1" preserveRatio="true"/>
+                <ImageView fx:id="imagen4" fitWidth="70.0" fitHeight="70.0" GridPane.columnIndex="1" GridPane.rowIndex="1" preserveRatio="true"/>
+            </children>
+        </GridPane>
+
+        <Label fx:id="lblNombrePlaylist" textFill="white" wrapText="true" style="-fx-font-size: 13px;"/>
+
+    </children>
+</VBox>
