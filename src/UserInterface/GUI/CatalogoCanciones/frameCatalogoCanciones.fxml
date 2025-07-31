@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.CatalogoCanciones.CatalogoCancionesController"> <!-- Poner NOMBRE del controlador correcto -->
+
+    <children>
+
+        <!-- HEADER -->
+        <AnchorPane layoutY="-13.0" prefHeight="168.0" prefWidth="1280.0" style="-fx-background-color: #08072C;">
+            <children>
+                <Label layoutX="27.0" layoutY="41.0" maxHeight="118.0" maxWidth="452.0" prefHeight="118.0" prefWidth="452.0" text="CANCIONES" textFill="WHITE">
+                    <font>
+                        <Font size="80.0" />
+                    </font>
+                </Label>
+            </children>
+        </AnchorPane>
+
+        <!-- BOTÓN SUBIR -->
+        <Button layoutX="56.0" layoutY="155.0" mnemonicParsing="false" onAction="#handlePantallaSubirCancion" prefHeight="55.0" prefWidth="57.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+            <graphic>
+                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../Resources/img/CatalogoCanciones/subir.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button>
+
+        <!-- BARRA DE BÚSQUEDA -->
+        <HBox layoutX="136.0" layoutY="166.0" prefHeight="33.0" prefWidth="262.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+            <children>
+                <TextField fx:id="txtBuscar" alignment="BASELINE_CENTER" style="-fx-background-radius: 20; -fx-background-color: #9190C2;" promptText="Busca una canción por...">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </TextField>
+                <ImageView fitHeight="34.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true" translateX="45.0" translateY="1.0" translateZ="5.0">
+                    <image>
+                        <Image url="@../../Resources/img/CatalogoCanciones/Lupa.png" />
+                    </image>
+                </ImageView>
+            </children>
+        </HBox>
+
+        <!-- TABLA DE CANCIONES -->
+        <TableView fx:id="tableCanciones" layoutX="55.0" layoutY="221.0" prefHeight="480.0" prefWidth="1170.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 20;">
+            <columns>
+                <TableColumn fx:id="colTituloConImagen" prefWidth="400.0" text="Título" reorderable="false" />
+                <TableColumn fx:id="colGenero" prefWidth="400.0" text="Género" reorderable="false" />
+                <TableColumn fx:id="colDuracion" prefWidth="370.0" text="Duración" reorderable="false" />
+            </columns>
+        </TableView>
+        
+
+        
+        <!-- BOTONES DE ACCIÓN FUERA DEL HBOX -->
+        <Button fx:id="btnEditar" layoutX="55.0" layoutY="720.0" mnemonicParsing="false" onAction="#handleEditarCancion" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #9190C2; -fx-background-radius: 10; -fx-cursor: hand;" text="Editar Canción" textFill="WHITE">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Button>
+        
+        <Button fx:id="btnEliminar" layoutX="275.0" layoutY="720.0" mnemonicParsing="false" onAction="#handleEliminarCancion" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #9190C2; -fx-background-radius: 10; -fx-cursor: hand;" text="Eliminar Canción" textFill="WHITE">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Button>
+
+    </children>
+</AnchorPane>
