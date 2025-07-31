@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.Playlist.AgregarCancionesController">
+    <children>
+        <!-- HEADER -->
+        <Label layoutX="40.0" layoutY="30.0" text="CANCIONES DISPONIBLES" textFill="WHITE">
+            <font><Font size="36.0"/></font>
+        </Label>
+        
+        <!-- INSTRUCCIONE -->
+        <Label layoutX="40.0" layoutY="80.0" text="Selecciona las canciones que quieras con el botón ⊕ y cuando estés listo, dale a Agregar canciones :)" textFill="WHITE">
+            <font><Font size="14.0"/></font>
+        </Label>
+        
+        <!-- BARRA DE BUSQUEDA -->
+        <HBox layoutX="40.0" layoutY="120.0" prefHeight="40.0" prefWidth="400.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+            <children>
+                <TextField fx:id="txtBuscarCancion" alignment="BASELINE_CENTER" prefWidth="350.0"
+                           promptText="Busca una canción por..." style="-fx-background-radius: 20; -fx-background-color: #9190C2; -fx-text-fill: #FFFFFF;">
+                    <font><Font size="14.0"/></font>
+                </TextField>
+                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                    <image><Image url="@../../Resources/img/CatalogoCanciones/Lupa.png"/></image>
+                </ImageView>
+            </children>
+        </HBox>
+        
+        <!-- TABLA DE CANCIONES -->
+        <TableView fx:id="tablaCanciones" layoutX="40.0" layoutY="180.0" prefHeight="400.0" prefWidth="920.0"
+                   style="-fx-background-color: #1B1A55; -fx-background-radius: 20;">
+            <columns>
+                <TableColumn fx:id="colPortada" prefWidth="60.0" text="Portada" />
+                <TableColumn fx:id="colTitulo" prefWidth="250.0" text="Título" />
+                <TableColumn fx:id="colArtista" prefWidth="200.0" text="Artista" />
+                <TableColumn fx:id="colFecha" prefWidth="150.0" text="Fecha de agregación" />
+                <TableColumn fx:id="colAnio" prefWidth="120.0" text="Año de la canción" />
+                <TableColumn fx:id="colDuracion" prefWidth="100.0" text="Duración" />
+                <TableColumn fx:id="colAgregar" prefWidth="80.0" text="Agregar" />
+            </columns>
+        </TableView>
+        
+        <!-- BOTÓN AGREGAR CANCIONES -->
+        <Button fx:id="btnAgregarCanciones" layoutX="350.0" layoutY="600.0" onAction="#agregarCancionesSeleccionadas" 
+                prefWidth="300.0" prefHeight="50.0" text="Agregar canciones" 
+                style="-fx-background-color: #9190C2; -fx-background-radius: 10;">
+            <font><Font size="18.0"/></font>
+        </Button>
+    </children>
+</AnchorPane> 
