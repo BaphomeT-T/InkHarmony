@@ -1,3 +1,4 @@
+/*
 package UserInterface.CustomerControl.Playlist;
 
 import BusinessLogic.ElementoCancion;
@@ -10,8 +11,16 @@ import javax.swing.text.TableView;
 import javax.swing.text.TableView.TableCell;
 import javax.swing.text.html.ImageView;
 
+import com.sun.scenario.effect.impl.ImagePool;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
+
 public class VistaPlaylistController {
-    @FXML private ImageView imgPortadaPlaylist;
+    @FXML
+    private ImageView imgPortadaPlaylist;
     @FXML private Label lblTituloPlaylist;
     @FXML private Label lblInfoPlaylist;
     @FXML private Label lblDescripcion;
@@ -177,4 +186,4 @@ public class VistaPlaylistController {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
-} 
+} */
