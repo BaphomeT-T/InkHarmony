@@ -61,30 +61,30 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
 
                 // Inserta relaciones con artistas (solo si no es null)
                 if (cancion.getArtistas() != null) {
-                for (ArtistaDTO artista : cancion.getArtistas()) {
-                    String insertArtista = "INSERT INTO Cancion_Artista(id_cancion, id_artista) VALUES (?, ?)";
-                    PreparedStatement psa = conn.prepareStatement(insertArtista);
-                    psa.setInt(1, idGenerado);
-                    psa.setInt(2, artista.getId());
-                    psa.executeUpdate();
+                    for (ArtistaDTO artista : cancion.getArtistas()) {
+                        String insertArtista = "INSERT INTO Cancion_Artista(id_cancion, id_artista) VALUES (?, ?)";
+                        PreparedStatement psa = conn.prepareStatement(insertArtista);
+                        psa.setInt(1, idGenerado);
+                        psa.setInt(2, artista.getId());
+                        psa.executeUpdate();
                     }
                 }
 
                 // Inserta relaciones con géneros (solo si no es null)
                 if (cancion.getGeneros() != null) {
-                for (Genero genero : cancion.getGeneros()) {
-                    String insertGenero = "INSERT INTO Cancion_Genero(id_cancion, id_genero) VALUES (?, ?)";
-                    PreparedStatement psg = conn.prepareStatement(insertGenero);
-                    psg.setInt(1, idGenerado);
-                    psg.setInt(2, genero.ordinal() + 1); // Se asume que el ID en BD coincide con el orden del enum
-                    psg.executeUpdate();
+                    for (Genero genero : cancion.getGeneros()) {
+                        String insertGenero = "INSERT INTO Cancion_Genero(id_cancion, id_genero) VALUES (?, ?)";
+                        PreparedStatement psg = conn.prepareStatement(insertGenero);
+                        psg.setInt(1, idGenerado);
+                        psg.setInt(2, genero.ordinal() + 1); // Se asume que el ID en BD coincide con el orden del enum
+                        psg.executeUpdate();
                     }
                 }
             }
 
             return true;
         } catch (Exception e) {
-            throw e;
+            throw new Exception("Error al registrar canción: " + e.getMessage(), e);
         }
     }
 
@@ -98,15 +98,11 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
     public List<CancionDTO> buscarTodo() throws Exception {
         List<CancionDTO> lista = new ArrayList<>();
         String query = "SELECT id_cancion, titulo, duracion, anio, fecha_registro, archivo_mp3, portada FROM Cancion";
-        
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        
+
         try {
-            conn = openConnection();
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(query);
+            Connection conn = openConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
 
             while (rs.next()) {
                 int id = rs.getInt("id_cancion");
@@ -124,23 +120,14 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
                 cancion.setIdCancion(id);
                 lista.add(cancion);
             }
-            
+
             System.out.println("BuscarTodo completado exitosamente. Canciones encontradas: " + lista.size());
-            
+
         } catch (Exception e) {
             System.out.println("Error en buscarTodo: " + e.getMessage());
-            throw e;
-        } finally {
-            // Cerrar recursos en orden inverso
-            try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-                // No cerramos la conexión aquí para mantenerla disponible
-            } catch (SQLException e) {
-                System.out.println("Error al cerrar recursos: " + e.getMessage());
-            }
+            throw new Exception("Error al obtener canciones: " + e.getMessage(), e);
         }
-        
+
         return lista;
     }
 
@@ -177,10 +164,9 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
                 return null;
             }
         } catch (Exception e) {
-            throw e;
+            throw new Exception("Error al buscar canción: " + e.getMessage(), e);
         }
     }
-
 
     /**
      * Busca canciones por coincidencia exacta de su título.
@@ -192,9 +178,9 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
         List<CancionDTO> lista = new ArrayList<>();
         String query = "SELECT id_cancion, titulo, duracion, anio, fecha_registro, archivo_mp3, portada FROM Cancion WHERE titulo = ?";
 
-        try (Connection conn = openConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
-
+        try {
+            Connection conn = openConnection();
+            PreparedStatement ps = conn.prepareStatement(query);
             ps.setString(1, nombre);
             ResultSet rs = ps.executeQuery();
 
@@ -216,7 +202,7 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
             }
 
         } catch (Exception e) {
-            throw e;
+            throw new Exception("Error al buscar canciones por nombre: " + e.getMessage(), e);
         }
 
         return lista;
@@ -248,7 +234,8 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
         queryBuilder.append(" WHERE id_cancion = ?");
         parametros.add(entity.getIdCancion());
 
-        try (Connection conn = openConnection()) {
+        try {
+            Connection conn = openConnection();
             PreparedStatement ps = conn.prepareStatement(queryBuilder.toString());
 
             // Asignar parámetros dinámicamente
@@ -267,42 +254,37 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
 
             //Actualizar artistas
             String eliminarArtistas = "DELETE FROM Cancion_Artista WHERE id_cancion = ?";
-            try (PreparedStatement psDelete = conn.prepareStatement(eliminarArtistas)) {
-                psDelete.setInt(1, entity.getIdCancion());
-                psDelete.executeUpdate();
-            }
+            PreparedStatement psDelete = conn.prepareStatement(eliminarArtistas);
+            psDelete.setInt(1, entity.getIdCancion());
+            psDelete.executeUpdate();
 
             for (ArtistaDTO artista : entity.getArtistas()) {
                 String insertarArtista = "INSERT INTO Cancion_Artista(id_cancion, id_artista) VALUES (?, ?)";
-                try (PreparedStatement psInsert = conn.prepareStatement(insertarArtista)) {
-                    psInsert.setInt(1, entity.getIdCancion());
-                    psInsert.setInt(2, artista.getId());
-                    psInsert.executeUpdate();
-                }
+                PreparedStatement psInsert = conn.prepareStatement(insertarArtista);
+                psInsert.setInt(1, entity.getIdCancion());
+                psInsert.setInt(2, artista.getId());
+                psInsert.executeUpdate();
             }
 
             //  Actualizar géneros
             String eliminarGeneros = "DELETE FROM Cancion_Genero WHERE id_cancion = ?";
-            try (PreparedStatement psDelete = conn.prepareStatement(eliminarGeneros)) {
-                psDelete.setInt(1, entity.getIdCancion());
-                psDelete.executeUpdate();
-            }
+            PreparedStatement psDelete2 = conn.prepareStatement(eliminarGeneros);
+            psDelete2.setInt(1, entity.getIdCancion());
+            psDelete2.executeUpdate();
 
             for (Genero genero : entity.getGeneros()) {
                 String insertarGenero = "INSERT INTO Cancion_Genero(id_cancion, id_genero) VALUES (?, ?)";
-                try (PreparedStatement psInsert = conn.prepareStatement(insertarGenero)) {
-                    psInsert.setInt(1, entity.getIdCancion());
-                    psInsert.setInt(2, genero.ordinal() + 1); // Se asume ID = ordinal + 1
-                    psInsert.executeUpdate();
-                }
+                PreparedStatement psInsert2 = conn.prepareStatement(insertarGenero);
+                psInsert2.setInt(1, entity.getIdCancion());
+                psInsert2.setInt(2, genero.ordinal() + 1); // Se asume ID = ordinal + 1
+                psInsert2.executeUpdate();
             }
 
             return true;
         } catch (Exception e) {
-            throw e;
+            throw new Exception("Error al actualizar canción: " + e.getMessage(), e);
         }
     }
-
 
     /**
      * Elimina una canción de la base de datos según su ID.
@@ -313,20 +295,16 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
     @Override
     public boolean eliminar(Integer id) throws Exception {
         String query = "DELETE FROM Cancion WHERE id_cancion = ?";
-        Connection conn = null;
-        PreparedStatement ps = null;
         try {
-            conn = openConnection(); // que abra una conexión nueva
-            ps = conn.prepareStatement(query);
+            Connection conn = openConnection();
+            PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, id);
             ps.executeUpdate();
             return true;
-        } finally {
-            if (ps != null) ps.close();
-            if (conn != null) conn.close();
+        } catch (Exception e) {
+            throw new Exception("Error al eliminar canción: " + e.getMessage(), e);
         }
     }
-
 
     /**
      * Recupera los artistas asociados a una canción específica.
@@ -339,10 +317,12 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
         String query = "SELECT a.id_artista, a.nombre FROM Artista a " +
                 "JOIN Cancion_Artista ca ON a.id_artista = ca.id_artista " +
                 "WHERE ca.id_cancion = ?";
+
         Connection conn = openConnection();
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setInt(1, idCancion);
         ResultSet rs = ps.executeQuery();
+
         while (rs.next()) {
             ArtistaDTO artista = new ArtistaDTO();
             artista.setId(rs.getInt("id_artista"));
@@ -364,22 +344,25 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
         String query = "SELECT g.nombre_genero FROM Genero g " +
                 "JOIN Cancion_Genero cg ON g.id_genero = cg.id_genero " +
                 "WHERE cg.id_cancion = ?";
+
         Connection conn = openConnection();
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setInt(1, idCancion);
         ResultSet rs = ps.executeQuery();
+
         while (rs.next()) {
             String nombre = rs.getString("nombre_genero");
             lista.add(Genero.valueOf(nombre));
         }
         return lista;
     }
+
     public boolean existeCancionConTitulo(String titulo) {
         String sql = "SELECT COUNT(*) FROM Cancion WHERE Titulo = ? AND Estado = 'A'";
 
-        try (Connection conn = openConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
+        try {
+            Connection conn = openConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, titulo);
             ResultSet rs = stmt.executeQuery();
 
