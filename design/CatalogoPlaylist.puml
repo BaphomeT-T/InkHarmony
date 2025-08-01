@@ -3,18 +3,12 @@ package "CatalogoPlaylist" {
 
     interface "ComponentePlaylist" {
         +mostrarInformacion(): void
-        +obtenerDuracion(): double
-        +agregar(componente: ComponentePlaylist): void
-        +eliminar(componente: ComponentePlaylist): void
-        +getComponentes(): List<ComponentePlaylist>
     }
 
     class "Playlist" implements "ComponentePlaylist" {
         -idPlaylist: int
         -tituloPlaylist: String
         -descripcion: String
-        -fechaCreacion: Date
-        -fechaModificacion: Date
         -propietario: Perfil
         -imagenPortada: BufferedImage
         -componentes: List<ComponentePlaylist>
@@ -25,26 +19,6 @@ package "CatalogoPlaylist" {
         +getPropietario(): Perfil
         +calcularCantidadCanciones(): int
 
-        +mostrarInformacion(): void
-        +obtenerDuracion(): double
-        +agregar(componente: ComponentePlaylist): void
-        +eliminar(componente: ComponentePlaylist): void
-        +getComponentes(): List<ComponentePlaylist>
-    }
-
-    class "ElementoCancion" implements "ComponentePlaylist" {
-        -cancion: Cancion
-        -fechaAgregado: Date
-        -orden: int
-
-        +ElementoCancion(cancion: Cancion)
-        +ElementoCancion(cancion: Cancion, orden: int)
-        +getCancion(): Cancion
-        +getFechaAgregado(): Date
-        +getOrden(): int
-        +setOrden(orden: int): void
-
-        ' Implementación de ComponentePlaylist (interfaz común)
         +mostrarInformacion(): void
         +obtenerDuracion(): double
         +agregar(componente: ComponentePlaylist): void
@@ -84,27 +58,16 @@ package "CatalogoCanciones" {
         -anioCancion: int
         -portadaCancion: BufferedImage
         -archivoMP3: BLOB
+        -fechaAgregado: Date
+        -orden: int
 
-    }
-    ElementoCancion --> Cancion : encapsula
-}
-
-package "AdministracionUsuarios" {
-    class "Perfil" {
-        -nombre: String
-        -apellido: String
-        -correo: String
-        -contrasenia: String
-        -estadoCuenta: String
-        -fechaRegistro: Date
-        -foto: String
-        -preferenciasMusicales: List<Genero>
-        -tipoUsuario: TipoUsuario
-
+        +getFechaAgregado(): Date
+        +getOrden(): int
+        +setOrden(orden: int): void
     }
 }
 
-Playlist --> Perfil : propietario
-PlaylistDAO --> Perfil : filtra por usuario
+' Relaciones de implementación
+Cancion ..|> ComponentePlaylist : implements
 
 @enduml
