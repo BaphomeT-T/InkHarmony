@@ -25,12 +25,18 @@ public class Playlist implements ComponentePlaylist {
     private CancionDAO cancionDAO;
     private List<ComponentePlaylist> componentes;
 
+    /**
+     * Constructor vacío
+     */
     public Playlist() {
         this.playlistDAO = new PlaylistDAO();
         this.cancionDAO = new CancionDAO();
         this.componentes = new ArrayList<>();
     }
 
+    /**
+     * Constructor lleno xD
+     */
     public Playlist(String titulo, String descripcion, int idPropietario) {
         this();
         this.playlistDTO = new PlaylistDTO(titulo, descripcion, idPropietario, null, new ArrayList<>());
@@ -247,14 +253,16 @@ public class Playlist implements ComponentePlaylist {
                 CancionDTO cancionDTO = cancionDAO.buscarPorId(idCancion);
                 if (cancionDTO != null) {
                     Cancion cancion = new Cancion();
-                    // Aquí podrías cargar la canción completa si es necesario
+                    // Aquí se puede cargar la canción completa si es necesario
                     componentes.add(cancion);
                 }
             }
         }
     }
 
-    // Getters y Setters
+    /**
+     * Getter y setters
+     */
     public PlaylistDTO getPlaylistDTO() { return playlistDTO; }
     public void setPlaylistDTO(PlaylistDTO playlistDTO) { this.playlistDTO = playlistDTO; }
     public List<ComponentePlaylist> getComponentes() { return componentes; }

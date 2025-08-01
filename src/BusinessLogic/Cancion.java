@@ -177,5 +177,31 @@ public class Cancion implements ComponentePlaylist{
         }
     }
 
+    @Override
+    public void mostrarInformacion() {
+        if (cancion != null) {
+            System.out.println("Canción: " + cancion.getTitulo());
+            System.out.println("Duración: " + cancion.getDuracion() + " segundos");
+            System.out.println("Año: " + cancion.getAnio());
+            System.out.println("Géneros: " + cancion.getGeneros());
+            System.out.println("Artistas: " + cancion.getArtistas());
+        }
+    }
 
+    @Override
+    public double obtenerDuracion() {
+        return cancion != null ? cancion.getDuracion() : 0.0;
+    }
+
+    @Override
+    public String getTitulo() {
+        return cancion != null ? cancion.getTitulo() : "";
+    }
+
+    /**
+     * Carga una canción de prueba
+     */
+    public void cargarCancion(int idCancion) throws Exception {
+        this.cancion = buscarPorId(idCancion);
+    }
 }
