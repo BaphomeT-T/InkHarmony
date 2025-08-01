@@ -67,7 +67,6 @@ package "CatalogoCanciones" {
     }
 }
 
-' Relaciones de implementación
 Cancion ..|> ComponentePlaylist : implements
 
 @enduml

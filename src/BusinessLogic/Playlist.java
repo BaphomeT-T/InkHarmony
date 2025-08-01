@@ -1,109 +1,261 @@
+/*
+|-----------------------------------------------|
+| © 2025 EPN-FIS, Todos los derechos reservados |
+| GR1SW                                         |
+|-----------------------------------------------|
+Autores: Grupo C
+Clase de lógica de negocio para gestión de playlists.
+Implementa el patrón Composite para manejar componentes de playlist.
+*/
 package BusinessLogic;
 
-import java.awt.image.BufferedImage;
+import DataAccessComponent.DAO.PlaylistDAO;
+import DataAccessComponent.DAO.CancionDAO;
+import DataAccessComponent.DTO.PlaylistDTO;
+import DataAccessComponent.DTO.CancionDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Playlist implements ComponentePlaylist {
-    private int idPlaylist;
-    private String tituloPlaylist;
-    private String descripcion;
-    private Perfil propietario;
-    private BufferedImage imagenPortada;
+
+    private PlaylistDTO playlistDTO;
+    private PlaylistDAO playlistDAO;
+    private CancionDAO cancionDAO;
     private List<ComponentePlaylist> componentes;
 
-    public Playlist(String titulo, String descripcion, Perfil propietario) {
-        this.tituloPlaylist = titulo;
-        this.descripcion = descripcion;
-        this.propietario = propietario;
+    public Playlist() {
+        this.playlistDAO = new PlaylistDAO();
+        this.cancionDAO = new CancionDAO();
         this.componentes = new ArrayList<>();
     }
 
-    public int getIdPlaylist() {
-        return idPlaylist;
+    public Playlist(String titulo, String descripcion, int idPropietario) {
+        this();
+        this.playlistDTO = new PlaylistDTO(titulo, descripcion, idPropietario, null, new ArrayList<>());
     }
 
-    public void setIdPlaylist(int idPlaylist) {
-        this.idPlaylist = idPlaylist;
+    /**
+     * Registra una nueva playlist en el sistema.
+     */
+    public boolean registrar(String titulo, String descripcion, int idPropietario,
+                             byte[] imagenPortada, List<Integer> cancionesIds) throws Exception {
+
+        PlaylistDTO nuevaPlaylist = new PlaylistDTO(titulo, descripcion, idPropietario,
+                imagenPortada, cancionesIds);
+
+        boolean resultado = playlistDAO.registrar(nuevaPlaylist);
+        if (resultado) {
+            this.playlistDTO = nuevaPlaylist;
+            cargarComponentes();
+        }
+
+        return resultado;
     }
 
-    public String getTitulo() {
-        return tituloPlaylist;
+    /**
+     * Busca todas las playlists.
+     */
+    public List<PlaylistDTO> buscarTodo() throws Exception {
+        return playlistDAO.buscarTodo();
     }
 
-    public void setTitulo(String titulo) {
-        this.tituloPlaylist = titulo;
+    /**
+     * Busca playlist por ID.
+     */
+    public PlaylistDTO buscarPorId(int id) throws Exception {
+        PlaylistDTO playlist = playlistDAO.buscarPorId(id);
+        if (playlist != null) {
+            this.playlistDTO = playlist;
+            cargarComponentes();
+        }
+        return playlist;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    /**
+     * Busca playlists por nombre.
+     */
+    public List<PlaylistDTO> buscarPorNombre(String nombre) throws Exception {
+        return playlistDAO.buscarPorNombre(nombre);
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    /**
+     * Obtiene playlists de un usuario específico.
+     */
+    public List<PlaylistDTO> obtenerPlaylistPorUsuario(int idUsuario) throws Exception {
+        return playlistDAO.obtenerPlaylistPorUsuario(idUsuario);
     }
 
-    public Perfil getPropietario() {
-        return propietario;
+    /**
+     * Actualiza una playlist existente.
+     */
+    public boolean actualizar(PlaylistDTO playlist) throws Exception {
+        boolean resultado = playlistDAO.actualizar(playlist);
+        if (resultado) {
+            this.playlistDTO = playlist;
+            cargarComponentes();
+        }
+        return resultado;
     }
 
-    public BufferedImage getImagenPortada() {
-        return imagenPortada;
+    /**
+     * Elimina una playlist.
+     */
+    public boolean eliminar(int idPlaylist) throws Exception {
+        return playlistDAO.eliminar(idPlaylist);
     }
 
-    public void setImagenPortada(BufferedImage imagenPortada) {
-        this.imagenPortada = imagenPortada;
+    /**
+     * Agrega una canción a la playlist.
+     */
+    public boolean agregarCancion(int idCancion) throws Exception {
+        if (playlistDTO == null) {
+            throw new Exception("No hay playlist cargada");
+        }
+
+        if (playlistDTO.getCancionesIds() == null) {
+            playlistDTO.setCancionesIds(new ArrayList<>());
+        }
+
+        if (!playlistDTO.getCancionesIds().contains(idCancion)) {
+            playlistDTO.getCancionesIds().add(idCancion);
+            return playlistDAO.actualizar(playlistDTO);
+        }
+
+        return false; // Ya existe la canción
     }
 
-    public int calcularCantidadCanciones() {
-        int contador = 0;
-        for (ComponentePlaylist componente : componentes) {
-            if (componente instanceof Cancion) {
-                contador++;
-            } else if (componente instanceof Playlist) {
-                contador += ((Playlist) componente).calcularCantidadCanciones();
+    /**
+     * Elimina una canción de la playlist.
+     */
+    public boolean eliminarCancion(int idCancion) throws Exception {
+        if (playlistDTO == null || playlistDTO.getCancionesIds() == null) {
+            return false;
+        }
+
+        boolean eliminado = playlistDTO.getCancionesIds().remove(Integer.valueOf(idCancion));
+        if (eliminado) {
+            return playlistDAO.actualizar(playlistDTO);
+        }
+
+        return false;
+    }
+
+    /**
+     * Obtiene los bytes de audio de todas las canciones para reproducción.
+     */
+    public List<byte[]> obtenerCancionesParaReproduccion() throws Exception {
+        if (playlistDTO == null) {
+            return new ArrayList<>();
+        }
+
+        List<byte[]> cancionesBytes = new ArrayList<>();
+        List<CancionDTO> canciones = playlistDAO.obtenerCancionesCompletasDePlaylist(playlistDTO.getIdPlaylist());
+
+        for (CancionDTO cancion : canciones) {
+            if (cancion.getArchivoMP3() != null) {
+                cancionesBytes.add(cancion.getArchivoMP3());
             }
         }
-        return contador;
+
+        return cancionesBytes;
     }
+
+    /**
+     * Reproduce la playlist usando el reproductor MP3.
+     */
+    public void reproducir() throws Exception {
+        List<byte[]> cancionesBytes = obtenerCancionesParaReproduccion();
+        if (!cancionesBytes.isEmpty()) {
+            ReproductorMP3 reproductor = ReproductorMP3.getInstancia(cancionesBytes);
+            reproductor.reproducir();
+        } else {
+            throw new Exception("La playlist está vacía o no tiene archivos de audio");
+        }
+    }
+
+    // Implementación de ComponentePlaylist
 
     @Override
     public void mostrarInformacion() {
-        System.out.println("=== PLAYLIST ===");
-        System.out.println("Título: " + tituloPlaylist);
-        System.out.println("Descripción: " + descripcion);
-        System.out.println("Propietario: " + propietario.getNombre());
-        System.out.println("Canciones: " + calcularCantidadCanciones());
-        System.out.println("Duración total: " + obtenerDuracion() + " min");
-        System.out.println("Componentes:");
-        for (ComponentePlaylist componente : componentes) {
-            componente.mostrarInformacion();
+        if (playlistDTO != null) {
+            System.out.println("Playlist: " + playlistDTO.getTituloPlaylist());
+            System.out.println("Descripción: " + playlistDTO.getDescripcion());
+            System.out.println("Cantidad de canciones: " + calcularCantidadCanciones());
+            System.out.println("Duración total: " + obtenerDuracion() + " segundos");
         }
     }
 
     @Override
     public double obtenerDuracion() {
         double duracionTotal = 0;
-        for (ComponentePlaylist componente : componentes) {
-            duracionTotal += componente.obtenerDuracion();
+        try {
+            if (playlistDTO != null) {
+                List<CancionDTO> canciones = playlistDAO.obtenerCancionesCompletasDePlaylist(playlistDTO.getIdPlaylist());
+                for (CancionDTO cancion : canciones) {
+                    duracionTotal += cancion.getDuracion();
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error al calcular duración: " + e.getMessage());
         }
         return duracionTotal;
     }
 
     @Override
+    public String getTitulo() {
+        return playlistDTO != null ? playlistDTO.getTituloPlaylist() : "";
+    }
+
+    /**
+     * Agrega un componente a la playlist (patrón Composite).
+     */
     public void agregar(ComponentePlaylist componente) {
-        if (componente != null && !componentes.contains(componente)) {
-            componentes.add(componente);
+        if (componentes == null) {
+            componentes = new ArrayList<>();
+        }
+        componentes.add(componente);
+    }
+
+    /**
+     * Elimina un componente de la playlist.
+     */
+    public void eliminar(ComponentePlaylist componente) {
+        if (componentes != null) {
+            componentes.remove(componente);
         }
     }
 
-    @Override
-    public void eliminar(ComponentePlaylist componente) {
-        componentes.remove(componente);
+    /**
+     * Calcula la cantidad total de canciones.
+     */
+    public int calcularCantidadCanciones() {
+        if (playlistDTO != null && playlistDTO.getCancionesIds() != null) {
+            return playlistDTO.getCancionesIds().size();
+        }
+        return 0;
     }
 
-    @Override
-    public List<ComponentePlaylist> getComponentes() {
-        return new ArrayList<>(componentes);
+    /**
+     * Carga los componentes de la playlist desde la base de datos.
+     */
+    private void cargarComponentes() throws Exception {
+        if (playlistDTO != null && playlistDTO.getCancionesIds() != null) {
+            componentes = new ArrayList<>();
+            for (Integer idCancion : playlistDTO.getCancionesIds()) {
+                CancionDTO cancionDTO = cancionDAO.buscarPorId(idCancion);
+                if (cancionDTO != null) {
+                    Cancion cancion = new Cancion();
+                    // Aquí podrías cargar la canción completa si es necesario
+                    componentes.add(cancion);
+                }
+            }
+        }
     }
+
+    // Getters y Setters
+    public PlaylistDTO getPlaylistDTO() { return playlistDTO; }
+    public void setPlaylistDTO(PlaylistDTO playlistDTO) { this.playlistDTO = playlistDTO; }
+    public List<ComponentePlaylist> getComponentes() { return componentes; }
 }
