@@ -1,9 +1,11 @@
+/*
 package BusinessLogic;
 
 import DataAccessComponent.DTO.CancionDTO;
 import DataAccessComponent.DTO.UsuarioDTO;
 import java.util.List;
 
+*/
 /**
  * Clase de lógica de negocio que gestiona las recomendaciones musicales personalizadas en InkHarmony.
  * <p>
@@ -14,10 +16,12 @@ import java.util.List;
  * @author Grupo E - InkHarmony Team
  * @version 1.0
  * @since 1.0
- */
+ *//*
+
 public class ServicioRecomendaciones {
     
-    /**
+    */
+/**
      * Genera una lista de canciones recomendadas en base al usuario actual, un género específico,
      * y la opción de mostrar solo estrenos recientes.
      *
@@ -25,7 +29,8 @@ public class ServicioRecomendaciones {
      * @param genero   Género musical específico a filtrar (puede ser null para no filtrar)
      * @param estrenos true si se desea mostrar solo canciones añadidas recientemente
      * @return Lista de canciones recomendadas según los filtros aplicados
-     */
+     *//*
+
     public List<CancionDTO> recomendarCanciones(UsuarioDTO usuario,
                                                 Genero genero,
                                                 boolean estrenos) {
@@ -37,4 +42,4 @@ public class ServicioRecomendaciones {
 
         return cadena.recomendar();
     }
-}
+}*/

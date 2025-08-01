@@ -33,7 +33,7 @@ import java.io.ByteArrayInputStream;
  * @version 1.0
  * @since 19-07-2025
  */
-public class Cancion implements ComponentePlaylist{
+public class Cancion {
 
     /** Objeto temporal para almacenar la canción actual manipulada */
     private CancionDTO cancion;

@@ -1,3 +1,4 @@
+/*
 package UserInterface.CustomerControl.Playlist;
 
 import BusinessLogic.Cancion;
@@ -75,13 +76,13 @@ public class AgregarCancionesController {
                 return new SimpleObjectProperty<>(img);
             }
         });
-        
+
         colTitulo.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitulo()));
         colArtista.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getArtista()));
         colFecha.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFechaAgregacion()));
         colAnio.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getAnio()));
         colDuracion.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDuracion()));
-        
+
         colAgregar.setCellFactory(param -> new TableCell<>() {
             private final Button btnAgregar = new Button("+");
             {
@@ -190,4 +191,4 @@ public class AgregarCancionesController {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
-} 
+} */

@@ -1,7 +1,13 @@
+/*
 package UserInterface.CustomerControl.Playlist;
 
 import BusinessLogic.Playlist;
 import BusinessLogic.PlaylistDAO;
+import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.stage.Stage;
 
 public class EliminarPlaylistController {
     @FXML private Label lblTitulo;
@@ -88,4 +94,4 @@ public class EliminarPlaylistController {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
-} 
+} */

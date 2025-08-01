@@ -3,7 +3,7 @@
 | © 2025 EPN-FIS, Todos los derechos reservados |
 | GR1SW                                         |
 |-----------------------------------------------|
-Autor: Sergio Rodríguez
+Autor: Grupo - A
 Descripción: Controlador del catálogo de canciones.
 */
 
@@ -11,6 +11,7 @@ package UserInterface.CustomerControl.CatalogoCanciones;
 
 
 import BusinessLogic.Cancion;
+import DataAccessComponent.DTO.ArtistaDTO;
 import DataAccessComponent.DTO.CancionDTO;
 import BusinessLogic.Genero;
 import javafx.beans.binding.Bindings;
@@ -21,6 +22,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -29,6 +31,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+
+import javafx.event.ActionEvent;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -48,6 +52,33 @@ import java.lang.Thread;
  * @since 18-07-2025
  */
 public class CatalogoCancionesController {
+    @FXML
+    private Button cerrarButton;
+
+    @FXML
+    private void cerrarVentana() {
+        try {
+            // Obtener el Stage actual a partir del botón cerrar
+            Stage stage = (Stage) cerrarButton.getScene().getWindow();
+
+            // Cargar el nuevo FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/administracion_Usuarios.fxml"));
+            Parent root = loader.load();
+
+            // Crear la nueva escena con la interfaz de administración
+            Scene scene = new Scene(root);
+
+            // Cambiar la escena del Stage
+            stage.setScene(scene);
+            stage.setTitle("Administración de Usuarios");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private TableColumn<CancionDTO, Void> colAcciones;
+
 
     // Referencia a la tabla principal que muestra las canciones
     @FXML
@@ -60,12 +91,10 @@ public class CatalogoCancionesController {
     private TableColumn<CancionDTO, String> colDuracion;
     @FXML
     private TableColumn<CancionDTO, CancionDTO> colTituloConImagen;
-    
-    // Botones de acción
     @FXML
-    private Button btnEditar;
+    private TableColumn<CancionDTO, String> colAnio;
     @FXML
-    private Button btnEliminar;
+    private TableColumn<CancionDTO, String> colArtista;
 
     // Campo de texto para búsqueda de canciones por título
     @FXML
@@ -82,30 +111,11 @@ public class CatalogoCancionesController {
      */
     @FXML
     public void initialize() {
-        System.out.println("=== INICIALIZANDO CATÁLOGO DE CANCIONES ===");
-        
-        // Verificar que los botones estén conectados
-        System.out.println("Verificando conexión de botones...");
-        if (btnEditar != null) {
-            System.out.println("btnEditar conectado correctamente");
-        } else {
-            System.out.println("ERROR: btnEditar es null");
-        }
-        
-        if (btnEliminar != null) {
-            System.out.println("btnEliminar conectado correctamente");
-        } else {
-            System.out.println("ERROR: btnEliminar es null");
-        }
-        
         try {
             configurarTabla();
-            configurarBotones();
             cargarCanciones();
             configurarBusqueda();
-            System.out.println("=== INICIALIZACIÓN COMPLETADA ===");
         } catch (Exception e) {
-            System.out.println("Error en inicialización: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -139,47 +149,43 @@ public class CatalogoCancionesController {
         tableCanciones.setItems(filtrados);
     }
 
-    /**
-     * Configura las columnas de la tabla con título, imagen, géneros y duración.
-     */
     private void configurarTabla() {
         System.out.println("=== CONFIGURANDO TABLA ===");
-        
-        // Deshabilitar reordenamiento de columnas
+
+        // Política de ajuste de columna
         tableCanciones.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        // Deshabilitar reordenamiento de columnas
         colTituloConImagen.setReorderable(false);
         colGenero.setReorderable(false);
         colDuracion.setReorderable(false);
-        
-        // Configurar selección de filas
-        tableCanciones.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        
-        // Listener para habilitar/deshabilitar botones según selección
-        tableCanciones.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            boolean haySeleccion = newSelection != null;
-            btnEditar.setDisable(!haySeleccion);
-            btnEliminar.setDisable(!haySeleccion);
-            
-            if (haySeleccion) {
-                System.out.println("Canción seleccionada: " + newSelection.getTitulo());
-                System.out.println("Botones habilitados: Editar=" + !btnEditar.isDisabled() + ", Eliminar=" + !btnEliminar.isDisabled());
-            } else {
-                System.out.println("Ninguna canción seleccionada");
-                System.out.println("Botones deshabilitados: Editar=" + btnEditar.isDisabled() + ", Eliminar=" + btnEliminar.isDisabled());
-            }
+        colAcciones.setReorderable(false);
+
+        colArtista.setCellValueFactory(cellData -> {
+            List<ArtistaDTO> artistas = cellData.getValue().getArtistas();
+            String nombres = artistas.stream()
+                    .map(ArtistaDTO::getNombre)
+                    .collect(Collectors.joining(", "));
+            return new SimpleStringProperty(nombres);
         });
-        
-        // Columna de géneros (puede haber más de uno)
+
+
+
+        // Columna de géneros
         colGenero.setCellValueFactory(cellData -> {
             List<Genero> generos = cellData.getValue().getGeneros();
             String texto = generos.stream().map(Enum::name).collect(Collectors.joining(", "));
             return SimpleStringProperty.stringExpression(Bindings.createStringBinding(() -> texto));
         });
 
-        // Columna de duración
+        // Año
+        colAnio.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getAnio())));
+
+        // Duración
         colDuracion.setCellValueFactory(new PropertyValueFactory<>("duracion"));
 
-        // Columna personalizada que muestra imagen y título de la canción
+
+        // Columna personalizada: imagen + título
         colTituloConImagen.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue()));
         colTituloConImagen.setCellFactory(column -> new TableCell<>() {
             private final HBox contenedor = new HBox(10);
@@ -212,7 +218,10 @@ public class CatalogoCancionesController {
                 }
             }
         });
+        // Columna de acciones
+        agregarColumnaAcciones();
     }
+
 
     /**
      * Carga una imagen por defecto si no existe portada en la canción.
@@ -246,31 +255,43 @@ public class CatalogoCancionesController {
         System.out.println("Tabla actualizada con " + listaObservable.size() + " canciones");
     }
 
-    /**
-     * Configura los botones de acción para que estén deshabilitados inicialmente.
-     */
-    private void configurarBotones() {
-        System.out.println("=== CONFIGURANDO BOTONES DE ACCIÓN ===");
-        
-        // Deshabilitar botones inicialmente
-        btnEditar.setDisable(true);
-        btnEliminar.setDisable(true);
-        
-        // Configurar estilos adicionales
-        btnEditar.setStyle("-fx-background-color: #9190C2; -fx-background-radius: 10; -fx-cursor: hand; -fx-text-fill: white;");
-        btnEliminar.setStyle("-fx-background-color: #9190C2; -fx-background-radius: 10; -fx-cursor: hand; -fx-text-fill: white;");
-        
-        // Agregar tooltips
-        btnEditar.setTooltip(new Tooltip("Selecciona una canción para editar"));
-        btnEliminar.setTooltip(new Tooltip("Selecciona una canción para eliminar"));
-        
-        // Configurar focus traversable
-        btnEditar.setFocusTraversable(false);
-        btnEliminar.setFocusTraversable(false);
-        
-        System.out.println("Botones configurados - Editar y Eliminar deshabilitados hasta seleccionar canción");
-        System.out.println("Color de los botones: #9190C2 (violeta claro)");
+    private void agregarColumnaAcciones() {
+        colAcciones.setCellFactory(col -> new TableCell<>() {
+            private final Button btnEditar = new Button();
+            private final Button btnEliminar = new Button();
+
+            {
+                btnEditar.setGraphic(loadIcon("/UserInterface/Resources/img/CatalogoCanciones/tuerca.png"));
+                btnEliminar.setGraphic(loadIcon("/UserInterface/Resources/img/CatalogoCanciones/tacho.png"));
+
+                btnEditar.setStyle("-fx-background-color: transparent;");
+                btnEliminar.setStyle("-fx-background-color: transparent;");
+
+                btnEditar.setOnAction(event -> {
+                    CancionDTO cancion = getTableView().getItems().get(getIndex());
+                    irAPantallaEditarCancion(cancion);
+                });
+
+                btnEliminar.setOnAction(event -> {
+                    CancionDTO cancion = getTableView().getItems().get(getIndex());
+                    irAPantallaEliminarCancion(cancion);
+                });
+            }
+
+            private final HBox contenedor = new HBox(10, btnEditar, btnEliminar);
+
+            {
+                contenedor.setPadding(new Insets(5));
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : contenedor);
+            }
+        });
     }
+
 
     /**
      * Carga un icono desde una ruta específica del proyecto.
@@ -315,46 +336,19 @@ public class CatalogoCancionesController {
         }
     }
 
+
+
     /**
      * Método público para refrescar la tabla de canciones.
      * Se llama desde otros controladores cuando se registra, edita o elimina una canción.
      */
     public void refrescarTabla() {
-        System.out.println("=== REFRESCANDO TABLA DE CANCIONES ===");
-        System.out.println("Ejecutando en hilo de JavaFX...");
-        
-        // Asegurar que se ejecute en el hilo de la interfaz de usuario
-        javafx.application.Platform.runLater(() -> {
-            try {
-                System.out.println("Cargando canciones desde la base de datos...");
-                cargarCanciones();
-                System.out.println("Tabla refrescada exitosamente");
-                
-                // Forzar la actualización visual de la tabla
-                tableCanciones.refresh();
-                System.out.println("Actualización visual de la tabla completada");
-                System.out.println("Total de canciones en la tabla: " + (listaObservable != null ? listaObservable.size() : "null"));
-                
-            } catch (Exception e) {
-                System.out.println("Error al refrescar tabla: " + e.getMessage());
-                e.printStackTrace();
-                
-                // Intentar reconectar si es un error de conexión
-                if (e.getMessage().contains("database connection closed") || 
-                    e.getMessage().contains("connection")) {
-                    System.out.println("Intentando reconectar a la base de datos...");
-                    try {
-                        // Forzar una nueva conexión
-                        Thread.sleep(1000); // Esperar un segundo
-                        cargarCanciones();
-                        tableCanciones.refresh();
-                        System.out.println("Reconexión exitosa");
-                    } catch (Exception reconnectError) {
-                        System.out.println("Error en reconexión: " + reconnectError.getMessage());
-                    }
-                }
-            }
-        });
+        try {
+            txtBuscar.clear();
+            cargarCanciones();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -365,46 +359,7 @@ public class CatalogoCancionesController {
         irAPantallaSubirCancion();
     }
     
-    /**
-     * Maneja el click en el botón "Editar Canción".
-     */
-    @FXML
-    private void handleEditarCancion() {
-        System.out.println("=== BOTÓN EDITAR CANCIÓN CLICKEADO ===");
-        System.out.println("Estado del botón Editar: " + (btnEditar.isDisabled() ? "DESHABILITADO" : "HABILITADO"));
-        System.out.println("Método handleEditarCancion ejecutándose...");
-        
-        CancionDTO cancionSeleccionada = tableCanciones.getSelectionModel().getSelectedItem();
-        
-        if (cancionSeleccionada != null) {
-            System.out.println("Editando canción: " + cancionSeleccionada.getTitulo());
-            System.out.println("Llamando a irAPantallaEditarCancion...");
-            irAPantallaEditarCancion(cancionSeleccionada);
-        } else {
-            System.out.println("No hay canción seleccionada para editar");
-        }
-    }
-    
-    /**
-     * Maneja el click en el botón "Eliminar Canción".
-     */
-    @FXML
-    private void handleEliminarCancion() {
-        System.out.println("=== BOTÓN ELIMINAR CANCIÓN CLICKEADO ===");
-        System.out.println("Estado del botón Eliminar: " + (btnEliminar.isDisabled() ? "DESHABILITADO" : "HABILITADO"));
-        
-        CancionDTO cancionSeleccionada = tableCanciones.getSelectionModel().getSelectedItem();
-        
-        if (cancionSeleccionada != null) {
-            System.out.println("Eliminando canción: " + cancionSeleccionada.getTitulo());
-            irAPantallaEliminarCancion(cancionSeleccionada);
-        } else {
-            System.out.println("No hay canción seleccionada para eliminar");
-        }
-    }
-    
 
-    
 
 
     /**
@@ -412,7 +367,7 @@ public class CatalogoCancionesController {
      *
      * @param cancion Canción que se desea eliminar.
      */
-    private void irAPantallaEliminarCancion(CancionDTO cancion) {
+/*    private void irAPantallaEliminarCancion(CancionDTO cancion) {
         System.out.println("=== ABRIENDO VENTANA ELIMINAR CANCIÓN ===");
         System.out.println("Canción a eliminar: " + cancion.getTitulo());
         try {
@@ -430,22 +385,35 @@ public class CatalogoCancionesController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }*/
+
+    private void irAPantallaEliminarCancion(CancionDTO cancion) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/CatalogoCanciones/frameEliminarCancion.fxml"));
+            Parent root = loader.load();
+
+            EliminarCancionesController controller = loader.getController();
+            controller.setCancion(cancion);
+            controller.setCatalogoController(this);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Eliminar Canción");
+            stage.setMaximized(true);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * Abre la ventana para editar la información de una canción existente.
-     *
-     * @param cancionSeleccionada Canción que será editada.
-     */
-    private void irAPantallaEditarCancion(CancionDTO cancionSeleccionada) {
-        System.out.println("=== ABRIENDO VENTANA EDITAR CANCIÓN ===");
-        System.out.println("Canción a editar: " + cancionSeleccionada.getTitulo());
+    private void irAPantallaEditarCancion(CancionDTO cancion) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/CatalogoCanciones/frameEditarCancion.fxml"));
             Parent root = loader.load();
+
             EditarCancionesController controller = loader.getController();
-            controller.setCancion(cancionSeleccionada);
-            controller.setCatalogoController(this); // Pasar referencia para actualizar el catálogo
+            controller.setCancion(cancion);
+            controller.setCatalogoController(this);
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
@@ -456,4 +424,5 @@ public class CatalogoCancionesController {
             e.printStackTrace();
         }
     }
+
 }
