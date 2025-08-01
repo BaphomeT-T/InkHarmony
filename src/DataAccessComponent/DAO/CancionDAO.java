@@ -65,7 +65,7 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
                     String insertArtista = "INSERT INTO Cancion_Artista(id_cancion, id_artista) VALUES (?, ?)";
                     PreparedStatement psa = conn.prepareStatement(insertArtista);
                     psa.setInt(1, idGenerado);
-                    psa.setInt(2, artista.getIdArtista());
+                    psa.setInt(2, artista.getId());
                     psa.executeUpdate();
                     }
                 }
@@ -276,7 +276,7 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
                 String insertarArtista = "INSERT INTO Cancion_Artista(id_cancion, id_artista) VALUES (?, ?)";
                 try (PreparedStatement psInsert = conn.prepareStatement(insertarArtista)) {
                     psInsert.setInt(1, entity.getIdCancion());
-                    psInsert.setInt(2, artista.getIdArtista());
+                    psInsert.setInt(2, artista.getId());
                     psInsert.executeUpdate();
                 }
             }
@@ -345,7 +345,7 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
             ArtistaDTO artista = new ArtistaDTO();
-            artista.setIdArtista(rs.getInt("id_artista"));
+            artista.setId(rs.getInt("id_artista"));
             artista.setNombre(rs.getString("nombre"));
             lista.add(artista);
         }

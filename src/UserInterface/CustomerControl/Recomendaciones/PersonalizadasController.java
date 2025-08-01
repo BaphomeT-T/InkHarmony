@@ -1,3 +1,4 @@
+/*
 package UserInterface.CustomerControl.Recomendaciones;
 
 import BusinessLogic.ServicioRecomendaciones;
@@ -68,3 +69,4 @@ public class PersonalizadasController {
         });
     }
 }
+*/

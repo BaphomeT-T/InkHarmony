@@ -1,7 +1,11 @@
+/*
 package UserInterface.CustomerControl.Playlist;
 
 import BusinessLogic.Playlist;
 import BusinessLogic.PlaylistDAO;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+
 import java.io.IOException;
 import java.util.List;
 import javax.swing.table.TableColumn;
@@ -162,4 +166,4 @@ public class CatalogoPlaylistController {
             e.printStackTrace();
         }
     }
-} 
+} */
