@@ -1,7 +1,7 @@
 package UserInterface.CustomerControl.AdminUserControl;
 
-import java.io.IOException;
 import java.util.List;
+import javafx.scene.control.Label;
 
 import BusinessLogic.Administrador;
 import BusinessLogic.Sesion;
@@ -13,10 +13,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -57,7 +53,7 @@ public class AdministracionUsuarioController {
     private Button btnDesactivarCuenta;
 
     @FXML
-    private Button cerrarButton;
+    private Label cerrarButton;
 
     @FXML
     private Button btnEliminarCuenta;
@@ -271,24 +267,22 @@ public class AdministracionUsuarioController {
     }
     @FXML
     private void cerrarVentana() {
+         // Cerrar la ventana de registro y abrir de nuevo la ventana de login
         try {
-            // Obtener el Stage actual a partir del botón cerrar
-            Stage stage = (Stage) cerrarButton.getScene().getWindow();
-
-            // Cargar el nuevo FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/home.fxml"));
-            Parent root = loader.load();
-
-            // Crear la nueva escena con la interfaz de administración
-            Scene scene = new Scene(root);
-
-            // Cambiar la escena del Stage
-            stage.setScene(scene);
-            stage.setTitle("Administración de Usuarios");
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                    getClass().getResource("/UserInterface/GUI/AdminUserControl/home.fxml"));
+            javafx.scene.Parent root = loader.load();
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.setTitle("Home administrador");
+            stage.setMinWidth(1280);
+            stage.setMinHeight(680);
             stage.show();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        javafx.stage.Stage stage = (javafx.stage.Stage) cerrarButton.getScene().getWindow();
+        stage.close();
     }
 
     @FXML
