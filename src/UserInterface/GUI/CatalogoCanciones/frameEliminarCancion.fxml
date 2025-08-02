@@ -13,7 +13,7 @@
         <AnchorPane layoutX="54.4" layoutY="64.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="288.0" prefWidth="601.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 25;" AnchorPane.leftAnchor="54.0" AnchorPane.rightAnchor="59.0">
             <children>
                 <StackPane layoutX="33.0" layoutY="269.0" prefWidth="428.0" style="-fx-background-radius: 20; -fx-border-radius: 20;" />
-            <Label layoutX="51.0" layoutY="14.0" prefHeight="51.0" prefWidth="497.0" text="¿Seguro de que quieres eliminar esta canción?" textFill="WHITE">
+            <Label layoutX="51.0" layoutY="14.0" prefHeight="51.0" prefWidth="497.0" text="¿Seguro de que quieres eliminar este artista?" textFill="WHITE">
                <font>
                   <Font size="24.0" />
                </font>
@@ -23,7 +23,7 @@
                   <Font size="24.0" />
                </font>
             </Label>
-            <ImageView  fx:id="imagenCancionImageView" fitHeight="89.0" fitWidth="98.0" layoutX="76.0" layoutY="83.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="imagenCancionImageView" fitHeight="89.0" fitWidth="98.0" layoutX="76.0" layoutY="83.0" pickOnBounds="true" preserveRatio="true" />
             </children>
         </AnchorPane>
 

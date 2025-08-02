@@ -1,9 +1,9 @@
 package UserInterface.CustomerControl.CatalogoArtistas;
 
+import BusinessLogic.ServicioValidacionArtista;
 import DataAccessComponent.DTO.ArtistaDTO;
 import DataAccessComponent.DAO.ArtistaDAO;
-import BusinessLogic.ServicioValidacionArtista;
-import BusinessLogic.Genero;
+import UserInterface.CustomerControl.CatalogoArtistas.CatalogoArtistasController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -15,153 +15,77 @@ import java.io.ByteArrayInputStream;
 
 public class EliminarArtistasController {
 
-    @FXML
-    private TextField nombreTextField;
-
-    @FXML
-    private TextArea biografiaTextArea;
-
-    @FXML
-    private MenuButton generoMenuButton;
-
-    @FXML
-    private ImageView artistaImageView;
-
-    @FXML
-    private Button eliminarButton;
-
-    @FXML
-    private Button cerrarButton;
+    @FXML private Button registrarButton;    // Cancelar
+    @FXML private Button registrarButton1;   // Confirmar
+    @FXML private ImageView imagenArtistaImageView;
+    @FXML private Label nombreArtistaLabel;
 
     private ArtistaDTO artista;
-    private final ServicioValidacionArtista servicioValidacionArtista = new ServicioValidacionArtista();
     private final ArtistaDAO artistaDAO = new ArtistaDAO();
-
+    private final ServicioValidacionArtista servicioValidacionArtista = new ServicioValidacionArtista();
     private CatalogoArtistasController catalogoController;
 
     public void setArtista(ArtistaDTO artista) {
         this.artista = artista;
-        mostrarInformacionArtista();
-    }
-
-    /**
-     * Muestra la información del artista en la interfaz gráfica, incluyendo nombre, biografía, géneros y foto.
-     */
-    private void mostrarInformacionArtista() {
         if (artista != null) {
-            nombreTextField.setText(artista.getNombre());
-            biografiaTextArea.setText(artista.getBiografia());
+            System.out.println("Título recibido: " + artista.getNombre()); // Verificación
 
-            if (artista.getGenero() != null && !artista.getGenero().isEmpty()) {
-                String generosTexto = artista.getGenero().stream()
-                        .map(this::formatearGenero)
-                        .reduce((a, b) -> a + ", " + b)
-                        .orElse("No definido");
-                generoMenuButton.setText(generosTexto);
-            } else {
-                generoMenuButton.setText("No definido");
-            }
+            nombreArtistaLabel.setText(artista.getNombre());
 
             if (artista.getImagen() != null) {
-                try {
-                    Image imagen = new Image(new ByteArrayInputStream(artista.getImagen()));
-                    artistaImageView.setImage(imagen);
-                } catch (Exception e) {
-                    System.out.println("Error al cargar imagen: " + e.getMessage());
-                }
+                Image imagen = new Image(new ByteArrayInputStream(artista.getImagen()));
+                imagenArtistaImageView.setImage(imagen);
             }
         }
     }
 
-    /**
-     * Convierte el nombre del género a un formato legible con mayúsculas iniciales y espacios.
-     *
-     * @param genero Género a formatear
-     * @return Nombre del género formateado para mostrar
-     */
-    private String formatearGenero(Genero genero) {
-        String nombre = genero.name().replace('_', ' ').toLowerCase();
-        String[] palabras = nombre.split(" ");
-        StringBuilder resultado = new StringBuilder();
-        for (String palabra : palabras) {
-            if (!palabra.isEmpty()) {
-                resultado.append(Character.toUpperCase(palabra.charAt(0)))
-                        .append(palabra.substring(1)).append(" ");
-            }
-        }
-        return resultado.toString().trim();
-    }
-
 
     /**
-     * Elimina el artista actual si no tiene elementos asociados. Muestra alertas según el resultado.
-     *
-     * @param event Evento de acción generado por el botón de eliminar
+     * Elimina directamente al artista si no tiene elementos asociados.
      */
     @FXML
-    void eliminarArtista(ActionEvent event) {
-        try {
-            if (artista == null) return;
-            // Cuadro de confirmación sin ícono
-            Alert confirmacion = new Alert(Alert.AlertType.NONE);
-            confirmacion.getDialogPane().setPrefWidth(435);
-            confirmacion.getDialogPane().setPrefHeight(100);
+    void confirmarEliminacion(ActionEvent event) {
+        if (artista == null) return;
 
-            confirmacion.setTitle("Confirmar eliminación");
-            confirmacion.setContentText("¿Está seguro de que desea eliminar al artista?");
-
-            ButtonType botonSi = new ButtonType("Sí", ButtonBar.ButtonData.OK_DONE);
-            ButtonType botonNo = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
-            confirmacion.getButtonTypes().setAll(botonSi, botonNo);
-            confirmacion.showAndWait().ifPresent(respuesta -> {
-                if (respuesta == botonSi) {
-                    if (servicioValidacionArtista.tieneElementosAsociados(artista)) {
-                        mostrarAlerta("No se puede eliminar: el artista tiene elementos asociados (canciones o playlists).");
-                    } else {
-                        try {
-                            boolean eliminado = artistaDAO.eliminar(artista.getId());
-                            if (eliminado) {
-                                mostrarAlerta("El artista fue eliminado correctamente.");
-                                if (catalogoController != null) {
-                                    catalogoController.actualizarTabla(); // Actualizar catálogo
-                                }
-                                cerrarVentana();
-                            } else {
-                                mostrarAlerta("No se pudo eliminar el artista. Intente de nuevo.");
-                            }
-                        } catch (Exception e) {
-                            mostrarAlerta("Error al eliminar el artista: " + e.getMessage());
-                            e.printStackTrace();
-                        }
+        if (servicioValidacionArtista.tieneElementosAsociados(artista)) {
+            mostrarAlerta("No se puede eliminar: el artista tiene elementos asociados (canciones o playlists).");
+        } else {
+            try {
+                boolean eliminado = artistaDAO.eliminar(artista.getId());
+                if (eliminado) {
+                    mostrarAlerta("El artista fue eliminado correctamente.");
+                    if (catalogoController != null) {
+                        catalogoController.actualizarTabla(); // Actualizar catálogo
                     }
+                    cerrarVentana();
                 } else {
-                    System.out.println("Eliminación cancelada por el usuario.");
+                    mostrarAlerta("No se pudo eliminar el artista. Intente de nuevo.");
                 }
-            });
-        } catch (Exception ex) {
-            mostrarAlerta("Ocurrió un error inesperado: " + ex.getMessage());
-            ex.printStackTrace();
+            } catch (Exception e) {
+                mostrarAlerta("Error al eliminar el artista: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 
 
 
-    /**
-     * Inicializa los componentes de la interfaz deshabilitando campos no editables.
-     */
     @FXML
     void initialize() {
-        nombreTextField.setEditable(false);
-        biografiaTextArea.setEditable(false);
-        generoMenuButton.setDisable(true);
+        // Inicialización de componentes, si es necesario
+        registrarButton.setText("Cancelar");
+        registrarButton1.setText("Confirmar");
+        nombreArtistaLabel.setText("");
+        imagenArtistaImageView.setImage(null);
     }
 
-    /**
-     * Cierra la ventana actual.
-     */
     @FXML
-    void cerrarVentana() {
-        Stage stage = (Stage) cerrarButton.getScene().getWindow();
+    void cancelar(ActionEvent event) {
+        cerrarVentana();
+    }
+
+    private void cerrarVentana() {
+        Stage stage = (Stage) registrarButton.getScene().getWindow();
         stage.close();
     }
 
