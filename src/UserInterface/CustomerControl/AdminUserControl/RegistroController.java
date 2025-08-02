@@ -169,6 +169,14 @@ public class RegistroController {
             return false;
         }
 
+        // Validar que el nombre y apellido no contengan números ni espacios
+        if (!nombre.matches("[a-zA-Z]+") || !apellido.matches("[a-zA-Z]+")) {
+            mostrarAlerta("Nombre o Apellido inválido", 
+                "El nombre y apellido solo pueden contener letras.",
+                Alert.AlertType.ERROR);
+            return false;
+        }
+
         // Validar formato de correo
         if (!correo.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
             mostrarAlerta("Correo inválido", 
