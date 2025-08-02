@@ -132,13 +132,13 @@ public class RegistroController {
             servicioPerfil.registrarUsuario(nombre, apellido, correo, contrasena, String.valueOf(indiceActual));
             PerfilDTO usuario = perfilDAO.buscarPorEmail(correo);
             
-            // 5. Guardar preferencias directamente con enum Genero
+/*            // 5. Guardar preferencias directamente con enum Genero
             UsuarioDAO usuarioDAO = new UsuarioDAO();
             if (!usuarioDAO.guardarPreferencias(usuario, generosSeleccionados)) {
                 // Si fallan las preferencias, eliminar perfil
                 perfilDAO.eliminar(usuario);
                 throw new RuntimeException("No se pudieron guardar las preferencias");
-            }
+            }*/
             
             mostrarAlerta("Éxito", "Registro completo con preferencias", Alert.AlertType.INFORMATION);
             salirRegistro();

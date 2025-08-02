@@ -68,7 +68,7 @@
          </ImageView>
            <TextField fx:id="txtBuscarCorreo" prefHeight="26.0" prefWidth="696.0" promptText="Buscar usuarios..." style="-fx-pref-width: 300; -fx-background-color: #575a81; -fx-background-radius: 15; -fx-padding: 10; -fx-text-fill: #FFFFFF;" GridPane.columnIndex="1" GridPane.columnSpan="2" />
           
-          <TableView fx:id="tblUsuarios" minWidth="-Infinity" prefHeight="351.0" prefWidth="474.0" style="-fx-pref-height: 500; -fx-background-color: #B0BAC3;" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.rowSpan="2">
+          <TableView fx:id="tblUsuarios" minWidth="-Infinity" prefHeight="351.0" prefWidth="474.0" style="-fx-pref-height: 500; -fx-background-color: #B0BAC3;" stylesheets="@../CatalogoArtistas/catalogoArtistas.css" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.rowSpan="2">
               <columns>
                   <TableColumn fx:id="colNombre" prefWidth="100" text="Nombre" />
                   <TableColumn fx:id="colApellido" prefWidth="100" text="Apellido" />
