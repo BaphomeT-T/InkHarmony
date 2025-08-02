@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.CatalagoPlaylist.NuevaPlaylistController">
+    
+    <!-- Header con botones -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="80.0" style="-fx-padding: 20;">
+            <children>
+                <!-- Botón regresar -->
+                <Button fx:id="btnRegresar" mnemonicParsing="false" onAction="#handleRegresar" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: #9190C2; -fx-background-radius: 25;">
+                    <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="/UserInterface/Resources/img/CatalogoPlaylist/regresar.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                
+                <!-- Spacer para empujar el botón cerrar a la derecha -->
+                <Region HBox.hgrow="ALWAYS" />
+                
+                <!-- Botón cerrar -->
+                <Button fx:id="btnCerrar" mnemonicParsing="false" onAction="#handleCerrar" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" text="✕" />
+            </children>
+        </HBox>
+    </top>
+
+    <!-- Centro con contenido principal -->
+    <center>
+        <VBox alignment="CENTER" spacing="30.0" style="-fx-padding: 20;">
+            <children>
+                <!-- Título principal centrado -->
+                <Label text="NUEVA PLAYLIST" textFill="WHITE">
+                    <font>
+                        <Font size="48.0" />
+                    </font>
+                </Label>
+
+                <!-- Panel principal con fondo morado -->
+                <HBox alignment="CENTER" maxWidth="900.0" prefHeight="450.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 25; -fx-padding: 50;">
+                    <children>
+                        <!-- Sección izquierda - Formulario -->
+                        <VBox prefWidth="400.0" spacing="20.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <!-- Título de la playlist -->
+                                <Label text="Título de la playlist" textFill="#AFAFC7">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+
+                                <TextField fx:id="txtTitulo" prefHeight="45.0" promptText="Ingresa el título de la playlist aquí" style="-fx-background-color: #9190C2; -fx-background-radius: 15; -fx-text-fill: black; -fx-font-size: 14px; -fx-padding: 0 15 0 15; -fx-prompt-text-fill: #333333;">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </TextField>
+
+                                <!-- Descripción de la playlist -->
+                                <Label text="Descripción de la playlist" textFill="#AFAFC7">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+
+                                <TextArea fx:id="txtDescripcion" prefHeight="120.0" promptText="Ingresa la descripción aquí" style="-fx-background-color: #9190C2; -fx-background-radius: 15; -fx-text-fill: black; -fx-padding: 15; -fx-prompt-text-fill: #333333; -fx-control-inner-background: #9190C2;" wrapText="true">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </TextArea>
+
+                                <!-- Botón Crear/Guardar Playlist -->
+                                <Button fx:id="btnGuardarPlaylist" mnemonicParsing="false" onAction="#handleGuardarPlaylist" prefHeight="45.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20; -fx-text-fill: black; -fx-font-size: 16px; -fx-font-weight: bold;" text="Crear Playlist" />
+                            </children>
+                        </VBox>
+
+                        <!-- Espaciador entre secciones -->
+                        <Region prefWidth="50.0" />
+
+                        <!-- Sección derecha - Seleccionar portada -->
+                        <VBox alignment="CENTER" prefWidth="300.0" spacing="15.0">
+                            <children>
+                                <Label text="Seleccione la Portada" textFill="#AFAFC7">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+
+                                <!-- Contenedor de imagen clickeable -->
+                                <AnchorPane onMouseClicked="#handleSeleccionarPortada" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #9190C2; -fx-background-radius: 15; -fx-cursor: hand;">
+                                    <children>
+                                        <!-- Ícono de cámara centrado -->
+                                        <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <children>
+                                                <ImageView fx:id="imgPortada" fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+                                                    <image>
+                                                        <Image url="/UserInterface/Resources/img/CatalogoPlaylist/camara.png" />
+                                                    </image>
+                                                </ImageView>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </AnchorPane>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </center>
+
+</BorderPane>

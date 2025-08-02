@@ -1,29 +1,12 @@
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
+import UserInterface.GUI.CatalogoPlaylist.VentanaManager;
 
 public class App extends Application {
-    
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Cargar el archivo FXML
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/CatalogoPlaylist.fxml"));
-        Parent root = loader.load();
-        
-        // Configurar la escena
-        Scene scene = new Scene(root, 1200, 800);
-        
-        // Configurar la ventana principal
-        primaryStage.setTitle("InkHarmony - Catálogo de Playlists");
-        primaryStage.setScene(scene);
-        primaryStage.setResizable(true);
-        primaryStage.setMinWidth(1000);
-        primaryStage.setMinHeight(700);
-        
-        // Mostrar la ventana
-        primaryStage.show();
+        VentanaManager ventanaManager = new VentanaManager();
+        ventanaManager.start(primaryStage);
     }
     
     public static void main(String[] args) {

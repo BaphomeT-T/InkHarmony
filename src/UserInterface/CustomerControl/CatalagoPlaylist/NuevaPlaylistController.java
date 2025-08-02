@@ -1,4 +1,4 @@
-package UserInterface.CustomerControl;
+package UserInterface.CustomerControl.CatalagoPlaylist;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

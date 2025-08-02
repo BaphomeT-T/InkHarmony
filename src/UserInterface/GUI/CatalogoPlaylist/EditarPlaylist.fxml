@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.CatalagoPlaylist.EditarPlaylistController">
+    <children>
+        <!-- Botón regresar en esquina superior izquierda -->
+        <Button fx:id="btnRegresar" layoutX="30.0" layoutY="30.0" mnemonicParsing="false" onAction="#handleRegresar" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: #9190C2; -fx-background-radius: 25;">
+            <graphic>
+                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="/UserInterface/Resources/img/CatalogoPlaylist/regresar.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button>
+
+        <!-- Botón cerrar (X) en esquina superior derecha -->
+        <Button fx:id="btnCerrar" layoutX="1130.0" layoutY="30.0" mnemonicParsing="false" onAction="#handleCerrar" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" text="✕" />
+
+        <!-- Título principal centrado -->
+        <Label layoutX="320.0" layoutY="100.0" text="EDITAR PLAYLIST" textFill="WHITE">
+            <font>
+                <Font size="48.0" />
+            </font>
+        </Label>
+
+        <!-- Panel principal con fondo morado centrado -->
+        <AnchorPane layoutX="200.0" layoutY="200.0" prefHeight="450.0" prefWidth="800.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 25;">
+            <children>
+                <!-- Sección izquierda - Formulario -->
+                <VBox layoutX="50.0" layoutY="50.0" prefWidth="350.0" spacing="20.0">
+                    <children>
+                        <!-- Título de la playlist -->
+                        <Label text="Nombre Playlist" textFill="#AFAFC7">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+
+                        <TextField fx:id="txtTitulo" prefHeight="45.0" prefWidth="350.0" promptText="Ingresa el título de la playlist aquí" style="-fx-background-color: #9190C2; -fx-background-radius: 15; -fx-text-fill: black; -fx-font-size: 14px; -fx-padding: 0 15 0 15; -fx-prompt-text-fill: #333333;">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </TextField>
+
+                        <!-- Descripción de la playlist -->
+                        <Label text="Descripción" textFill="#AFAFC7">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+
+                        <TextArea fx:id="txtDescripcion" prefHeight="100.0" prefWidth="350.0" promptText="Ingresa la descripción aquí" style="-fx-background-color: #9190C2; -fx-background-radius: 15; -fx-text-fill: black; -fx-padding: 15; -fx-prompt-text-fill: #333333; -fx-control-inner-background: #9190C2;" wrapText="true">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </TextArea>
+                    </children>
+                </VBox>
+
+                <!-- Sección derecha - Seleccionar portada -->
+                <VBox alignment="CENTER" layoutX="500.0" layoutY="50.0" prefWidth="250.0" spacing="15.0">
+                    <children>
+                        <Label text="Selecciona la imagen del artista (.jpg)" textFill="#AFAFC7">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+
+                        <!-- Contenedor de imagen clickeable -->
+                        <AnchorPane onMouseClicked="#handleSeleccionarPortada" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #9190C2; -fx-background-radius: 15; -fx-cursor: hand;">
+                            <children>
+                                <!-- Imagen de la playlist -->
+                                <VBox alignment="CENTER" layoutX="22.0" layoutY="7.0" prefHeight="200.0" prefWidth="200.0">
+                                    <children>
+                                        <ImageView fx:id="imgPortada" fitHeight="185.0" fitWidth="170.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="/UserInterface/Resources/img/CatalogoPlaylist/camara.png" />
+                                            </image>
+                                        </ImageView>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </AnchorPane>
+                    </children>
+                </VBox>
+
+                <!-- Botón Actualizar Playlist centrado en la parte inferior -->
+                <Button fx:id="btnActualizarPlaylist" layoutX="300.0" layoutY="380.0" mnemonicParsing="false" onAction="#handleActualizarPlaylist" prefHeight="45.0" prefWidth="200.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20; -fx-text-fill: black; -fx-font-size: 16px; -fx-font-weight: bold;" text="Actualizar" />
+
+            </children>
+        </AnchorPane>
+
+    </children>
+</AnchorPane>

@@ -1,4 +1,4 @@
-package UserInterface.CustomerControl;
+package UserInterface.CustomerControl.CatalagoPlaylist;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -118,15 +118,13 @@ public class CatalogoPlaylistController implements Initializable {
     @FXML
     private void handleAgregarPlaylist() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../GUI/NuevaPlaylist.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/CatalogoPlaylist/NuevaPlaylist.fxml"));
             Parent root = loader.load();
-            Scene scene = new Scene(root);
             Stage stage = new Stage();
             stage.setTitle("Nueva Playlist");
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.initOwner(btnAgregarPlaylist.getScene().getWindow());
-            stage.showAndWait();
+            stage.setScene(new Scene(root, 800, 600));
+            stage.setResizable(true);
+            stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }

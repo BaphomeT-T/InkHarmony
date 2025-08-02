@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.shape.Circle?>
 
-<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.CatalagoPlaylist.CatalogoPlaylistController">
 
    <!-- Panel superior con búsqueda principal -->
    <top>
@@ -21,7 +21,7 @@
                      <graphic>
                         <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <javafx.scene.image.Image url="@../Resources/img/img/CatalogoPlaylist/Regresar.png" />
+                              <javafx.scene.image.Image url="/UserInterface/Resources/img/CatalogoPlaylist/regresar.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -32,11 +32,11 @@
                   <!-- Logo de la aplicación como botón al extremo derecho -->
                   <Button fx:id="btnLogo"  style="-fx-background-color: transparent; -fx-padding: 0;">
                      <graphic>
-                        <StackPane>
+                        <StackPane alignment="CENTER">
                            <Circle radius="28" fill="#AFAFC7" />
-                           <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                           <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                 <javafx.scene.image.Image url="@../Resources/img/img/CatalogoPlaylist/simbolo-aplicacion.png" />
+                                 <javafx.scene.image.Image url="/UserInterface/Resources/img/CatalogoPlaylist/simbolo-aplicacion.png" />
                               </image>
                            </ImageView>
                         </StackPane>
@@ -58,7 +58,7 @@
                   <HBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
                         <Label text="Tu Biblioteca" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" />
-                        <Button fx:id="btnAgregarPlaylist"  text="+" style="-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-background-radius: 15px; -fx-min-width: 30px; -fx-min-height: 30px;" />
+                        <Button fx:id="btnAgregarPlaylist"  text="+" style="-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-background-radius: 15px; -fx-min-width: 30px; -fx-min-height: 30px;" onAction="#handleAgregarPlaylist" />
                      </children>
                   </HBox>
 
@@ -144,6 +144,17 @@
                               <Label text="empezar." style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" />
                            </children>
                         </VBox>
+
+                        <!-- Tabla de canciones -->
+                        <TableView fx:id="tableCanciones" style="-fx-background-color: #0A0E27; -fx-control-inner-background: #0A0E27; -fx-selection-bar: #5A5A80; -fx-selection-bar-non-focused: #5A5A80; -fx-column-header-background: #28205C; -fx-table-column-header-text-fill: white;" VBox.vgrow="ALWAYS" visible="false">
+                           <columns>
+                              <TableColumn fx:id="colTitulo" prefWidth="250.0" text="Título" />
+                              <TableColumn fx:id="colArtista" prefWidth="200.0" text="Artista" />
+                              <TableColumn fx:id="colFechaAgregacion" prefWidth="150.0" text="Fecha de agregación" />
+                              <TableColumn fx:id="colAnio" prefWidth="120.0" text="Año de la canción" />
+                              <TableColumn fx:id="colDuracion" prefWidth="100.0" text="Duración" />
+                           </columns>
+                        </TableView>
 
                         <Button fx:id="btnAgregarCanciones"  text="Agregar canciones" style="-fx-background-color: #AFAFC7; -fx-text-fill: #0A0E27; -fx-background-radius: 20px; -fx-padding: 12px 30px; -fx-font-size: 14px; -fx-font-weight: bold;">
                            <VBox.margin>
