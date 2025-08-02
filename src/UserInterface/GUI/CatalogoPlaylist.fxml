@@ -8,16 +8,16 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.shape.Circle?>
 
-<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.CatalogoPlaylistController">
-   
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+
    <!-- Panel superior con búsqueda principal -->
    <top>
       <VBox style="-fx-background-color: #0A0E27; -fx-padding: 15px;">
          <children>
             <!-- Barra de búsqueda principal -->
-            <HBox alignment="CENTER" spacing="10.0">
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
                <children>
-                  <Button style="-fx-background-color: transparent; -fx-padding: 0;">
+                  <Button fx:id="btnRegresar"  style="-fx-background-color: transparent; -fx-padding: 0;">
                      <graphic>
                         <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -26,12 +26,11 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Pane HBox.hgrow="ALWAYS" />
-                  <TextField promptText="¿Qué quieres reproducir?" style="-fx-background-color: #201D4E; -fx-text-fill: white; -fx-prompt-text-fill: #AFAFC7; -fx-background-radius: 20px; -fx-padding: 10px 15px;" prefWidth="400.0" />
-                  <Button text="🔍" style="-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-background-radius: 20px; -fx-min-width: 35px; -fx-min-height: 35px;" />
+                  <TextField fx:id="txtBusquedaPrincipal" promptText="¿Qué quieres reproducir?" style="-fx-background-color: #AFAFC7; -fx-text-fill: #0A0E27; -fx-prompt-text-fill: #666666; -fx-background-radius: 20px; -fx-padding: 10px 15px;" prefWidth="400.0" />
+                  <Button fx:id="btnBuscar"  text="🔍" style="-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-background-radius: 20px; -fx-min-width: 35px; -fx-min-height: 35px;" />
                   <Pane HBox.hgrow="ALWAYS" />
                   <!-- Logo de la aplicación como botón al extremo derecho -->
-                  <Button style="-fx-background-color: transparent; -fx-padding: 0;">
+                  <Button fx:id="btnLogo"  style="-fx-background-color: transparent; -fx-padding: 0;">
                      <graphic>
                         <StackPane>
                            <Circle radius="28" fill="#AFAFC7" />
@@ -59,17 +58,17 @@
                   <HBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
                         <Label text="Tu Biblioteca" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" />
-                        <Button fx:id="btnAgregarPlaylist" onAction="#handleAgregarPlaylist" text="+" style="-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-background-radius: 15px; -fx-min-width: 30px; -fx-min-height: 30px;" />
+                        <Button fx:id="btnAgregarPlaylist"  text="+" style="-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-background-radius: 15px; -fx-min-width: 30px; -fx-min-height: 30px;" />
                      </children>
                   </HBox>
-                  
+
                   <!-- Búsqueda de playlists -->
-                  <TextField fx:id="txtBuscarPlaylist" onAction="#handleBuscarPlaylist" promptText="Busca una playlist por nombre" style="-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-prompt-text-fill: #AFAFC7; -fx-background-radius: 15px; -fx-padding: 8px 12px;" VBox.vgrow="NEVER">
+                  <TextField fx:id="txtBuscarPlaylist"  promptText="Busca una playlist por nombre" style="-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-prompt-text-fill: #AFAFC7; -fx-background-radius: 15px; -fx-padding: 8px 12px;" VBox.vgrow="NEVER">
                      <VBox.margin>
                         <Insets top="15.0" />
                      </VBox.margin>
                   </TextField>
-                  
+
                   <!-- Lista de playlists -->
                   <ListView fx:id="listPlaylists" style="-fx-background-color: #201D4E; -fx-control-inner-background: #201D4E; -fx-selection-bar: #5A5A80; -fx-selection-bar-non-focused: #5A5A80;" VBox.vgrow="ALWAYS">
                      <VBox.margin>
@@ -78,57 +77,87 @@
                   </ListView>
                </children>
             </VBox>
-            
-            <!-- Panel central - Detalles de la playlist -->
+
+            <!-- Panel central - Playlist vacía -->
             <VBox style="-fx-background-color: #0A0E27; -fx-padding: 20px;" HBox.hgrow="ALWAYS">
                <children>
                   <!-- Información de la playlist -->
                   <HBox alignment="CENTER_LEFT" spacing="20.0">
                      <children>
-                        <ImageView fx:id="imgPortadaPlaylist" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: #201D4E; -fx-background-radius: 10px;" />
+                        <!-- Portada por defecto o imagen placeholder -->
+                        <VBox alignment="CENTER" style="-fx-background-color: #201D4E; -fx-background-radius: 10px; -fx-min-width: 200px; -fx-min-height: 200px;">
+                           <children>
+                              <ImageView fx:id="imgPortadaPlaylist" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </VBox>
+
                         <VBox spacing="10.0" HBox.hgrow="ALWAYS">
                            <children>
                               <Label text="Playlist" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px;" />
-                              <HBox alignment="CENTER_LEFT" spacing="15.0">
+                              <Label fx:id="lblNombrePlaylist" text="Nueva Playlist" style="-fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: bold;" />
+                              <HBox alignment="CENTER_LEFT" spacing="8.0">
                                  <children>
-                                    <Label fx:id="lblNombrePlaylist" text="Electro Rock" style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold;" />
-                                    <Label text="20 songs" style="-fx-text-fill: #AFAFC7; -fx-font-size: 18px; -fx-font-weight: bold;" />
-                                    <Label text="•" style="-fx-text-fill: #AFAFC7; -fx-font-size: 18px; -fx-font-weight: bold;" />
-                                    <Label text="1h 36m" style="-fx-text-fill: #AFAFC7; -fx-font-size: 18px; -fx-font-weight: bold;" />
+                                    <Label fx:id="lblDescripcionPlaylist" text="Descripción..." style="-fx-text-fill: #AFAFC7; -fx-font-size: 14px;" />
+                                    <Label text="•" style="-fx-text-fill: #AFAFC7; -fx-font-size: 14px;" />
+                                    <Label fx:id="lblCantidadCanciones" text="0 songs" style="-fx-text-fill: #AFAFC7; -fx-font-size: 14px;" />
+                                    <Label text="•" style="-fx-text-fill: #AFAFC7; -fx-font-size: 14px;" />
+                                    <Label fx:id="lblDuracionTotal" text="0h" style="-fx-text-fill: #AFAFC7; -fx-font-size: 14px;" />
                                  </children>
                               </HBox>
-                              <Label fx:id="lblInfoPlaylist" text="Las mejores canciones de toda la vida" style="-fx-text-fill: #AFAFC7; -fx-font-size: 14px;" />
+
+                              <!-- Botones de acción -->
+                              <HBox spacing="15.0" alignment="CENTER_LEFT">
+                                 <children>
+                                    <Button fx:id="btnPlayAll"  text="▶" style="-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-background-radius: 25px; -fx-min-width: 50px; -fx-min-height: 50px; -fx-font-size: 16px;" disable="true">
+                                       <VBox.margin>
+                                          <Insets top="15.0" />
+                                       </VBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
-                        <Pane HBox.hgrow="ALWAYS" />
-                        <HBox alignment="CENTER_RIGHT" spacing="20.0">
-                           <children>
-                              <Button fx:id="btnAgregarMas" onAction="#handleAgregarMas" text="Agrega más" style="-fx-background-color: transparent; -fx-text-fill: #AFAFC7; -fx-border-color: #AFAFC7; -fx-border-radius: 20px; -fx-background-radius: 20px; -fx-padding: 8px 20px; -fx-font-size: 16px;" />
-                              <Button fx:id="btnPlayAll" onAction="#handlePlayAll" text="▶" style="-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-background-radius: 25px; -fx-min-width: 50px; -fx-min-height: 50px; -fx-font-size: 22px;" />
-                           </children>
-                        </HBox>
                      </children>
                   </HBox>
-                  
-                  <!-- Tabla de canciones -->
-                  <TableView fx:id="tableCanciones" style="-fx-background-color: #0A0E27; -fx-control-inner-background: #0A0E27; -fx-selection-bar: #5A5A80; -fx-selection-bar-non-focused: #5A5A80; -fx-table-header-border-color: transparent; -fx-table-header: #28205C; -fx-column-header-background: #28205C; -fx-table-column-header-text-fill: white;" VBox.vgrow="ALWAYS">
-                     <columns>
-                        <TableColumn fx:id="colTitulo" prefWidth="250.0" text="Título" />
-                        <TableColumn fx:id="colArtista" prefWidth="200.0" text="Artista" />
-                        <TableColumn fx:id="colFechaAgregacion" prefWidth="150.0" text="Fecha de agregación" />
-                        <TableColumn fx:id="colAnio" prefWidth="120.0" text="Año de la canción" />
-                        <TableColumn fx:id="colDuracion" prefWidth="100.0" text="Duración" />
-                     </columns>
+
+                  <!-- Encabezados de tabla -->
+                  <HBox spacing="20.0" style="-fx-padding: 0 15px 10px 15px; -fx-border-color: transparent transparent #5A5A80 transparent; -fx-border-width: 0 0 1 0;">
+                     <children>
+                        <Label text="Título" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px; -fx-min-width: 250px;" />
+                        <Label text="Artista" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px; -fx-min-width: 200px;" />
+                        <Label text="Fecha de agregación" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px; -fx-min-width: 150px;" />
+                        <Label text="Año de la canción" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px; -fx-min-width: 120px;" />
+                        <Label text="Duración" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px; -fx-min-width: 100px;" />
+                     </children>
                      <VBox.margin>
-                        <Insets top="20.0" />
+                        <Insets top="30.0" />
                      </VBox.margin>
-                  </TableView>
+                  </HBox>
+
+                  <!-- Mensaje de playlist vacía -->
+                  <VBox alignment="CENTER" spacing="20.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <Label text="La playlist está vacía," style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" />
+                              <Label text="agrega canciones para" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" />
+                              <Label text="empezar." style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" />
+                           </children>
+                        </VBox>
+
+                        <Button fx:id="btnAgregarCanciones"  text="Agregar canciones" style="-fx-background-color: #AFAFC7; -fx-text-fill: #0A0E27; -fx-background-radius: 20px; -fx-padding: 12px 30px; -fx-font-size: 14px; -fx-font-weight: bold;">
+                           <VBox.margin>
+                              <Insets top="20.0" />
+                           </VBox.margin>
+                        </Button>
+                     </children>
+                  </VBox>
                </children>
             </VBox>
          </children>
       </HBox>
    </center>
-   
+
    <!-- Panel inferior - Reproductor -->
    <bottom>
       <HBox alignment="CENTER" spacing="20.0" style="-fx-background-color: #201D4E; -fx-padding: 15px 20px;">
@@ -140,40 +169,45 @@
                   <VBox>
                      <children>
                         <Label fx:id="lblCancionActual" text="Yesterday - 2009" style="-fx-text-fill: white; -fx-font-size: 14px;" />
-                        <Label text="Remaster" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px;" />
+                        <Label fx:id="lblArtistaActual" text="Remaster" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px;" />
                      </children>
                   </VBox>
                </children>
             </HBox>
-            
+
             <!-- Controles de reproducción -->
             <VBox alignment="CENTER" spacing="5.0" HBox.hgrow="ALWAYS">
                <children>
                   <!-- Botones de control -->
                   <HBox alignment="CENTER" spacing="15.0">
                      <children>
-                        <Button fx:id="btnAnterior" onAction="#handleAnterior" text="⏮" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 16px;" />
-                        <Button fx:id="btnPlayPause" onAction="#handlePlayPause" text="⏸" style="-fx-background-color: white; -fx-text-fill: black; -fx-background-radius: 25px; -fx-min-width: 40px; -fx-min-height: 40px; -fx-font-size: 16px;" />
-                        <Button fx:id="btnSiguiente" onAction="#handleSiguiente" text="⏭" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 16px;" />
+                        <Button fx:id="btnAnterior"  text="⏮" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 16px;" />
+                        <Button fx:id="btnPlayPause"  text="⏸" style="-fx-background-color: white; -fx-text-fill: black; -fx-background-radius: 25px; -fx-min-width: 40px; -fx-min-height: 40px; -fx-font-size: 16px;" />
+                        <Button fx:id="btnSiguiente"  text="⏭" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 16px;" />
                      </children>
                   </HBox>
-                  
+
                   <!-- Barra de progreso -->
                   <HBox alignment="CENTER" spacing="10.0" maxWidth="500.0">
                      <children>
                         <Label fx:id="lblTiempoActual" text="0:34" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px;" />
                         <Slider fx:id="sliderTiempo" value="0.34" max="2.36" HBox.hgrow="ALWAYS" style="-fx-control-inner-background: #5A5A80;" />
-                        <Label fx:id="lblTiempoTotal" text="2:36" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px;" />
+                        <Label fx:id="lblTiempoTotal" text="2:38" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px;" />
                      </children>
                   </HBox>
                </children>
             </VBox>
-            
+
             <!-- Controles adicionales -->
             <HBox alignment="CENTER_RIGHT" spacing="10.0" prefWidth="200.0">
                <children>
-                  <Button text="🔊" style="-fx-background-color: transparent; -fx-text-fill: white;" />
-                  <Slider value="0.5" max="1.0" prefWidth="80.0" style="-fx-control-inner-background: #5A5A80;" />
+                  <Button fx:id="btnVolumen"  text="🔊" style="-fx-background-color: transparent; -fx-text-fill: white;" />
+                  <Slider fx:id="sliderVolumen" value="0.5" max="1.0" prefWidth="80.0" style="-fx-control-inner-background: #5A5A80;" />
+                  <Button fx:id="btnExpandir"  style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 12px;">
+                     <graphic>
+                        <Label text="⤢" style="-fx-text-fill: white;" />
+                     </graphic>
+                  </Button>
                </children>
             </HBox>
          </children>
