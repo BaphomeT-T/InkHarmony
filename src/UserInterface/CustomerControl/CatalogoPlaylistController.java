@@ -2,6 +2,10 @@ package UserInterface.CustomerControl;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -113,7 +117,19 @@ public class CatalogoPlaylistController implements Initializable {
 
     @FXML
     private void handleAgregarPlaylist() {
-        // Lógica para crear nueva playlist
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../GUI/NuevaPlaylist.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setTitle("Nueva Playlist");
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.initOwner(btnAgregarPlaylist.getScene().getWindow());
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
