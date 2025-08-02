@@ -39,8 +39,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.collections.FXCollections; // AGREGADO
-import javafx.collections.ObservableList; // AGREGADO
+import javafx.scene.control.CustomMenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 
 /**
  * La clase SubirCancionesController maneja la lógica para subir nuevas canciones al catálogo.
@@ -58,7 +58,10 @@ public class SubirCancionesController {
     @FXML private TextField nombreTextField;  // Para el título
     @FXML private TextField nombreTextField1; // Para el año
     @FXML private Label artistaLabel;
-    @FXML private ComboBox<String> artistaComboBox;
+
+    // CAMBIADO: De ComboBox a MenuButton para selección múltiple
+    @FXML private MenuButton artistaMenuButton;
+
     @FXML private ListView<String> cancionesListView;
     @FXML private MenuButton generoMenuButton;
     @FXML private ImageView cancionImageView;
@@ -71,6 +74,9 @@ public class SubirCancionesController {
 
     private List<Genero> generosSeleccionados = new ArrayList<>();
 
+    // NUEVA VARIABLE: Lista de artistas seleccionados
+    private List<ArtistaDTO> artistasSeleccionados = new ArrayList<>();
+
     // Referencia al controlador del catálogo para actualizar la tabla
     private CatalogoCancionesController catalogoController;
 
@@ -80,10 +86,9 @@ public class SubirCancionesController {
     private double duracionSegundos = 0.0;
     private String nombreArchivoMP3 = "";
 
-    // NUEVAS VARIABLES PARA AUTOCOMPLETADO DE ARTISTAS
+    // VARIABLES PARA MANEJO DE ARTISTAS
     private Artista artistaLogic = new Artista();
     private List<ArtistaDTO> todosLosArtistas = new ArrayList<>();
-    private ArtistaDTO artistaSeleccionado = null;
 
     // Método de inicialización del controlador
     @FXML
@@ -101,8 +106,8 @@ public class SubirCancionesController {
             generoMenuButton.getItems().add(item);
         }
 
-        // NUEVA SECCIÓN: Configurar el ComboBox de artistas para autocompletado
-        configurarAutocompletadoArtistas();
+        // NUEVA SECCIÓN: Configurar el MenuButton de artistas para selección múltiple
+        configurarMenuButtonArtistas();
 
         // Listener para validar el título en tiempo real
         nombreTextField.textProperty().addListener((obs, oldText, newText) -> {
@@ -142,38 +147,121 @@ public class SubirCancionesController {
     }
 
     /**
-     * NUEVO MÉTODO: Configura el ComboBox de artistas para autocompletado
-     * usando el mismo patrón que CatalogoArtistasController
+     * NUEVO MÉTODO: Configura el MenuButton de artistas para selección múltiple
+     * similar al patrón usado para géneros
      */
-    private void configurarAutocompletadoArtistas() {
+    private void configurarMenuButtonArtistas() {
         // Cargar todos los artistas al inicio
         cargarTodosLosArtistas();
 
-        // Hacer el ComboBox editable para permitir escritura
-        artistaComboBox.setEditable(true);
-        artistaComboBox.setDisable(false);
+        // Configurar texto inicial del MenuButton
+        artistaMenuButton.setText("Selecciona artistas");
 
-        // Usar el mismo patrón de listener que en CatalogoArtistasController
-        artistaComboBox.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-            filtrarArtistasParaComboBox(newValue);
+        // Hacer el MenuButton editable para permitir búsqueda
+        artistaMenuButton.setMnemonicParsing(false);
+
+        // Poblar el MenuButton con CheckMenuItems para cada artista
+        actualizarMenuButtonArtistas();
+
+        // NUEVO: Agregar TextField de búsqueda como primer item del menú
+        agregarCampoBusquedaAlMenu();
+    }
+
+    /**
+     * NUEVO MÉTODO: Agrega un TextField de búsqueda como primer elemento del MenuButton
+     */
+    private void agregarCampoBusquedaAlMenu() {
+        // Crear TextField para búsqueda
+        TextField busquedaField = new TextField();
+        busquedaField.setPromptText("Buscar artistas...");
+        busquedaField.setStyle("-fx-background-color: #575a81; -fx-text-fill: white; -fx-prompt-text-fill: #cccccc;");
+        busquedaField.setPrefWidth(180);
+
+        // Listener para filtrar mientras se escribe
+        busquedaField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filtrarArtistasEnMenuButton(newValue, busquedaField);
         });
 
-        // Manejar la selección de un artista
-        artistaComboBox.setOnAction(e -> {
-            String nombreSeleccionado = artistaComboBox.getSelectionModel().getSelectedItem();
-            if (nombreSeleccionado != null && !nombreSeleccionado.isEmpty()) {
-                // Buscar el artista completo por nombre
-                artistaSeleccionado = todosLosArtistas.stream()
-                        .filter(artista -> artista.getNombre().equals(nombreSeleccionado))
-                        .findFirst()
-                        .orElse(null);
+        // Evitar que el menú se cierre al escribir
+        busquedaField.setOnMouseClicked(e -> e.consume());
+        busquedaField.setOnKeyPressed(e -> e.consume());
 
-                if (artistaSeleccionado != null) {
-                    System.out.println("Artista seleccionado: " + artistaSeleccionado.getNombre() +
-                            " (ID: " + artistaSeleccionado.getId() + ")");
+        // Crear CustomMenuItem que contenga el TextField
+        CustomMenuItem searchItem = new CustomMenuItem(busquedaField);
+        searchItem.setHideOnClick(false); // No cerrar el menú al hacer clic
+
+        // Agregar separador visual
+        SeparatorMenuItem separator = new SeparatorMenuItem();
+
+        // Insertar al inicio del menú
+        artistaMenuButton.getItems().add(0, searchItem);
+        artistaMenuButton.getItems().add(1, separator);
+    }
+
+    /**
+     * NUEVO MÉTODO: Filtra los artistas en el MenuButton basado en el texto de búsqueda
+     */
+    private void filtrarArtistasEnMenuButton(String filtro, TextField busquedaField) {
+        List<ArtistaDTO> artistasFiltrados;
+
+        if (filtro == null || filtro.trim().isEmpty()) {
+            artistasFiltrados = todosLosArtistas;
+        } else {
+            artistasFiltrados = todosLosArtistas.stream()
+                    .filter(artista -> artista.getNombre().toLowerCase().contains(filtro.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        // Actualizar solo los CheckMenuItems (mantener el campo de búsqueda)
+        actualizarCheckMenuItems(artistasFiltrados, busquedaField);
+    }
+
+    /**
+     * MÉTODO CORREGIDO: Actualiza solo los CheckMenuItems manteniendo el campo de búsqueda
+     * y preservando todas las selecciones previas
+     */
+    private void actualizarCheckMenuItems(List<ArtistaDTO> artistas, TextField busquedaField) {
+        // Guardar las selecciones actuales de TODOS los artistas (no solo los visibles)
+        List<Integer> artistasSeleccionadosIds = artistasSeleccionados.stream()
+                .map(ArtistaDTO::getId)
+                .collect(Collectors.toList());
+
+        // Remover solo los CheckMenuItems (mantener búsqueda y separador)
+        artistaMenuButton.getItems().removeIf(item ->
+                item instanceof CheckMenuItem ||
+                        (item instanceof SeparatorMenuItem && artistaMenuButton.getItems().indexOf(item) > 1)
+        );
+
+        // Agregar CheckMenuItem para cada artista filtrado
+        for (ArtistaDTO artista : artistas) {
+            CheckMenuItem item = new CheckMenuItem(artista.getNombre());
+            item.setUserData(artista);
+
+            // Verificar si este artista estaba previamente seleccionado
+            boolean estabaSeleccionado = artistasSeleccionadosIds.contains(artista.getId());
+            item.setSelected(estabaSeleccionado);
+
+            // Configurar el evento de selección
+            item.setOnAction(e -> {
+                e.consume();
+                // CORREGIDO: Actualizar la lista de seleccionados directamente
+                if (item.isSelected()) {
+                    // Solo agregar si no está ya en la lista
+                    if (!artistasSeleccionados.stream().anyMatch(a -> a.getId() == artista.getId())) {
+                        artistasSeleccionados.add(artista);
+                    }
+                } else {
+                    // Remover de la lista de seleccionados
+                    artistasSeleccionados.removeIf(a -> a.getId() == artista.getId());
                 }
-            }
-        });
+                actualizarTextoMenuButtonArtistas();
+            });
+
+            artistaMenuButton.getItems().add(item);
+        }
+
+        // Mantener el foco en el campo de búsqueda
+        busquedaField.requestFocus();
     }
 
     /**
@@ -182,8 +270,7 @@ public class SubirCancionesController {
     private void cargarTodosLosArtistas() {
         try {
             todosLosArtistas = artistaLogic.buscarTodo();
-            mostrarTodosLosArtistasEnComboBox();
-            System.out.println("Cargados " + todosLosArtistas.size() + " artistas para autocompletado");
+            System.out.println("Cargados " + todosLosArtistas.size() + " artistas para selección múltiple");
         } catch (Exception e) {
             System.err.println("Error al cargar artistas: " + e.getMessage());
             e.printStackTrace();
@@ -193,68 +280,99 @@ public class SubirCancionesController {
     }
 
     /**
-     * NUEVO MÉTODO: Filtra los artistas para el ComboBox usando el mismo patrón que CatalogoArtistasController
+     * NUEVO MÉTODO: Actualiza el MenuButton con todos los artistas disponibles
      */
-    private void filtrarArtistasParaComboBox(String filtro) {
-        if (filtro == null || filtro.isBlank()) {
-            // Si no hay filtro, mostrar todos los artistas
-            mostrarTodosLosArtistasEnComboBox();
-            artistaSeleccionado = null;
-            return;
-        }
+    private void actualizarMenuButtonArtistas() {
+        actualizarMenuButtonConArtistas(todosLosArtistas);
+    }
 
-        // Filtrar usando el mismo patrón que CatalogoArtistasController
-        List<ArtistaDTO> artistasFiltrados = todosLosArtistas.stream()
-                .filter(artista -> artista.getNombre().toLowerCase().contains(filtro.toLowerCase()))
+    /**
+     * NUEVO MÉTODO: Actualiza el MenuButton con una lista específica de artistas
+     */
+    private void actualizarMenuButtonConArtistas(List<ArtistaDTO> artistas) {
+        // Guardar las selecciones actuales
+        List<Integer> artistasSeleccionadosIds = artistasSeleccionados.stream()
+                .map(ArtistaDTO::getId)
                 .collect(Collectors.toList());
 
-        actualizarComboBoxConArtistas(artistasFiltrados);
-    }
+        // Limpiar items existentes
+        artistaMenuButton.getItems().clear();
 
-    /**
-     * NUEVO MÉTODO: Muestra todos los artistas en el ComboBox
-     */
-    private void mostrarTodosLosArtistasEnComboBox() {
-        actualizarComboBoxConArtistas(todosLosArtistas);
-    }
+        // Agregar CheckMenuItem para cada artista filtrado
+        for (ArtistaDTO artista : artistas) {
+            CheckMenuItem item = new CheckMenuItem(artista.getNombre());
+            item.setUserData(artista);
 
-    /**
-     * NUEVO MÉTODO: Actualiza el ComboBox con la lista de artistas proporcionada
-     */
-    private void actualizarComboBoxConArtistas(List<ArtistaDTO> artistas) {
-        // Crear lista de nombres para el ComboBox
-        ObservableList<String> nombresArtistas = FXCollections.observableArrayList(
-                artistas.stream()
-                        .map(ArtistaDTO::getNombre)
-                        .collect(Collectors.toList())
-        );
+            // Verificar si este artista estaba previamente seleccionado
+            boolean estabaSeleccionado = artistasSeleccionadosIds.contains(artista.getId());
+            item.setSelected(estabaSeleccionado);
 
-        // Guardar el texto actual del editor y la posición del cursor
-        String textoActual = artistaComboBox.getEditor().getText();
-        int posicionCursor = artistaComboBox.getEditor().getCaretPosition();
+            // Configurar el evento de selección
+            item.setOnAction(e -> {
+                e.consume();
+                actualizarListaArtistasSeleccionados();
+                actualizarTextoMenuButtonArtistas();
+            });
 
-        // Actualizar las opciones del ComboBox
-        artistaComboBox.setItems(nombresArtistas);
-
-        // Restaurar el texto y posición del cursor
-        if (!textoActual.isEmpty()) {
-            artistaComboBox.getEditor().setText(textoActual);
-            artistaComboBox.getEditor().positionCaret(Math.min(posicionCursor, textoActual.length()));
+            artistaMenuButton.getItems().add(item);
         }
 
-        // Mostrar dropdown si hay opciones y texto
-        if (!nombresArtistas.isEmpty() && !textoActual.isEmpty()) {
-            if (!artistaComboBox.isShowing()) {
-                artistaComboBox.show();
+        // Actualizar la lista de seleccionados después de reconstruir el menú
+        actualizarListaArtistasSeleccionados();
+    }
+
+    /**
+     * MÉTODO MODIFICADO: Solo actualiza la lista cuando no hay filtro activo
+     * para evitar conflictos durante la búsqueda
+     */
+    private void actualizarListaArtistasSeleccionados() {
+        // Solo reconstruir la lista si estamos viendo todos los artistas (sin filtro)
+        // Durante la búsqueda, la lista se mantiene manualmente en el onAction del CheckMenuItem
+
+        artistasSeleccionados.clear();
+
+        for (javafx.scene.control.MenuItem item : artistaMenuButton.getItems()) {
+            if (item instanceof CheckMenuItem) {
+                CheckMenuItem checkItem = (CheckMenuItem) item;
+                if (checkItem.isSelected()) {
+                    ArtistaDTO artista = (ArtistaDTO) checkItem.getUserData();
+                    if (artista != null) {
+                        artistasSeleccionados.add(artista);
+                    }
+                }
             }
         }
+
+        System.out.println("Artistas seleccionados: " + artistasSeleccionados.size());
     }
 
     /**
-     * NUEVO MÉTODO: Obtiene el artista actualmente seleccionado
+     * NUEVO MÉTODO: Actualiza el texto del MenuButton de artistas con los seleccionados
      */
-    public ArtistaDTO getArtistaSeleccionado() {
-        return artistaSeleccionado;
+    private void actualizarTextoMenuButtonArtistas() {
+        List<String> nombresSeleccionados = artistasSeleccionados.stream()
+                .map(ArtistaDTO::getNombre)
+                .collect(Collectors.toList());
+
+        if (nombresSeleccionados.isEmpty()) {
+            artistaMenuButton.setText("Selecciona artistas");
+        } else if (nombresSeleccionados.size() == 1) {
+            artistaMenuButton.setText(nombresSeleccionados.get(0));
+        } else if (nombresSeleccionados.size() <= 2) {
+            artistaMenuButton.setText(String.join(", ", nombresSeleccionados));
+        } else {
+            // Si hay más de 2 artistas, mostrar los primeros 2 y "... +N más"
+            String texto = nombresSeleccionados.get(0) + ", " + nombresSeleccionados.get(1) +
+                    "... +" + (nombresSeleccionados.size() - 2) + " más";
+            artistaMenuButton.setText(texto);
+        }
+    }
+
+    /**
+     * NUEVO MÉTODO: Obtiene la lista de artistas actualmente seleccionados
+     */
+    public List<ArtistaDTO> getArtistasSeleccionados() {
+        return new ArrayList<>(artistasSeleccionados);
     }
 
     // Método para registrar la canción - conectado al botón "Publicar"
@@ -306,7 +424,7 @@ public class SubirCancionesController {
         List<Genero> generosSeleccionados = generoMenuButton.getItems().stream()
                 .filter(item -> item instanceof CheckMenuItem && ((CheckMenuItem)item).isSelected())
                 .map(item -> (Genero)item.getUserData())
-                .collect(Collectors.toList()); // CORREGIDO: usar collect() en lugar de toList()
+                .collect(Collectors.toList());
 
         if (!validador.validarGeneros(generosSeleccionados)) {
             mostrarAlerta("Debes seleccionar al menos un género musical.");
@@ -333,33 +451,41 @@ public class SubirCancionesController {
             return;
         }
 
-        // 7. Validar que hay un artista seleccionado
-        if (artistaSeleccionado == null) {
-            mostrarAlerta("Debes seleccionar un artista.");
+        // 7. MODIFICADO: Validar que hay al menos un artista seleccionado
+        if (artistasSeleccionados.isEmpty()) {
+            mostrarAlerta("Debes seleccionar al menos un artista.");
             return;
         }
 
-        // 8. Registrar la canción en el sistema
+        // 8. MODIFICADO: Registrar la canción con múltiples artistas
         try {
             Cancion cancionLogic = new Cancion();
 
             // Convertir duración de segundos a formato "mm:ss"
             String duracionFormateada = formatearDuracion(duracionSegundos);
 
-            // CORREGIDO: Pasar todos los parámetros necesarios incluyendo MP3 y artista
-            boolean exito = cancionLogic.registrar(
+            // Registrar la canción con múltiples artistas
+            boolean exito = cancionLogic.registrarConMultiplesArtistas(
                     titulo,
                     anioStr,
                     duracionFormateada,
                     generosSeleccionados,
                     "", // Letra vacía por ahora
                     imagenBytes,
-                    archivoMP3,  // AGREGADO: archivo MP3
-                    artistaSeleccionado // AGREGADO: artista seleccionado
+                    archivoMP3,
+                    artistasSeleccionados // MODIFICADO: ahora es una lista
             );
 
             if (exito) {
-                mostrarExito("Canción registrada con éxito.");
+                String artistasTexto = artistasSeleccionados.size() == 1 ?
+                        "artista: " + artistasSeleccionados.get(0).getNombre() :
+                        "artistas: " + artistasSeleccionados.stream()
+                                .map(ArtistaDTO::getNombre)
+                                .collect(Collectors.joining(", "));
+
+                mostrarExito("Canción registrada con éxito.\n" +
+                        "Título: " + titulo + "\n" +
+                        "Con " + artistasTexto);
 
                 // Actualizar el catálogo si existe la referencia
                 if (catalogoController != null) {

@@ -30,12 +30,10 @@
                     <font><Font size="24.0" /></font>
                 </Label>
 
-                <!-- COMBOBOX ACTUALIZADO - QUITADO disable="true" Y HABILITADO PARA AUTOCOMPLETADO -->
-                <ComboBox fx:id="artistaComboBox" cacheShape="false" centerShape="false" disable="true" editable="true" focusTraversable="true" layoutX="30.0" layoutY="334.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="51.0" prefWidth="198.0" promptText="Buscar artista..." scaleShape="false" stylesheets="@catologoCanciones.css">
-                    <opaqueInsets>
-                        <Insets />
-                    </opaqueInsets>
-                </ComboBox>
+                <!-- CAMBIADO: MenuButton con estilo morado igual que género -->
+                <MenuButton fx:id="artistaMenuButton" layoutX="30.0" layoutY="334.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="198.0" style="-fx-background-color: #575a81; -fx-background-radius: 20;" stylesheets="@catologoCanciones.css" text="Selecciona artistas" textFill="WHITE">
+                    <font><Font size="16.0" /></font>
+                </MenuButton>
 
                 <!-- ListView para canciones del artista -->
                 <ListView fx:id="cancionesListView" layoutX="30.0" layoutY="400.0" prefHeight="100.0" prefWidth="434.0" style="-fx-background-color: #1B1A55; -fx-border-color: #9190C2; -fx-border-radius: 10;" visible="false" />
