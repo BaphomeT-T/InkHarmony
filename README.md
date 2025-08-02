@@ -1,4 +1,19 @@
-## Estructura del proyecto y descripción de carpetas
+# InkHarmony 🎵
+Aplicación realizada como parte del proyecto de la materia de Diseño de Software, por los estudiantes del GR1SW de la Escuela Politécnica Nacional 
+## 🌟 Descripción
+InkHarmony es una aplicación de escritorio desarrollada en Java que funciona como un reproductor de música. 
+Permite a los usuarios disfrutar de su música favorita. 
+La aplicación cuenta con una interfaz gráfica amigable e intuitiva, acceso directo a una base de datos local (SQLite) y funcionalidades que permiten realizar operaciones CRUD sobre el catálogo musical, artistas y en general, siular una experiencia parecida a la de una plataforma de streaming, pero completamente offline y personalizada.
+
+## ⚙️Tecnologías utilizadas 
+- **Java 17**
+- **Java FX**
+- **JLayer**
+- **SQLite**
+- **JDBC**
+- **Scene Builder**
+
+## 📂 Estructura del proyecto y descripción de carpetas
 
 - **.vscode, bin, lib:** Carpetas para configuración del IDE, archivos compilados o bibliotecas externas.
 
