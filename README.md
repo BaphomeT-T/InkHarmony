@@ -20,4 +20,4 @@
 
 - **App.java:** Clase principal que contiene el método `main`, inicia la aplicación y ensambla sus componentes.
 
-- **README.md:** Documento de ayuda y guía del proyecto.
+- **README.md:** Documento de ayuda y guía del proyecto.  
