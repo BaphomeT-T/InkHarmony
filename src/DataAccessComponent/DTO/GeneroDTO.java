@@ -1,5 +1,5 @@
 package DataAccessComponent.DTO;
-
+//
 /**
  * Clase DTO que representa un género musical en el sistema InkHarmony.
  * Extiende SQLiteDataHelper para aprovechar la funcionalidad de conexión
@@ -18,7 +18,7 @@ package DataAccessComponent.DTO;
  */
 public class GeneroDTO {
     
-    /** Nombre del género musical */
+    /** Nombre del género musical  traido de la bd*/
     private String nombreGenero;
 
     /**

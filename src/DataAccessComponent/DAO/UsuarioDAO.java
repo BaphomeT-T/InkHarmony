@@ -3,7 +3,7 @@ package DataAccessComponent.DAO;
 import DataAccessComponent.DTO.GeneroDTO;
 import DataAccessComponent.DTO.PerfilDTO;
 import DataAccessComponent.SQLiteDataHelper;
-
+// imports
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
