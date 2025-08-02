@@ -31,19 +31,7 @@
                 </Label>
 
                 <!-- COMBOBOX ACTUALIZADO - QUITADO disable="true" Y HABILITADO PARA AUTOCOMPLETADO -->
-                <ComboBox fx:id="artistaComboBox"
-                          cacheShape="false"
-                          centerShape="false"
-                          focusTraversable="true"
-                          layoutX="30.0"
-                          layoutY="334.0"
-                          nodeOrientation="LEFT_TO_RIGHT"
-                          prefHeight="51.0"
-                          prefWidth="198.0"
-                          promptText="Buscar artista..."
-                          scaleShape="false"
-                          style="-fx-background-radius: 20; -fx-background-color: #575a81;"
-                          stylesheets="@catalogoCanciones.css">
+                <ComboBox fx:id="artistaComboBox" cacheShape="false" centerShape="false" disable="true" editable="true" focusTraversable="true" layoutX="30.0" layoutY="334.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="51.0" prefWidth="198.0" promptText="Buscar artista..." scaleShape="false" stylesheets="@catologoCanciones.css">
                     <opaqueInsets>
                         <Insets />
                     </opaqueInsets>
@@ -56,11 +44,7 @@
                     <font><Font size="24.0" /></font>
                 </Label>
 
-                <MenuButton fx:id="generoMenuButton" accessibleRole="CHECK_BOX" layoutX="286.0" layoutY="334.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="198.0" style="-fx-background-color: #575a81; -fx-background-radius: 20;" text="Selecciona" textFill="WHITE">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Action 1" />
-                        <MenuItem mnemonicParsing="false" text="Action 2" />
-                    </items>
+                <MenuButton fx:id="generoMenuButton" layoutX="286.0" layoutY="334.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="198.0" style="-fx-background-color: #575a81; -fx-background-radius: 20;" stylesheets="@catologoCanciones.css" text="Selecciona" textFill="WHITE">
                     <font><Font size="20.0" /></font>
                 </MenuButton>
 

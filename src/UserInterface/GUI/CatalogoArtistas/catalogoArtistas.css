@@ -64,3 +64,33 @@
     -fx-background-color: #9190C2;
     -fx-background-radius: 10;
 }
+.menu-item {
+    -fx-background-color: #575a81;
+    -fx-text-fill: white;
+    -fx-font-weight: normal;
+}
+
+.menu-item:focused {
+    -fx-background-color: #6C63FF;
+}
+.menu-item .label {
+    -fx-text-fill: white;
+}
+.check-menu-item {
+    -fx-background-color: #575a81;
+    -fx-text-fill: white;
+}
+.check-menu-item:checked {
+    -fx-background-color: #6C63FF;
+}
+.check-menu-item .check {
+    -fx-background-color: transparent;
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+.check-menu-item:checked .check {
+    -fx-background-color: white;
+    -fx-shape: "M 0 -1 L 4 -1 L 6 1 L 12 -5 L 14 -3 L 6 5 L 0 -1";
+    -fx-scale-shape: false;
+    -fx-padding: 0.166667em 0.166667em 0.166667em 0.25em;
+}
