@@ -1,15 +1,14 @@
 -- database: ../database/InkHarmony.sqlite
 -- Borrar tablas en orden seguro
 DROP TABLE IF EXISTS Reproduccion;
-DROP TABLE IF EXISTS playlists;
-DROP TABLE IF EXISTS playlist_elementos;
+DROP TABLE IF EXISTS Playlist_Cancion;
 DROP TABLE IF EXISTS Cancion_Genero;
 DROP TABLE IF EXISTS Cancion_Artista;
 DROP TABLE IF EXISTS Artista_Genero;
 DROP TABLE IF EXISTS Playlist;
 DROP TABLE IF EXISTS Cancion;
 DROP TABLE IF EXISTS Artista;
- DROP TABLE IF EXISTS Genero;
+DROP TABLE IF EXISTS Genero;
 DROP TABLE IF EXISTS Usuario;
 
 
@@ -27,29 +26,29 @@ CREATE TABLE Usuario (
                          tipo_usuario VARCHAR(20) NOT NULL
 );
 
---Tabla Genero
+-- Tabla Genero
 CREATE TABLE Genero (
                         id_genero INTEGER PRIMARY KEY AUTOINCREMENT,
                         nombre_genero VARCHAR(20) NOT NULL
 );
 
 -- Tabla Artista
-    CREATE TABLE Artista (
-                             id_artista INTEGER PRIMARY KEY AUTOINCREMENT,
-                             nombre VARCHAR(50) NOT NULL UNIQUE,
-                             biografia TEXT NOT NULL,
-                             imagen BLOB -- o BLOB si quieres guardar bytes
-    );
+CREATE TABLE Artista (
+                         id_artista INTEGER PRIMARY KEY AUTOINCREMENT,
+                         nombre VARCHAR(20) NOT NULL,
+                         nacionalidad VARCHAR(20),
+                         biografia VARCHAR(20),
+                         fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
-
-    -- Tabla Artista_Genero (N:M)
-    CREATE TABLE Artista_Genero (
-                                    id_artista INTEGER NOT NULL,
-                                    id_genero INTEGER NOT NULL,
-                                    PRIMARY KEY (id_artista, id_genero),
-                                    FOREIGN KEY (id_artista) REFERENCES Artista(id_artista),
-                                    FOREIGN KEY (id_genero) REFERENCES Genero(id_genero)
-    );
+-- Tabla Artista_Genero (N:M)
+CREATE TABLE Artista_Genero (
+                                id_artista INTEGER NOT NULL,
+                                id_genero INTEGER NOT NULL,
+                                PRIMARY KEY (id_artista, id_genero),
+                                FOREIGN KEY (id_artista) REFERENCES Artista(id_artista),
+                                FOREIGN KEY (id_genero) REFERENCES Genero(id_genero)
+);
 
 -- Tabla Cancion
 CREATE TABLE Cancion (
@@ -80,22 +79,23 @@ CREATE TABLE Cancion_Artista (
                                  FOREIGN KEY (id_artista) REFERENCES Artista(id_artista)
 );
 
-CREATE TABLE IF NOT EXISTS playlists (
-                                         id_playlist INTEGER PRIMARY KEY AUTOINCREMENT,
-                                         titulo_playlist TEXT NOT NULL,
-                                         descripcion TEXT,
-                                         fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                         fecha_modificacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                         propietario_correo TEXT NOT NULL
+CREATE TABLE Playlist (
+                          id_playlist INTEGER PRIMARY KEY AUTOINCREMENT,
+                          titulo VARCHAR(100) NOT NULL,
+                          descripcion TEXT,
+                          id_propietario INTEGER NOT NULL,
+                          imagen_portada BLOB,
+                          fecha_creacion DATETIME NOT NULL,
+                          FOREIGN KEY (id_propietario) REFERENCES Usuario(id_usuario)
 );
 
-CREATE TABLE IF NOT EXISTS playlist_elementos (
-                                                  id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                                  id_playlist INTEGER NOT NULL,
-                                                  id_cancion INTEGER NOT NULL,
-                                                  orden_elemento INTEGER DEFAULT 0,
-                                                  fecha_agregado DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                                  FOREIGN KEY (id_playlist) REFERENCES playlists(id_playlist) ON DELETE CASCADE
+CREATE TABLE Playlist_Cancion (
+                                  id_playlist INTEGER,
+                                  id_cancion INTEGER,
+                                  orden INTEGER NOT NULL,
+                                  PRIMARY KEY (id_playlist, id_cancion),
+                                  FOREIGN KEY (id_playlist) REFERENCES Playlist(id_playlist) ON DELETE CASCADE,
+                                  FOREIGN KEY (id_cancion) REFERENCES Cancion(id_cancion) ON DELETE CASCADE
 );
 
 
