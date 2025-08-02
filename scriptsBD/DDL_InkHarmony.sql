@@ -80,6 +80,7 @@ CREATE TABLE Cancion_Artista (
                                  FOREIGN KEY (id_artista) REFERENCES Artista(id_artista)
 );
 
+<<<<<<< HEAD
 CREATE TABLE IF NOT EXISTS playlists (
                                          id_playlist INTEGER PRIMARY KEY AUTOINCREMENT,
                                          titulo_playlist TEXT NOT NULL,
@@ -96,6 +97,25 @@ CREATE TABLE IF NOT EXISTS playlist_elementos (
                                                   orden_elemento INTEGER DEFAULT 0,
                                                   fecha_agregado DATETIME DEFAULT CURRENT_TIMESTAMP,
                                                   FOREIGN KEY (id_playlist) REFERENCES playlists(id_playlist) ON DELETE CASCADE
+=======
+CREATE TABLE Playlist (
+                          id_playlist INTEGER PRIMARY KEY AUTOINCREMENT,
+                          titulo VARCHAR(100) NOT NULL,
+                          descripcion TEXT,
+                          id_propietario INTEGER NOT NULL,
+                          imagen_portada BLOB,
+                          fecha_creacion DATETIME NOT NULL,
+                          FOREIGN KEY (id_propietario) REFERENCES Usuario(id_usuario)
+);
+
+CREATE TABLE Playlist_Cancion (
+                                  id_playlist INTEGER,
+                                  id_cancion INTEGER,
+                                  orden INTEGER NOT NULL,
+                                  PRIMARY KEY (id_playlist, id_cancion),
+                                  FOREIGN KEY (id_playlist) REFERENCES Playlist(id_playlist) ON DELETE CASCADE,
+                                  FOREIGN KEY (id_cancion) REFERENCES Cancion(id_cancion) ON DELETE CASCADE
+>>>>>>> 13a7d7a8b979e880d7ed8bd7bb3eb477cc5ac00f
 );
 
 
