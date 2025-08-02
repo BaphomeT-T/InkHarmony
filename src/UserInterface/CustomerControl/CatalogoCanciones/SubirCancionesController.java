@@ -2,7 +2,9 @@ package UserInterface.CustomerControl.CatalogoCanciones;
 
 import BusinessLogic.Cancion;
 import BusinessLogic.Genero;
+import BusinessLogic.Artista; // AGREGADO
 import BusinessLogic.ServicioValidacionCancion;
+import DataAccessComponent.DTO.ArtistaDTO; // AGREGADO
 import java.io.File;
 import java.net.URI;
 import java.nio.file.Files;
@@ -11,6 +13,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors; // AGREGADO
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,6 +30,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.collections.FXCollections; // AGREGADO
+import javafx.collections.ObservableList; // AGREGADO
 
 public class SubirCancionesController {
 
@@ -42,8 +47,8 @@ public class SubirCancionesController {
     @FXML private ImageView cancionImageView;
     @FXML private Button cargarImagenButton;
     @FXML private Button registrarButton;
-    @FXML private Button seleccionarArchivoButton; // AHORA CONECTADO AL FXML
-    @FXML private Label archivoSeleccionadoLabel; // Para mostrar el archivo seleccionado
+    @FXML private Button seleccionarArchivoButton;
+    @FXML private Label archivoSeleccionadoLabel;
     @FXML private Label seleccionarLabel;
     @FXML private Button cerrarButton;
 
@@ -57,6 +62,11 @@ public class SubirCancionesController {
     private byte[] archivoMP3 = null;
     private double duracionSegundos = 0.0;
     private String nombreArchivoMP3 = "";
+
+    // NUEVAS VARIABLES PARA AUTOCOMPLETADO DE ARTISTAS
+    private Artista artistaLogic = new Artista();
+    private List<ArtistaDTO> todosLosArtistas = new ArrayList<>();
+    private ArtistaDTO artistaSeleccionado = null;
 
     // Método de inicialización del controlador
     @FXML
@@ -73,6 +83,9 @@ public class SubirCancionesController {
             });
             generoMenuButton.getItems().add(item);
         }
+
+        // NUEVA SECCIÓN: Configurar el ComboBox de artistas para autocompletado
+        configurarAutocompletadoArtistas();
 
         // Listener para validar el título en tiempo real
         nombreTextField.textProperty().addListener((obs, oldText, newText) -> {
@@ -109,6 +122,122 @@ public class SubirCancionesController {
         if (archivoSeleccionadoLabel != null) {
             archivoSeleccionadoLabel.setVisible(false);
         }
+    }
+
+    /**
+     * NUEVO MÉTODO: Configura el ComboBox de artistas para autocompletado
+     * usando el mismo patrón que CatalogoArtistasController
+     */
+    private void configurarAutocompletadoArtistas() {
+        // Cargar todos los artistas al inicio
+        cargarTodosLosArtistas();
+
+        // Hacer el ComboBox editable para permitir escritura
+        artistaComboBox.setEditable(true);
+        artistaComboBox.setDisable(false);
+
+        // Usar el mismo patrón de listener que en CatalogoArtistasController
+        artistaComboBox.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+            filtrarArtistasParaComboBox(newValue);
+        });
+
+        // Manejar la selección de un artista
+        artistaComboBox.setOnAction(e -> {
+            String nombreSeleccionado = artistaComboBox.getSelectionModel().getSelectedItem();
+            if (nombreSeleccionado != null && !nombreSeleccionado.isEmpty()) {
+                // Buscar el artista completo por nombre
+                artistaSeleccionado = todosLosArtistas.stream()
+                        .filter(artista -> artista.getNombre().equals(nombreSeleccionado))
+                        .findFirst()
+                        .orElse(null);
+
+                if (artistaSeleccionado != null) {
+                    System.out.println("Artista seleccionado: " + artistaSeleccionado.getNombre() +
+                            " (ID: " + artistaSeleccionado.getId() + ")");
+                }
+            }
+        });
+    }
+
+    /**
+     * NUEVO MÉTODO: Carga todos los artistas desde la base de datos
+     */
+    private void cargarTodosLosArtistas() {
+        try {
+            todosLosArtistas = artistaLogic.buscarTodo();
+            mostrarTodosLosArtistasEnComboBox();
+            System.out.println("Cargados " + todosLosArtistas.size() + " artistas para autocompletado");
+        } catch (Exception e) {
+            System.err.println("Error al cargar artistas: " + e.getMessage());
+            e.printStackTrace();
+            mostrarAlerta("Error al cargar la lista de artistas");
+            todosLosArtistas = new ArrayList<>();
+        }
+    }
+
+    /**
+     * NUEVO MÉTODO: Filtra los artistas para el ComboBox usando el mismo patrón que CatalogoArtistasController
+     */
+    private void filtrarArtistasParaComboBox(String filtro) {
+        if (filtro == null || filtro.isBlank()) {
+            // Si no hay filtro, mostrar todos los artistas
+            mostrarTodosLosArtistasEnComboBox();
+            artistaSeleccionado = null;
+            return;
+        }
+
+        // Filtrar usando el mismo patrón que CatalogoArtistasController
+        List<ArtistaDTO> artistasFiltrados = todosLosArtistas.stream()
+                .filter(artista -> artista.getNombre().toLowerCase().contains(filtro.toLowerCase()))
+                .collect(Collectors.toList());
+
+        actualizarComboBoxConArtistas(artistasFiltrados);
+    }
+
+    /**
+     * NUEVO MÉTODO: Muestra todos los artistas en el ComboBox
+     */
+    private void mostrarTodosLosArtistasEnComboBox() {
+        actualizarComboBoxConArtistas(todosLosArtistas);
+    }
+
+    /**
+     * NUEVO MÉTODO: Actualiza el ComboBox con la lista de artistas proporcionada
+     */
+    private void actualizarComboBoxConArtistas(List<ArtistaDTO> artistas) {
+        // Crear lista de nombres para el ComboBox
+        ObservableList<String> nombresArtistas = FXCollections.observableArrayList(
+                artistas.stream()
+                        .map(ArtistaDTO::getNombre)
+                        .collect(Collectors.toList())
+        );
+
+        // Guardar el texto actual del editor y la posición del cursor
+        String textoActual = artistaComboBox.getEditor().getText();
+        int posicionCursor = artistaComboBox.getEditor().getCaretPosition();
+
+        // Actualizar las opciones del ComboBox
+        artistaComboBox.setItems(nombresArtistas);
+
+        // Restaurar el texto y posición del cursor
+        if (!textoActual.isEmpty()) {
+            artistaComboBox.getEditor().setText(textoActual);
+            artistaComboBox.getEditor().positionCaret(Math.min(posicionCursor, textoActual.length()));
+        }
+
+        // Mostrar dropdown si hay opciones y texto
+        if (!nombresArtistas.isEmpty() && !textoActual.isEmpty()) {
+            if (!artistaComboBox.isShowing()) {
+                artistaComboBox.show();
+            }
+        }
+    }
+
+    /**
+     * NUEVO MÉTODO: Obtiene el artista actualmente seleccionado
+     */
+    public ArtistaDTO getArtistaSeleccionado() {
+        return artistaSeleccionado;
     }
 
     // Método para registrar la canción - conectado al botón "Publicar"
