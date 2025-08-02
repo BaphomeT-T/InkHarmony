@@ -325,7 +325,7 @@ public class CatalogoCancionesController {
             Stage stage = new Stage();
             stage.setTitle("Subir Canción");
             stage.setScene(new Scene(root));
-            stage.setMaximized(true);
+            stage.setMaximized(false);
             
             // Configurar el controlador para que actualice el catálogo cuando se registre una canción
             controller.setCatalogoController(this);
@@ -399,7 +399,7 @@ public class CatalogoCancionesController {
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Eliminar Canción");
-            stage.setMaximized(true);
+            stage.setMaximized(false);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -418,7 +418,7 @@ public class CatalogoCancionesController {
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Editar Canción");
-            stage.setMaximized(true);
+            stage.setMaximized(false);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
