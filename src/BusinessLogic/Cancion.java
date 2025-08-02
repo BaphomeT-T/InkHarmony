@@ -10,6 +10,7 @@ Descripción: Clase de lógica de negocio (BL) que gestiona operaciones sobre ca
 package BusinessLogic;
 
 import DataAccessComponent.DAO.CancionDAO;
+import DataAccessComponent.DTO.ArtistaDTO;
 import DataAccessComponent.DTO.CancionDTO;
 
 import java.time.LocalDateTime;
@@ -79,36 +80,47 @@ public class Cancion {
      * @param generos Lista de géneros asociados.
      * @param letra Letra de la canción.
      * @param portada Imagen de portada.
+     * @param archivoMP3 Archivo de audio en bytes.
+     * @param artista Artista asociado a la canción.
      * @return true si el registro fue exitoso.
      * @throws Exception si ocurre algún error en el DAO.
      */
     public boolean registrar(String titulo, String anio,
                              String duracion, List<Genero> generos,
-                             String letra, byte[] portada) throws Exception {
+                             String letra, byte[] portada,
+                             byte[] archivoMP3, ArtistaDTO artista) throws Exception {
 
         LocalDateTime fechaRegistro = LocalDateTime.now();
-        
+
         // Convertir duración de formato "3:45" a segundos
         String[] duracionParts = duracion.split(":");
         double duracionSegundos = 0;
         if (duracionParts.length == 2) {
             duracionSegundos = Integer.parseInt(duracionParts[0]) * 60 + Integer.parseInt(duracionParts[1]);
         }
-        
+
+        // Crear lista de artistas con el artista seleccionado
+        List<ArtistaDTO> artistas = new ArrayList<>();
+        if (artista != null) {
+            artistas.add(artista);
+        }
+
         // Crear DTO con constructor correcto
         CancionDTO nuevaCancion = new CancionDTO(
-            titulo, 
-            duracionSegundos, 
-            Integer.parseInt(anio), // Convertir año de String a int
-            fechaRegistro,
-            null, // archivoMP3 - no se está manejando aún
-            portada,
-            new ArrayList<>(), // artistas - lista vacía por ahora
-            generos
+                titulo,
+                duracionSegundos,
+                Integer.parseInt(anio), // Convertir año de String a int
+                fechaRegistro,
+                archivoMP3, // CORREGIDO: ahora se pasa el archivo MP3
+                portada,
+                artistas, // CORREGIDO: ahora se pasa la lista de artistas
+                generos
         );
-        
+
         return cancionDAO.registrar(nuevaCancion);
     }
+
+
     /*
     Se refactorizo este metodo para solucionar problemas de compatibilidad
      */

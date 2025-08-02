@@ -306,7 +306,7 @@ public class SubirCancionesController {
         List<Genero> generosSeleccionados = generoMenuButton.getItems().stream()
                 .filter(item -> item instanceof CheckMenuItem && ((CheckMenuItem)item).isSelected())
                 .map(item -> (Genero)item.getUserData())
-                .toList();
+                .collect(Collectors.toList()); // CORREGIDO: usar collect() en lugar de toList()
 
         if (!validador.validarGeneros(generosSeleccionados)) {
             mostrarAlerta("Debes seleccionar al menos un género musical.");
@@ -333,20 +333,29 @@ public class SubirCancionesController {
             return;
         }
 
-        // 7. Registrar la canción en el sistema
+        // 7. Validar que hay un artista seleccionado
+        if (artistaSeleccionado == null) {
+            mostrarAlerta("Debes seleccionar un artista.");
+            return;
+        }
+
+        // 8. Registrar la canción en el sistema
         try {
             Cancion cancionLogic = new Cancion();
 
             // Convertir duración de segundos a formato "mm:ss"
             String duracionFormateada = formatearDuracion(duracionSegundos);
 
+            // CORREGIDO: Pasar todos los parámetros necesarios incluyendo MP3 y artista
             boolean exito = cancionLogic.registrar(
                     titulo,
                     anioStr,
                     duracionFormateada,
                     generosSeleccionados,
                     "", // Letra vacía por ahora
-                    imagenBytes
+                    imagenBytes,
+                    archivoMP3,  // AGREGADO: archivo MP3
+                    artistaSeleccionado // AGREGADO: artista seleccionado
             );
 
             if (exito) {
@@ -367,7 +376,7 @@ public class SubirCancionesController {
         }
     }
 
-    // MÉTODO CORREGIDO - Ahora conectado correctamente al FXML
+    // MÉTODO CORREGIDO - Ahora conectado correctamente al FXML y con filtro de archivos arreglado
     @FXML
     public void seleccionarArchivo(ActionEvent actionEvent) {
         System.out.println("Seleccionando archivo MP3...");
@@ -375,10 +384,10 @@ public class SubirCancionesController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccionar archivo de audio");
 
-        // Filtro para mostrar solo archivos de audio
+        // CORRECCIÓN: Filtro para mostrar solo archivos de audio - usar * en todas las extensiones
         FileChooser.ExtensionFilter extFilterAudio = new FileChooser.ExtensionFilter(
                 "Archivos de audio (*.mp3, *.wav, *.flac)",
-                "*.mp3", "*.wav", "*.flac"
+                "*.mp3", "*.wav", "*.flac"  // CORREGIDO: todas las extensiones con asterisco
         );
         fileChooser.getExtensionFilters().add(extFilterAudio);
 
@@ -589,7 +598,7 @@ public class SubirCancionesController {
         List<String> seleccionados = generoMenuButton.getItems().stream()
                 .filter(item -> item instanceof CheckMenuItem && ((CheckMenuItem)item).isSelected())
                 .map(item -> ((CheckMenuItem)item).getText())
-                .toList();
+                .collect(Collectors.toList());
 
         generoMenuButton.setText(seleccionados.isEmpty() ? "Selecciona" : String.join(", ", seleccionados));
     }
