@@ -48,6 +48,9 @@ public class CatalogoArtistasController {
 
     @FXML
     private TableColumn<ArtistaDTO, ArtistaDTO> colNombreConImagen;
+    @FXML
+    private Button cerrarButton;
+
 
     @FXML
     public void initialize() {
@@ -257,6 +260,27 @@ public class CatalogoArtistasController {
             txtBuscar.clear();
             cargarArtistas();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void cerrarVentana() {
+        try {
+            // Obtener el Stage actual a partir del botón cerrar
+            Stage stage = (Stage) cerrarButton.getScene().getWindow();
+
+            // Cargar el nuevo FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/administracion_Usuarios.fxml"));
+            Parent root = loader.load();
+
+            // Crear la nueva escena con la interfaz de administración
+            Scene scene = new Scene(root);
+
+            // Cambiar la escena del Stage
+            stage.setScene(scene);
+            stage.setTitle("Administración de Usuarios");
+            stage.show();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
