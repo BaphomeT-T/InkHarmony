@@ -1,252 +1,212 @@
 package BusinessLogic;
 
-import javazoom.jl.player.advanced.PlaybackEvent;
-import javazoom.jl.player.advanced.PlaybackListener;
+import java.util.List;
 import BusinessLogic.utilities.AdvancedPlayerAcc;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.List;
-
 /**
- * Clase BusinessLogic.ReproductorMP3 que representa el controlador principal de reproducción de audio.
+ * Clase principal que representa el controlador de reproducción de audio MP3.
  *
- * <p>Utiliza el patrón Singleton para asegurar que exista una única instancia global,
- * y el patrón State para manejar distintos comportamientos (detenido, reproduciendo, pausado).</p>
+ * <p>Utiliza el patrón de diseño {@code Singleton} para asegurar una única instancia global,
+ * y el patrón {@code State} para manejar dinámicamente el comportamiento del reproductor
+ * según su estado actual (detenido, reproduciendo o pausado).</p>
  *
- * <p>Administra la reproducción de una lista de canciones representadas como arreglos de bytes (MP3),
- * usando un hilo dedicado y la clase `BusinessLogic.utilities.AdvancedPlayerAcc` como motor de reproducción.</p>
+ * <p>Gestiona la reproducción de una lista de canciones representadas como arreglos de bytes,
+ * usando un motor de reproducción basado en {@link AdvancedPlayerAcc}, ejecutado en un hilo independiente.</p>
  *
  * @author Grupo B
  * @version 1.1
  * @since 25-07-2025
+ *
+ * @see EstadoReproductor
+ * @see EstadoReproduciendo
+ * @see EstadoPausado
+ * @see EstadoDetenido
+ * @see MotorReproduccion
+ * @see GestorPlaylist
  */
 public class ReproductorMP3 {
 
-    /** Instancia única (patrón Singleton). */
+    /** Instancia única del reproductor (patrón Singleton). */
     private static ReproductorMP3 instancia;
 
-    /** Lista de canciones como arreglos de bytes (MP3). */
-    private List<byte[]> cancionesBytes;
+    /** Gestor de la lista de reproducción. */
+    private GestorPlaylist playlist;
 
-    /** Índice actual de la canción en reproducción. */
-    private int indiceActual = 0;
+    /** Motor que controla la reproducción de audio. */
+    private MotorReproduccion motor;
 
-    /** Reproductor MP3 extendido basado en JLayer. */
-    private AdvancedPlayerAcc player;
-
-    /** Hilo de ejecución de la reproducción. */
-    private Thread hiloReproduccion;
-
-    /** Frame actual en la canción (posición de reproducción). */
-    private int frameActual = 0;
-
-    /** Estado actual del reproductor (detenido, pausado, reproduciendo). */
+    /** Estado actual del reproductor (patrón State). */
     private EstadoReproductor estadoActual;
 
     /**
-     * Constructor privado que inicializa el reproductor con la lista de canciones.
+     * Constructor privado. Se invoca solo una vez mediante {@link #getInstancia(List)}.
      *
-     * @param cancionesBytes Lista de canciones en formato binario.
+     * @param canciones Lista de canciones (en formato byte[])
      */
-    private ReproductorMP3(List<byte[]> cancionesBytes) {
-        this.cancionesBytes = cancionesBytes;
-        this.estadoActual = new EstadoDetenido(this); // Estado inicial
+    private ReproductorMP3(List<byte[]> canciones) {
+        this.playlist = new GestorPlaylist(canciones);
+        this.motor = new MotorReproduccion();
+        this.estadoActual = new EstadoDetenido(this);
     }
 
     /**
-     * Obtiene la instancia única del reproductor (Singleton).
+     * Devuelve la instancia única del reproductor MP3 (Singleton).
+     * Si no existe, la crea con la lista de canciones proporcionada.
      *
-     * @param cancionesBytes Lista de canciones (solo usada en la primera llamada).
-     * @return Instancia única de BusinessLogic.ReproductorMP3.
+     * @param canciones Lista de canciones para inicializar el reproductor
+     * @return Instancia única del reproductor
      */
-    public static ReproductorMP3 getInstancia(List<byte[]> cancionesBytes) {
+    public static ReproductorMP3 getInstancia(List<byte[]> canciones) {
         if (instancia == null) {
-            instancia = new ReproductorMP3(cancionesBytes);
+            instancia = new ReproductorMP3(canciones);
         }
         return instancia;
     }
 
-    /**
-     * Establece el estado actual del reproductor.
-     *
-     * @param nuevoEstado Nueva instancia de estado.
-     */
-    public void setEstado(EstadoReproductor nuevoEstado) {
-        this.estadoActual = nuevoEstado;
-    }
+    // --------------------------
+    // Métodos públicos del estado
+    // --------------------------
 
     /**
-     * Obtiene el estado actual del reproductor.
-     *
-     * @return EstadoReproductor actual.
-     */
-    public EstadoReproductor getEstado() {
-        return estadoActual;
-    }
-
-    // --- Métodos públicos del reproductor, delegados al estado actual ---
-
-    /**
-     * Solicita iniciar la reproducción. Delegado al estado actual.
+     * Inicia la reproducción desde el estado actual.
      */
     public void reproducir() {
         estadoActual.reproducir();
     }
 
     /**
-     * Solicita pausar la reproducción. Delegado al estado actual.
+     * Pausa la reproducción actual.
      */
     public void pausar() {
         estadoActual.pausar();
     }
 
     /**
-     * Solicita reanudar la reproducción. Delegado al estado actual.
+     * Reanuda la reproducción desde el punto en que fue pausada.
      */
     public void reanudar() {
         estadoActual.reanudar();
     }
 
     /**
-     * Solicita detener la reproducción. Delegado al estado actual.
+     * Detiene completamente la reproducción.
      */
     public void detener() {
         estadoActual.detener();
     }
 
     /**
-     * Solicita avanzar a la siguiente canción. Delegado al estado actual.
+     * Reproduce la siguiente canción en la lista.
      */
     public void siguiente() {
         estadoActual.siguiente();
     }
 
     /**
-     * Solicita retroceder a la canción anterior. Delegado al estado actual.
+     * Reproduce la canción anterior en la lista.
      */
     public void anterior() {
         estadoActual.anterior();
     }
 
-    // --- Métodos auxiliares utilizados por los estados ---
+    // --------------------------
+    // Métodos internos
+    // --------------------------
 
     /**
-     * Inicia la reproducción de la canción actual desde un frame específico.
+     * Inicia la reproducción desde un frame específico de la canción actual.
+     * Si la canción termina, automáticamente avanza a la siguiente.
      *
-     * @param frameInicial Número de frame desde el cual iniciar la reproducción.
+     * @param frameInicial Frame desde el cual comenzar la reproducción
      */
     public void iniciarReproduccionDesde(int frameInicial) {
-        hiloReproduccion = new Thread(() -> {
-            try (InputStream is = new ByteArrayInputStream(cancionesBytes.get(indiceActual))) {
-                player = new AdvancedPlayerAcc(is);
-                player.setPlayBackListener(new PlaybackListener() {
-                    @Override
-                    public void playbackFinished(PlaybackEvent evt) {
-                        frameActual = player.getLastPosition();
-                        indiceActual = (indiceActual + 1) % cancionesBytes.size();
-                        iniciarReproduccionDesde(0);
-                    }
-                });
-                player.play(frameInicial, Integer.MAX_VALUE);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        hiloReproduccion.start();
-    }
-
-    /**
-     * Cierra la reproducción actual, deteniendo el hilo y liberando recursos.
-     */
-    public void cerrarReproduccion() {
-        try {
-            if (player != null) player.close();
-            if (hiloReproduccion != null && hiloReproduccion.isAlive()) {
-                hiloReproduccion.join();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        List<byte[]> lista = playlist.getCanciones();
+        if (lista != null) {
+            byte[] cancion = playlist.obtenerCancionActual();
+            motor.reproducir(cancion, frameInicial, () -> {
+                playlist.siguiente();
+                iniciarReproduccionDesde(0);
+            });
+        } else {
+            System.out.println("No se encontró la canción.");
         }
     }
 
     /**
-     * Mueve la reproducción a un nuevo frame y continúa desde ese punto.
-     * Este método puede ser llamado desde la interfaz gráfica al mover un deslizador.
+     * Cierra la reproducción actual pero mantiene la playlist.
+     */
+    public void cerrarReproduccion() {
+        motor.cerrar();
+    }
+
+    /**
+     * Cierra la reproducción actual y limpia completamente la lista de canciones.
+     */
+    public void cerrarReproduccionTotal() {
+        motor.cerrar();
+        playlist.setCanciones(null);
+    }
+
+    /**
+     * Mueve la reproducción a un frame específico de la canción actual.
      *
-     * @param nuevoFrame Frame al que se desea saltar y continuar la reproducción.
+     * @param nuevoFrame Frame objetivo
      */
     public void moverAFrame(int nuevoFrame) {
         cerrarReproduccion();
-        setFrameActual(nuevoFrame);
+        motor.setFrameActual(nuevoFrame);
         iniciarReproduccionDesde(nuevoFrame);
     }
 
     /**
-     * Reestablece la lista de canciones, detiene la reproducción actual y reinicia el estado.
+     * Cambia la lista de canciones activa. Detiene la reproducción y reinicia el estado.
      *
-     * @param nuevaLista Nueva lista de canciones en formato binario.
+     * @param nuevaLista Nueva lista de canciones (byte[])
      */
     public void cambiarPlaylist(List<byte[]> nuevaLista) {
         detener();
         cerrarReproduccion();
-        this.cancionesBytes = nuevaLista;
-        this.indiceActual = 0;
-        this.frameActual = 0;
-        this.estadoActual = new EstadoDetenido(this);
+        playlist.setCanciones(nuevaLista);
+        estadoActual = new EstadoDetenido(this);
+    }
+
+    // --------------------------
+    // Getters y Setters
+    // --------------------------
+
+    /**
+     * Devuelve el gestor de la playlist actual.
+     *
+     * @return Gestor de playlist
+     */
+    public GestorPlaylist getPlaylist() {
+        return playlist;
     }
 
     /**
-     * Obtiene el frame actual (posición de reproducción).
+     * Devuelve el motor de reproducción usado internamente.
      *
-     * @return Frame actual.
+     * @return Motor de reproducción
      */
-    public int getFrameActual() {
-        return frameActual;
+    public MotorReproduccion getMotor() {
+        return motor;
     }
 
     /**
-     * Establece el frame actual (posición de reproducción).
+     * Devuelve el estado actual del reproductor (State).
      *
-     * @param frameActual Nuevo valor del frame actual.
+     * @return Estado actual
      */
-    public void setFrameActual(int frameActual) {
-        this.frameActual = frameActual;
+    public EstadoReproductor getEstado() {
+        return estadoActual;
     }
 
     /**
-     * Obtiene la instancia actual del reproductor avanzado.
+     * Cambia el estado del reproductor (se usa internamente por los estados).
      *
-     * @return Objeto AdvancedPlayerAcc utilizado.
+     * @param estado Nuevo estado a establecer
      */
-    public AdvancedPlayerAcc getPlayer() {
-        return player;
-    }
-
-    /**
-     * Obtiene el índice actual de la canción que se está reproduciendo.
-     *
-     * @return Índice de la canción actual.
-     */
-    public int getIndiceActual() {
-        return indiceActual;
-    }
-
-    /**
-     * Establece el índice actual de la canción a reproducir.
-     *
-     * @param indice Nuevo índice de canción.
-     */
-    public void setIndiceActual(int indice) {
-        this.indiceActual = indice;
-    }
-
-    /**
-     * Obtiene la lista actual de canciones en formato binario.
-     *
-     * @return Lista de canciones (bytes).
-     */
-    public List<byte[]> getCancionesBytes() {
-        return cancionesBytes;
+    public void setEstado(EstadoReproductor estado) {
+        this.estadoActual = estado;
     }
 }

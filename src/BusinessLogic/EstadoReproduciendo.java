@@ -12,7 +12,7 @@ package BusinessLogic;
  */
 public class EstadoReproduciendo implements EstadoReproductor {
 
-    /** Referencia al reproductor MP3 que está en este estado. */
+    /** Referencia al controlador del reproductor MP3. */
     private final ReproductorMP3 reproductor;
 
     /**
@@ -38,10 +38,11 @@ public class EstadoReproduciendo implements EstadoReproductor {
      */
     @Override
     public void pausar() {
-        reproductor.setFrameActual(reproductor.getPlayer().getLastPosition());
+        int frameActual = reproductor.getMotor().getPlayer().getLastPosition();
         reproductor.cerrarReproduccion();
+        reproductor.getMotor().setFrameActual(frameActual);
         reproductor.setEstado(new EstadoPausado(reproductor));
-        System.out.println("Pausado en frame: " + reproductor.getFrameActual());
+        System.out.println("Pausado en frame: " + frameActual);
     }
 
     /**
@@ -53,37 +54,34 @@ public class EstadoReproduciendo implements EstadoReproductor {
     }
 
     /**
-     * Detiene la reproducción, guarda el frame actual y cambia el estado a {@link EstadoDetenido}.
+     * Detiene la reproducción, cierra el motor y cambia al estado {@link EstadoDetenido}.
      */
     @Override
     public void detener() {
-        reproductor.setFrameActual(reproductor.getPlayer().getLastPosition());
-        reproductor.cerrarReproduccion();
+        reproductor.cerrarReproduccionTotal();
         reproductor.setEstado(new EstadoDetenido(reproductor));
+        System.out.println("Reproductor detenido.");
     }
 
     /**
      * Cambia a la siguiente canción en la lista y la reproduce desde el inicio.
-     * Si está en la última canción, vuelve a la primera (comportamiento cíclico).
      * Detiene la reproducción actual antes de cambiar de canción.
      */
     @Override
     public void siguiente() {
         detener();
-        reproductor.setIndiceActual((reproductor.getIndiceActual() + 1) % reproductor.getCancionesBytes().size());
-        reproductor.reproducir();
+        reproductor.getPlaylist().siguiente();
+        reproductor.iniciarReproduccionDesde(0);
     }
 
     /**
      * Retrocede a la canción anterior en la lista y la reproduce desde el inicio.
-     * Si está en la primera canción, pasa a la última (comportamiento cíclico).
      * Detiene la reproducción actual antes de cambiar de canción.
      */
     @Override
     public void anterior() {
         detener();
-        int nuevaPos = (reproductor.getIndiceActual() - 1 + reproductor.getCancionesBytes().size()) % reproductor.getCancionesBytes().size();
-        reproductor.setIndiceActual(nuevaPos);
-        reproductor.reproducir();
+        reproductor.getPlaylist().anterior();
+        reproductor.iniciarReproduccionDesde(0);
     }
 }

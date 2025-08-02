@@ -3,40 +3,37 @@ package BusinessLogic;
 /**
  * Clase que representa el estado "Detenido" de un reproductor MP3.
  * Implementa la interfaz {@link EstadoReproductor} y define el comportamiento
- * del reproductor cuando está detenido.
+ * del reproductor cuando no está reproduciendo ni pausado.
  *
- * En este estado, solo se permite iniciar la reproducción o cambiar de canción.
- * Las acciones de pausar o reanudar no tienen efecto.
- * 
+ * En este estado se puede iniciar la reproducción o navegar entre canciones.
+ *
  * Forma parte del patrón de diseño **State**.
  */
 public class EstadoDetenido implements EstadoReproductor {
 
-    /** Referencia al reproductor MP3 que está en este estado. */
+    /** Referencia al controlador del reproductor MP3. */
     private final ReproductorMP3 reproductor;
 
     /**
-     * Constructor que establece el reproductor asociado a este estado.
-     * 
-     * @param reproductor Reproductor MP3 que se encuentra detenido
+     * Constructor que asocia este estado con un reproductor dado.
+     *
+     * @param reproductor Controlador del reproductor que se encuentra detenido.
      */
     public EstadoDetenido(ReproductorMP3 reproductor) {
         this.reproductor = reproductor;
     }
 
     /**
-     * Inicia la reproducción desde el principio de la canción actual.
-     * Cambia el estado del reproductor a {@link EstadoReproduciendo}.
+     * Inicia la reproducción desde el principio y cambia al estado Reproduciendo.
      */
     @Override
     public void reproducir() {
-        reproductor.setFrameActual(0); // Reinicia la posición de reproducción
-        reproductor.iniciarReproduccionDesde(0); // Comienza desde el inicio
-        reproductor.setEstado(new EstadoReproduciendo(reproductor)); // Cambia el estado
+        reproductor.iniciarReproduccionDesde(0);
+        reproductor.setEstado(new EstadoReproduciendo(reproductor));
     }
 
     /**
-     * Acción no válida en este estado. Muestra un mensaje indicando que no se puede pausar.
+     * Acción no válida. No se puede pausar si no está reproduciendo.
      */
     @Override
     public void pausar() {
@@ -44,7 +41,7 @@ public class EstadoDetenido implements EstadoReproductor {
     }
 
     /**
-     * Acción no válida en este estado. Muestra un mensaje indicando que no se puede reanudar.
+     * Acción no válida. Solo se puede reanudar si está pausado.
      */
     @Override
     public void reanudar() {
@@ -52,33 +49,30 @@ public class EstadoDetenido implements EstadoReproductor {
     }
 
     /**
-     * Acción innecesaria en este estado. Muestra un mensaje indicando que ya está detenido.
+     * Acción sin efecto. Ya está detenido.
      */
     @Override
     public void detener() {
-        System.out.println("Ya está detenido.");
+        reproductor.cerrarReproduccionTotal();
+        System.out.println("El reproductor ya está detenido.");
     }
 
     /**
-     * Pasa a la siguiente canción en la lista y la reproduce desde el inicio.
-     * Si está en la última canción, vuelve a la primera (comportamiento cíclico).
+     * Cambia a la siguiente canción en la playlist sin iniciar reproducción.
      */
     @Override
     public void siguiente() {
-        int siguienteIndice = (reproductor.getIndiceActual() + 1) % reproductor.getCancionesBytes().size();
-        reproductor.setIndiceActual(siguienteIndice);
-        reproducir();
+        reproductor.getPlaylist().siguiente();
+        System.out.println("Canción cambiada. Lista en espera para reproducir.");
     }
 
     /**
-     * Retrocede a la canción anterior en la lista y la reproduce desde el inicio.
-     * Si está en la primera canción, pasa a la última (comportamiento cíclico).
+     * Cambia a la canción anterior en la playlist sin iniciar reproducción.
      */
     @Override
     public void anterior() {
-        int nuevaPos = (reproductor.getIndiceActual() - 1 + reproductor.getCancionesBytes().size())
-                     % reproductor.getCancionesBytes().size();
-        reproductor.setIndiceActual(nuevaPos);
-        reproducir();
+        reproductor.getPlaylist().anterior();
+        System.out.println("Canción cambiada. Lista en espera para reproducir.");
     }
 }
+
