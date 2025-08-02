@@ -1,15 +1,14 @@
 package DataAccessComponent.DAO;
 
 import DataAccessComponent.DTO.PerfilDTO;
+import DataAccessComponent.DTO.GeneroDTO;
 import DataAccessComponent.SQLiteDataHelper;
-
+// imports
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
-import BusinessLogic.Genero;
 
 /**
  * Clase DAO (Data Access Object) para la gestión de preferencias musicales de usuarios.
@@ -47,7 +46,7 @@ public class UsuarioDAO extends SQLiteDataHelper {
      * @throws IllegalArgumentException Si el correo es null o está vacío, o si la lista de géneros es null
      * @throws RuntimeException Si ocurre un error de conexión con la base de datos
      */
-    public boolean guardarPreferencias(PerfilDTO perfil, List<Genero> generos) {
+    public boolean guardarPreferencias(PerfilDTO perfil, List<GeneroDTO> generos) {
         String sql = "UPDATE Usuario SET preferencias_musicales = ? WHERE correo = ?";
         try {
             Connection conn = openConnection();
@@ -79,7 +78,7 @@ public class UsuarioDAO extends SQLiteDataHelper {
      * @throws IllegalArgumentException Si el correo es null o está vacío
      * @throws RuntimeException Si ocurre un error de conexión con la base de datos
      */
-    public List<Genero> obtenerPreferencias(PerfilDTO perfil) {
+    public List<GeneroDTO> obtenerPreferencias(PerfilDTO perfil) {
         String sql = "SELECT preferencias_musicales FROM Usuario WHERE correo = ?";
         try {
             Connection conn = openConnection();
@@ -100,18 +99,17 @@ public class UsuarioDAO extends SQLiteDataHelper {
     }
 
 
-    public boolean actualizarPerfil(PerfilDTO perfil, boolean borrarPreferencias, List<Genero> nuevosGeneros) {
+    public boolean actualizarPerfil(PerfilDTO perfil, boolean borrarPreferencias, List<GeneroDTO> nuevosGeneros) {
         StringBuilder sql = new StringBuilder("UPDATE Usuario SET ");
         List<Object> parametros = new ArrayList<>();
 
-        List<Genero> preferenciasActuales = obtenerPreferencias(perfil);
-        if (preferenciasActuales != null && nuevosGeneros != null) {
-            Set<Genero> combinado = new LinkedHashSet<>(preferenciasActuales);
-            combinado.addAll(nuevosGeneros); // agrega solo los que no están repetidos
-            nuevosGeneros = new ArrayList<>(combinado); // vuelve a lista por si lo necesitas como lista después
-        }
+        List<GeneroDTO> preferenciasActuales = obtenerPreferencias(perfil);
 
-        
+        if (preferenciasActuales != null && nuevosGeneros != null) {
+            Set<GeneroDTO> combinado = new LinkedHashSet<>(preferenciasActuales);
+            combinado.addAll(nuevosGeneros);
+            nuevosGeneros = new ArrayList<>(combinado);
+        }
 
         if (perfil.getNombre() != null) {
             sql.append("nombre_usuario = ?, ");

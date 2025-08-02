@@ -3,7 +3,6 @@ package DataAccessComponent.DTO;
 import java.util.Date;
 import java.util.List;
 
-import BusinessLogic.Genero;
 
 /**
  * Clase DTO que representa un usuario en el sistema InkHarmony.
@@ -19,7 +18,7 @@ public class UsuarioDTO extends PerfilDTO {
     /**
      * Lista de géneros musicales preferidos por el usuario.
      */
-    private List<Genero> preferenciasMusicales;
+    private List<GeneroDTO> preferenciasMusicales;
 
     /**
      * Constructor por defecto de UsuarioDTO.
@@ -27,6 +26,18 @@ public class UsuarioDTO extends PerfilDTO {
      */
     public UsuarioDTO() {
         super();
+    }
+
+    /**
+     * Constructor de UsuarioDTO que inicializa el perfil y las preferencias musicales.
+     *
+     * @param perfil Perfil del usuario
+     * @param preferenciasMusicales Lista de géneros musicales preferidos
+     */
+    public UsuarioDTO(PerfilDTO perfil, List<GeneroDTO> preferenciasMusicales) {
+        super(perfil.getNombre(), perfil.getApellido(), perfil.getCorreo(), perfil.getContrasenia(),
+              perfil.getTipoUsuario(), perfil.getFechaRegistro(), perfil.getFoto(), perfil.getEstado_cuenta());
+        this.preferenciasMusicales = preferenciasMusicales;
     }
 
     /**
@@ -44,7 +55,7 @@ public class UsuarioDTO extends PerfilDTO {
      */
     public UsuarioDTO(String nombre, String apellido, String correo, String contrasenia, 
                    TipoUsuario tipoUsuario, Date fechaRegistro, String foto, 
-                   String estadoCuenta, List<Genero> preferenciasMusicales) {
+                   String estadoCuenta, List<GeneroDTO> preferenciasMusicales) {
         super(nombre, apellido, correo, contrasenia, tipoUsuario, fechaRegistro, foto, estadoCuenta);
         this.preferenciasMusicales = preferenciasMusicales;
     }
@@ -54,7 +65,7 @@ public class UsuarioDTO extends PerfilDTO {
      *
      * @return Lista de géneros musicales preferidos
      */
-    public List<Genero> getPreferenciasMusicales() {
+    public List<GeneroDTO> getPreferenciasMusicales() {
         return preferenciasMusicales;
     }
 
@@ -63,7 +74,7 @@ public class UsuarioDTO extends PerfilDTO {
      *
      * @param preferenciasMusicales Lista de géneros musicales preferidos
      */
-    public void setPreferenciasMusicales(List<Genero> preferenciasMusicales) {
+    public void setPreferenciasMusicales(List<GeneroDTO> preferenciasMusicales) {
         this.preferenciasMusicales = preferenciasMusicales;
     }
 }

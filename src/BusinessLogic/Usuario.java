@@ -1,6 +1,7 @@
 package BusinessLogic;
-
+//imports
 import DataAccessComponent.DAO.UsuarioDAO;
+import DataAccessComponent.DTO.GeneroDTO;
 import DataAccessComponent.DTO.PerfilDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
@@ -28,14 +29,15 @@ public class Usuario {
      * @param preferenciasMusicales Lista de géneros musicales preferidos por el usuario
      * @return Cadena JSON que representa la lista de géneros
      */
-    public static String preferenciasToJSON(List<Genero> generos) {
-        if (generos == null || generos.isEmpty()) {
+    public static String preferenciasToJSON(List<GeneroDTO> preferenciasMusicales) {
+        if (preferenciasMusicales == null || preferenciasMusicales.isEmpty()) {
             return "[]";
         }
         StringBuilder json = new StringBuilder("[");
-        for (int i = 0; i < generos.size(); i++) {
-            json.append("\"").append(generos.get(i).name()).append("\"");
-            if (i < generos.size() - 1) {
+        for (int i = 0; i < preferenciasMusicales.size(); i++) {
+            String nombreGenero = preferenciasMusicales.get(i).getNombreGenero().replace("\"", "\\\"");
+            json.append("\"").append(nombreGenero).append("\"");
+            if (i < preferenciasMusicales.size() - 1) {
                 json.append(",");
             }
         }
@@ -50,15 +52,15 @@ public class Usuario {
      * @param json Cadena JSON que representa los géneros musicales
      * @return Lista de objetos GeneroDTO extraídos del JSON
      */
-    public static List<Genero> preferenciasFromJSON(String json) {
-        List<Genero> generos = new ArrayList<>();
+    public static List<GeneroDTO> preferenciasFromJSON(String json) {
+        List<GeneroDTO> generos = new ArrayList<>();
         if (json == null || json.trim().isEmpty() || json.equals("[]")) {
             return generos;
         }
         String[] partes = json.substring(1, json.length() - 1).split(",");
         for (String parte : partes) {
             try {
-                generos.add(Genero.valueOf(parte.trim().replace("\"", "")));
+            generos.add(new GeneroDTO(parte.trim().replace("\"", "")));
             } catch (IllegalArgumentException e) {
                 // Género no válido en el enum, lo ignoramos o podrías registrar un warning
             }
@@ -75,7 +77,7 @@ public class Usuario {
      * @param nuevosGeneros Lista de nuevos géneros musicales a asociar al usuario
      * @return true si la actualización fue exitosa, false en caso contrario
      */
-    public boolean actualizarPerfil(PerfilDTO perfil, boolean borrarPreferencias, List<Genero> nuevosGeneros) {
+    public boolean actualizarPerfil(PerfilDTO perfil, boolean borrarPreferencias, List<GeneroDTO> nuevosGeneros) {
         // Solo encriptar si la contraseña *parece* estar en texto plano
         if (perfil.getContrasenia() != null && !perfil.getContrasenia().startsWith("$2a$")) {
             // Asumimos que si no empieza con "$2a$", no está encriptada
