@@ -3,7 +3,7 @@
 | © 2025 EPN-FIS, Todos los derechos reservados |
 | GR1SW                                         |
 |-----------------------------------------------|
-Autor: Sergio Rodríguez
+Autor: Grupo - A
 Descripción: Controlador JavaFX para la edición de canciones en el catálogo.
 */
 

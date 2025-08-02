@@ -1,3 +1,12 @@
+/*
+|-----------------------------------------------|
+| © 2025 EPN-FIS, Todos los derechos reservados |
+| GR1SW                                         |
+|-----------------------------------------------|
+Autor: Grupo - A
+Descripción: Controlador del catálogo de canciones.
+*/
+
 package UserInterface.CustomerControl.CatalogoCanciones;
 
 import BusinessLogic.Cancion;
@@ -33,6 +42,14 @@ import javafx.stage.Stage;
 import javafx.collections.FXCollections; // AGREGADO
 import javafx.collections.ObservableList; // AGREGADO
 
+/**
+ * La clase SubirCancionesController maneja la lógica para subir nuevas canciones al catálogo.
+ * Esta clase se encarga de validar los datos ingresados por el usuario,
+ * registrar la canción en el sistema y actualizar la interfaz gráfica.
+ * @author Grupo - A
+ * @version 1.0
+ * @since 18-07-2025
+ */
 public class SubirCancionesController {
 
     // Componentes de la interfaz gráfica - nombres exactos del FXML

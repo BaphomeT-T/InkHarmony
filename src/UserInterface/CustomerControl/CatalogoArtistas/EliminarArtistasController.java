@@ -24,7 +24,9 @@ public class EliminarArtistasController {
     private final ArtistaDAO artistaDAO = new ArtistaDAO();
     private final ServicioValidacionArtista servicioValidacionArtista = new ServicioValidacionArtista();
     private CatalogoArtistasController catalogoController;
-
+    /*
+        * Establece el artista a eliminar y actualiza la interfaz con su información.
+     */
     public void setArtista(ArtistaDTO artista) {
         this.artista = artista;
         if (artista != null) {
@@ -68,8 +70,9 @@ public class EliminarArtistasController {
         }
     }
 
-
-
+    /*
+        * Método de inicialización que se llama al cargar el controlador.
+     */
     @FXML
     void initialize() {
         // Inicialización de componentes, si es necesario
@@ -78,12 +81,18 @@ public class EliminarArtistasController {
         nombreArtistaLabel.setText("");
         imagenArtistaImageView.setImage(null);
     }
-
+ /*
+    * Cierra la ventana actual sin realizar ninguna acción.
+     * Este método se invoca al hacer clic en el botón "Cancelar".
+  */
     @FXML
     void cancelar(ActionEvent event) {
         cerrarVentana();
     }
-
+/*
+    * Cierra la ventana actual.
+     * Este método se invoca al hacer clic en el botón "Cancelar" o después de eliminar un artista.
+ */
     private void cerrarVentana() {
         Stage stage = (Stage) registrarButton.getScene().getWindow();
         stage.close();

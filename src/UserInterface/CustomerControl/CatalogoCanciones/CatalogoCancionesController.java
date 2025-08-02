@@ -47,14 +47,18 @@ import java.lang.Thread;
  * comunica con la capa de lógica de negocio (Cancion) y manipula datos representados por objetos DTO.
  * Utiliza JavaFX para construir una experiencia interactiva con elementos visuales como tablas, imágenes y botones.
  *
- * @author Sergio Rodríguez
- * @version 1.0
+ * @author Grupo - A
+ * @version 3.0
  * @since 18-07-2025
  */
 public class CatalogoCancionesController {
     @FXML
     private Button cerrarButton;
-
+ /*
+    * Método para cerrar la ventana actual y redirigir a la pantalla de administración de usuarios.
+    * Utiliza FXMLLoader para cargar el nuevo FXML y cambiar la escena del Stage actual.
+    * Si ocurre un error al cargar el FXML, se imprime la traza de la excepción.
+  */
     @FXML
     private void cerrarVentana() {
         try {
@@ -148,7 +152,11 @@ public class CatalogoCancionesController {
 
         tableCanciones.setItems(filtrados);
     }
-
+/*
+    * Configura la tabla de canciones estableciendo políticas de ajuste, deshabilitando reordenamiento
+    * y definiendo las celdas para cada columna, incluyendo una columna personalizada con imagen y título.
+    * También se configura la columna de acciones para editar y eliminar canciones.
+ */
     private void configurarTabla() {
         System.out.println("=== CONFIGURANDO TABLA ===");
 
@@ -197,7 +205,9 @@ public class CatalogoCancionesController {
                 imageView.setFitWidth(40);
                 contenedor.getChildren().addAll(imageView, label);
             }
-
+            /*
+            Método que actualiza el contenido de la celda con la imagen y el título de la canción.
+             */
             @Override
             protected void updateItem(CancionDTO cancion, boolean empty) {
                 super.updateItem(cancion, empty);
@@ -254,7 +264,10 @@ public class CatalogoCancionesController {
         
         System.out.println("Tabla actualizada con " + listaObservable.size() + " canciones");
     }
-
+    /*
+    * Agrega una columna de acciones a la tabla que permite editar y eliminar canciones.
+    * (Con sus respectivos iconos)
+     */
     private void agregarColumnaAcciones() {
         colAcciones.setCellFactory(col -> new TableCell<>() {
             private final Button btnEditar = new Button();
@@ -283,7 +296,10 @@ public class CatalogoCancionesController {
             {
                 contenedor.setPadding(new Insets(5));
             }
-
+    /*
+            Método que actualiza el contenido de la celda con los botones de editar y eliminar.
+            Si la celda está vacía, no muestra nada.
+     */
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -360,33 +376,14 @@ public class CatalogoCancionesController {
     }
     
 
-
-
-    /**
-     * Abre la ventana para confirmar la eliminación de una canción.
-     *
-     * @param cancion Canción que se desea eliminar.
-     */
-/*    private void irAPantallaEliminarCancion(CancionDTO cancion) {
-        System.out.println("=== ABRIENDO VENTANA ELIMINAR CANCIÓN ===");
-        System.out.println("Canción a eliminar: " + cancion.getTitulo());
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/CatalogoCanciones/frameEliminarCancion.fxml"));
-            Parent root = loader.load();
-            EliminarCancionesController controller = loader.getController();
-            controller.setCancion(cancion);
-            controller.setCatalogoController(this); // Pasar referencia para actualizar el catálogo
-
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Eliminar Canción");
-            stage.setMaximized(true);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
-
+/*
+    * Abre la ventana para eliminar una canción específica.
+    * Utiliza FXMLLoader para cargar el FXML de la pantalla de eliminación.
+    * Configura el controlador con la canción seleccionada y el controlador del catálogo.
+    * Muestra la nueva ventana en un Stage separado.
+    *
+    * @param cancion Canción a eliminar, representada por un objeto CancionDTO.
+ */
     private void irAPantallaEliminarCancion(CancionDTO cancion) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/CatalogoCanciones/frameEliminarCancion.fxml"));
@@ -405,7 +402,14 @@ public class CatalogoCancionesController {
             e.printStackTrace();
         }
     }
-
+/*
+    * Abre la ventana para editar una canción específica.
+    * Utiliza FXMLLoader para cargar el FXML de la pantalla de edición.
+    * Configura el controlador con la canción seleccionada y el controlador del catálogo.
+    * Muestra la nueva ventana en un Stage separado.
+    *
+    * @param cancion Canción a editar, representada por un objeto CancionDTO.
+ */
     private void irAPantallaEditarCancion(CancionDTO cancion) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/CatalogoCanciones/frameEditarCancion.fxml"));
