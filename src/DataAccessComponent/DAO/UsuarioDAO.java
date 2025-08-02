@@ -6,7 +6,9 @@ import DataAccessComponent.SQLiteDataHelper;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Clase DAO (Data Access Object) para la gestión de preferencias musicales de usuarios.
@@ -108,8 +110,13 @@ public class UsuarioDAO extends SQLiteDataHelper {
     public boolean actualizarPerfil(PerfilDTO perfil, boolean borrarPreferencias, List<GeneroDTO> nuevosGeneros) {
         StringBuilder sql = new StringBuilder("UPDATE Usuario SET ");
         List<Object> parametros = new ArrayList<>();
-        if (obtenerPreferencias(perfil) != null && nuevosGeneros != null) {
-            nuevosGeneros.addAll(obtenerPreferencias(perfil));
+
+        List<GeneroDTO> preferenciasActuales = obtenerPreferencias(perfil);
+
+        if (preferenciasActuales != null && nuevosGeneros != null) {
+            Set<GeneroDTO> combinado = new LinkedHashSet<>(preferenciasActuales);
+            combinado.addAll(nuevosGeneros);
+            nuevosGeneros = new ArrayList<>(combinado);
         }
 
         if (perfil.getNombre() != null) {

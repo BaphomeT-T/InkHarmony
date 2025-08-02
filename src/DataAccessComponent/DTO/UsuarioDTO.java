@@ -28,6 +28,18 @@ public class UsuarioDTO extends PerfilDTO {
     }
 
     /**
+     * Constructor de UsuarioDTO que inicializa el perfil y las preferencias musicales.
+     *
+     * @param perfil Perfil del usuario
+     * @param preferenciasMusicales Lista de géneros musicales preferidos
+     */
+    public UsuarioDTO(PerfilDTO perfil, List<GeneroDTO> preferenciasMusicales) {
+        super(perfil.getNombre(), perfil.getApellido(), perfil.getCorreo(), perfil.getContrasenia(),
+              perfil.getTipoUsuario(), perfil.getFechaRegistro(), perfil.getFoto(), perfil.getEstado_cuenta());
+        this.preferenciasMusicales = preferenciasMusicales;
+    }
+
+    /**
      * Constructor completo de UsuarioDTO con todos los parámetros.
      *
      * @param nombre Nombre del usuario
