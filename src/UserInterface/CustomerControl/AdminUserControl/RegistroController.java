@@ -34,7 +34,7 @@ public class RegistroController {
 
     private List<String> rutasImagenes = RecursosPerfil.obtenerRutasImagenes();
     private int indiceActual = 0;
-
+    //sincronizar
     private List<String> todosLosGeneros;
     private List<String> generosMostrados;
     private List<String> generosSeleccionados = new ArrayList<>();
