@@ -30,20 +30,7 @@
                     <font><Font size="24.0" /></font>
                 </Label>
 
-                <!-- COMBOBOX ACTUALIZADO - QUITADO disable="true" Y HABILITADO PARA AUTOCOMPLETADO -->
-                <ComboBox fx:id="artistaComboBox"
-                          cacheShape="false"
-                          centerShape="false"
-                          focusTraversable="true"
-                          layoutX="30.0"
-                          layoutY="334.0"
-                          nodeOrientation="LEFT_TO_RIGHT"
-                          prefHeight="51.0"
-                          prefWidth="198.0"
-                          promptText="Buscar artista..."
-                          scaleShape="false"
-                          style="-fx-background-radius: 20; -fx-background-color: #575a81;"
-                          stylesheets="@catalogoCanciones.css">
+                <ComboBox fx:id="artistaComboBox" cacheShape="false" centerShape="false" disable="true" focusTraversable="false" layoutX="30.0" layoutY="334.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="51.0" prefWidth="198.0" promptText="Buscar artista..." scaleShape="false" style="-fx-background-radius: 20; -fx-background-color: #575a81;" stylesheets="@catalogoCanciones.css">
                     <opaqueInsets>
                         <Insets />
                     </opaqueInsets>
@@ -103,7 +90,7 @@
             <font><Font size="80.0" /></font>
         </Label>
 
-        <Button fx:id="cerrarButton" layoutX="3.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="47.0" prefWidth="83.0" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-weight: normal;" text="X" textFill="WHITE">
+        <Button fx:id="cerrarButton" layoutX="3.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="83.0" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-weight: normal;" text="X" textFill="WHITE">
             <font><Font size="40.0" /></font>
         </Button>
     </children>

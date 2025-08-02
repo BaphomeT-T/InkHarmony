@@ -62,7 +62,7 @@ public class CatalogoCancionesController {
             Stage stage = (Stage) cerrarButton.getScene().getWindow();
 
             // Cargar el nuevo FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/administracion_Usuarios.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/home.fxml"));
             Parent root = loader.load();
 
             // Crear la nueva escena con la interfaz de administración

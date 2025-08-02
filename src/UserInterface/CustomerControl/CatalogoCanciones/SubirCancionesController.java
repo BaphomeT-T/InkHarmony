@@ -2,9 +2,7 @@ package UserInterface.CustomerControl.CatalogoCanciones;
 
 import BusinessLogic.Cancion;
 import BusinessLogic.Genero;
-import BusinessLogic.Artista; // AGREGADO
 import BusinessLogic.ServicioValidacionCancion;
-import DataAccessComponent.DTO.ArtistaDTO; // AGREGADO
 import java.io.File;
 import java.net.URI;
 import java.nio.file.Files;
@@ -13,7 +11,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors; // AGREGADO
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,8 +27,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.collections.FXCollections; // AGREGADO
-import javafx.collections.ObservableList; // AGREGADO
 
 public class SubirCancionesController {
 
@@ -47,8 +42,7 @@ public class SubirCancionesController {
     @FXML private ImageView cancionImageView;
     @FXML private Button cargarImagenButton;
     @FXML private Button registrarButton;
-    @FXML private Button seleccionarArchivoButton;
-    @FXML private Label archivoSeleccionadoLabel;
+    @FXML private Button seleccionarArchivoButton; // Agregar esta línea
     @FXML private Label seleccionarLabel;
     @FXML private Button cerrarButton;
 
@@ -60,13 +54,8 @@ public class SubirCancionesController {
     // Variables para almacenar archivos seleccionados
     private byte[] imagenBytes = null;
     private byte[] archivoMP3 = null;
-    private double duracionSegundos = 0.0;
+    private double duracionSegundos = 0.0; // Cambiar a double para usar el método de Cancion
     private String nombreArchivoMP3 = "";
-
-    // NUEVAS VARIABLES PARA AUTOCOMPLETADO DE ARTISTAS
-    private Artista artistaLogic = new Artista();
-    private List<ArtistaDTO> todosLosArtistas = new ArrayList<>();
-    private ArtistaDTO artistaSeleccionado = null;
 
     // Método de inicialización del controlador
     @FXML
@@ -83,9 +72,6 @@ public class SubirCancionesController {
             });
             generoMenuButton.getItems().add(item);
         }
-
-        // NUEVA SECCIÓN: Configurar el ComboBox de artistas para autocompletado
-        configurarAutocompletadoArtistas();
 
         // Listener para validar el título en tiempo real
         nombreTextField.textProperty().addListener((obs, oldText, newText) -> {
@@ -118,126 +104,35 @@ public class SubirCancionesController {
             System.out.println("No se pudo cargar la imagen por defecto");
         }
 
-        // Inicializar el label del archivo seleccionado como invisible
-        if (archivoSeleccionadoLabel != null) {
-            archivoSeleccionadoLabel.setVisible(false);
-        }
-    }
-
-    /**
-     * NUEVO MÉTODO: Configura el ComboBox de artistas para autocompletado
-     * usando el mismo patrón que CatalogoArtistasController
-     */
-    private void configurarAutocompletadoArtistas() {
-        // Cargar todos los artistas al inicio
-        cargarTodosLosArtistas();
-
-        // Hacer el ComboBox editable para permitir escritura
-        artistaComboBox.setEditable(true);
-        artistaComboBox.setDisable(false);
-
-        // Usar el mismo patrón de listener que en CatalogoArtistasController
-        artistaComboBox.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-            filtrarArtistasParaComboBox(newValue);
-        });
-
-        // Manejar la selección de un artista
-        artistaComboBox.setOnAction(e -> {
-            String nombreSeleccionado = artistaComboBox.getSelectionModel().getSelectedItem();
-            if (nombreSeleccionado != null && !nombreSeleccionado.isEmpty()) {
-                // Buscar el artista completo por nombre
-                artistaSeleccionado = todosLosArtistas.stream()
-                        .filter(artista -> artista.getNombre().equals(nombreSeleccionado))
-                        .findFirst()
-                        .orElse(null);
-
-                if (artistaSeleccionado != null) {
-                    System.out.println("Artista seleccionado: " + artistaSeleccionado.getNombre() +
-                            " (ID: " + artistaSeleccionado.getId() + ")");
-                }
-            }
-        });
-    }
-
-    /**
-     * NUEVO MÉTODO: Carga todos los artistas desde la base de datos
-     */
-    private void cargarTodosLosArtistas() {
+        // SOLUCIÓN: Buscar el botón de seleccionar archivo por su texto y conectarlo manualmente
         try {
-            todosLosArtistas = artistaLogic.buscarTodo();
-            mostrarTodosLosArtistasEnComboBox();
-            System.out.println("Cargados " + todosLosArtistas.size() + " artistas para autocompletado");
+            // Buscar todos los botones en la escena
+            cargarImagenButton.getScene().getWindow().addEventHandler(javafx.stage.WindowEvent.WINDOW_SHOWN, event -> {
+                buscarYConectarBotonArchivo(cargarImagenButton.getParent());
+            });
         } catch (Exception e) {
-            System.err.println("Error al cargar artistas: " + e.getMessage());
-            e.printStackTrace();
-            mostrarAlerta("Error al cargar la lista de artistas");
-            todosLosArtistas = new ArrayList<>();
+            System.out.println("Error al intentar conectar botón de archivo: " + e.getMessage());
         }
     }
 
     /**
-     * NUEVO MÉTODO: Filtra los artistas para el ComboBox usando el mismo patrón que CatalogoArtistasController
+     * Busca recursivamente el botón "Seleccionar archivo" y le asigna la acción
      */
-    private void filtrarArtistasParaComboBox(String filtro) {
-        if (filtro == null || filtro.isBlank()) {
-            // Si no hay filtro, mostrar todos los artistas
-            mostrarTodosLosArtistasEnComboBox();
-            artistaSeleccionado = null;
-            return;
-        }
+    private void buscarYConectarBotonArchivo(javafx.scene.Parent parent) {
+        if (parent == null) return;
 
-        // Filtrar usando el mismo patrón que CatalogoArtistasController
-        List<ArtistaDTO> artistasFiltrados = todosLosArtistas.stream()
-                .filter(artista -> artista.getNombre().toLowerCase().contains(filtro.toLowerCase()))
-                .collect(Collectors.toList());
-
-        actualizarComboBoxConArtistas(artistasFiltrados);
-    }
-
-    /**
-     * NUEVO MÉTODO: Muestra todos los artistas en el ComboBox
-     */
-    private void mostrarTodosLosArtistasEnComboBox() {
-        actualizarComboBoxConArtistas(todosLosArtistas);
-    }
-
-    /**
-     * NUEVO MÉTODO: Actualiza el ComboBox con la lista de artistas proporcionada
-     */
-    private void actualizarComboBoxConArtistas(List<ArtistaDTO> artistas) {
-        // Crear lista de nombres para el ComboBox
-        ObservableList<String> nombresArtistas = FXCollections.observableArrayList(
-                artistas.stream()
-                        .map(ArtistaDTO::getNombre)
-                        .collect(Collectors.toList())
-        );
-
-        // Guardar el texto actual del editor y la posición del cursor
-        String textoActual = artistaComboBox.getEditor().getText();
-        int posicionCursor = artistaComboBox.getEditor().getCaretPosition();
-
-        // Actualizar las opciones del ComboBox
-        artistaComboBox.setItems(nombresArtistas);
-
-        // Restaurar el texto y posición del cursor
-        if (!textoActual.isEmpty()) {
-            artistaComboBox.getEditor().setText(textoActual);
-            artistaComboBox.getEditor().positionCaret(Math.min(posicionCursor, textoActual.length()));
-        }
-
-        // Mostrar dropdown si hay opciones y texto
-        if (!nombresArtistas.isEmpty() && !textoActual.isEmpty()) {
-            if (!artistaComboBox.isShowing()) {
-                artistaComboBox.show();
+        for (javafx.scene.Node node : parent.getChildrenUnmodifiable()) {
+            if (node instanceof Button) {
+                Button boton = (Button) node;
+                if ("Seleccionar archivo".equals(boton.getText())) {
+                    System.out.println("¡Botón 'Seleccionar archivo' encontrado!");
+                    boton.setOnAction(this::seleccionarArchivo);
+                    return;
+                }
+            } else if (node instanceof javafx.scene.Parent) {
+                buscarYConectarBotonArchivo((javafx.scene.Parent) node);
             }
         }
-    }
-
-    /**
-     * NUEVO MÉTODO: Obtiene el artista actualmente seleccionado
-     */
-    public ArtistaDTO getArtistaSeleccionado() {
-        return artistaSeleccionado;
     }
 
     // Método para registrar la canción - conectado al botón "Publicar"
@@ -316,8 +211,10 @@ public class SubirCancionesController {
             return;
         }
 
-        // 7. Registrar la canción en el sistema
+        // 7. Validación adicional usando el método general del validador
+        // Crear un DTO temporal para la validación completa
         try {
+            // Registrar la canción en el sistema
             Cancion cancionLogic = new Cancion();
 
             // Convertir duración de segundos a formato "mm:ss"
@@ -350,7 +247,7 @@ public class SubirCancionesController {
         }
     }
 
-    // MÉTODO CORREGIDO - Ahora conectado correctamente al FXML
+    // Método para seleccionar archivo MP3 - debes conectarlo al botón "Seleccionar archivo"
     @FXML
     public void seleccionarArchivo(ActionEvent actionEvent) {
         System.out.println("Seleccionando archivo MP3...");
@@ -365,7 +262,7 @@ public class SubirCancionesController {
         );
         fileChooser.getExtensionFilters().add(extFilterAudio);
 
-        File archivoSeleccionado = fileChooser.showOpenDialog(seleccionarArchivoButton.getScene().getWindow());
+        File archivoSeleccionado = fileChooser.showOpenDialog(registrarButton.getScene().getWindow());
 
         if (archivoSeleccionado != null) {
             try {
@@ -381,10 +278,6 @@ public class SubirCancionesController {
                     archivoMP3 = null;
                     nombreArchivoMP3 = "";
                     duracionSegundos = 0.0;
-                    // Ocultar el label del archivo seleccionado
-                    if (archivoSeleccionadoLabel != null) {
-                        archivoSeleccionadoLabel.setVisible(false);
-                    }
                     return;
                 }
 
@@ -398,68 +291,30 @@ public class SubirCancionesController {
 
                     if (duracionSegundos > 0) {
                         String duracionFormateada = formatearDuracion(duracionSegundos);
-                        System.out.println("Duración calculada: " + duracionFormateada + " (" + duracionSegundos + " segundos)");
-
-                        // Actualizar el label con el archivo seleccionado
-                        if (archivoSeleccionadoLabel != null) {
-                            archivoSeleccionadoLabel.setText("♪ " + nombreArchivoMP3 + " (" + duracionFormateada + ")");
-                            archivoSeleccionadoLabel.setVisible(true);
-                        }
-
-                        // Cambiar el texto del botón para indicar que ya hay un archivo seleccionado
-                        seleccionarArchivoButton.setText("Cambiar archivo");
-                        seleccionarArchivoButton.setStyle("-fx-background-color: #9190C2; -fx-background-radius: 20;");
-
-                        mostrarExito("Archivo de audio seleccionado correctamente:\n" + nombreArchivoMP3 +
+                        System.out.println("Duración calculada: " + duracionFormateada);
+                        mostrarExito("Archivo de audio seleccionado: " + nombreArchivoMP3 +
                                 "\nDuración: " + duracionFormateada);
                     } else {
                         System.out.println("No se pudo calcular la duración, usando valor por defecto");
                         duracionSegundos = 180.0; // 3 minutos por defecto
-                        String duracionFormateada = formatearDuracion(duracionSegundos);
-
-                        if (archivoSeleccionadoLabel != null) {
-                            archivoSeleccionadoLabel.setText("♪ " + nombreArchivoMP3 + " (" + duracionFormateada + " estimado)");
-                            archivoSeleccionadoLabel.setVisible(true);
-                        }
-
-                        seleccionarArchivoButton.setText("Cambiar archivo");
-                        seleccionarArchivoButton.setStyle("-fx-background-color: #9190C2; -fx-background-radius: 20;");
-
-                        mostrarExito("Archivo de audio seleccionado:\n" + nombreArchivoMP3 +
-                                "\n(Duración estimada: " + duracionFormateada + ")");
+                        mostrarExito("Archivo de audio seleccionado: " + nombreArchivoMP3 +
+                                "\n(Duración estimada: 3:00)");
                     }
                 } catch (Exception e) {
                     System.out.println("Error al calcular duración: " + e.getMessage());
                     duracionSegundos = 180.0; // 3 minutos por defecto
-                    String duracionFormateada = formatearDuracion(duracionSegundos);
-
-                    if (archivoSeleccionadoLabel != null) {
-                        archivoSeleccionadoLabel.setText("♪ " + nombreArchivoMP3 + " (" + duracionFormateada + " estimado)");
-                        archivoSeleccionadoLabel.setVisible(true);
-                    }
-
-                    seleccionarArchivoButton.setText("Cambiar archivo");
-                    seleccionarArchivoButton.setStyle("-fx-background-color: #9190C2; -fx-background-radius: 20;");
-
-                    mostrarExito("Archivo de audio seleccionado:\n" + nombreArchivoMP3 +
-                            "\n(Duración estimada: " + duracionFormateada + ")");
+                    mostrarExito("Archivo de audio seleccionado: " + nombreArchivoMP3 +
+                            "\n(Duración estimada: 3:00)");
                 }
 
                 System.out.println("Archivo MP3 cargado correctamente: " + archivoSeleccionado.getAbsolutePath());
 
             } catch (Exception e) {
-                mostrarAlerta("Error al cargar el archivo de audio: " + e.getMessage());
+                mostrarAlerta("Error al cargar el archivo de audio.");
                 e.printStackTrace();
                 archivoMP3 = null;
                 nombreArchivoMP3 = "";
                 duracionSegundos = 0.0;
-
-                // Restaurar el estado del botón y ocultar el label
-                seleccionarArchivoButton.setText("Seleccionar archivo");
-                seleccionarArchivoButton.setStyle("-fx-background-color: #575a81; -fx-background-radius: 20;");
-                if (archivoSeleccionadoLabel != null) {
-                    archivoSeleccionadoLabel.setVisible(false);
-                }
             }
         }
     }
