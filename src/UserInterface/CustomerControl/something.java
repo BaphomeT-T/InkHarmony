@@ -1,5 +1,4 @@
 package UserInterface.CustomerControl;
 
-public class PatButton {
-    
+public class something {
 }
