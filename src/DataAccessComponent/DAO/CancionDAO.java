@@ -295,11 +295,21 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
     @Override
     public boolean eliminar(Integer id) throws Exception {
         String query = "DELETE FROM Cancion WHERE id_cancion = ?";
+        String query2 = "DELETE FROM Cancion_Artista WHERE id_cancion = ?";
+        String query3 = "DELETE FROM Cancion_Genero WHERE id_cancion = ?";
         try {
             Connection conn = openConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, id);
             ps.executeUpdate();
+
+            PreparedStatement psDelete = conn.prepareStatement(query2);
+            psDelete.setInt(1, id);
+            psDelete.executeUpdate();
+
+            PreparedStatement psDelete2 = conn.prepareStatement(query3);
+            psDelete2.setInt(1, id);
+            psDelete2.executeUpdate();
             return true;
         } catch (Exception e) {
             throw new Exception("Error al eliminar canción: " + e.getMessage(), e);
