@@ -1,8 +1,8 @@
 package BusinessLogic;
-
+//imports
 import DataAccessComponent.DAO.UsuarioDAO;
-import DataAccessComponent.DTO.PerfilDTO;
 import DataAccessComponent.DTO.GeneroDTO;
+import DataAccessComponent.DTO.PerfilDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
 import java.util.ArrayList;
@@ -45,6 +45,7 @@ public class Usuario {
         return json.toString();
     }
 
+
     /**
      * Convierte una cadena JSON de preferencias musicales a una lista de objetos GeneroDTO.
      *
@@ -58,10 +59,15 @@ public class Usuario {
         }
         String[] partes = json.substring(1, json.length() - 1).split(",");
         for (String parte : partes) {
+            try {
             generos.add(new GeneroDTO(parte.trim().replace("\"", "")));
+            } catch (IllegalArgumentException e) {
+                // Género no válido en el enum, lo ignoramos o podrías registrar un warning
+            }
         }
         return generos;
     }
+
 
     /**
      * Actualiza el perfil de un usuario, encriptando la contraseña si es necesario y gestionando preferencias musicales.

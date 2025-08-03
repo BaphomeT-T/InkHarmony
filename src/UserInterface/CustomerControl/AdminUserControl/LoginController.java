@@ -50,7 +50,7 @@ public class LoginController {
             try {
                 javafx.fxml.FXMLLoader loader;
                 if (PerfilDTO.getTipoUsuario() == TipoUsuario.ADMINISTRADOR) {
-                    loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/administracion_Usuarios.fxml"));
+                    loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/home.fxml"));
                 } else {
                     loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/reproductor.fxml"));
                 }

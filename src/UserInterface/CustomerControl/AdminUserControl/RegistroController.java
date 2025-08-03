@@ -34,7 +34,7 @@ public class RegistroController {
 
     private List<String> rutasImagenes = RecursosPerfil.obtenerRutasImagenes();
     private int indiceActual = 0;
-
+    //sincronizar
     private List<String> todosLosGeneros;
     private List<String> generosMostrados;
     private List<String> generosSeleccionados = new ArrayList<>();
@@ -166,6 +166,14 @@ public class RegistroController {
         if (hayVacios) {
             mostrarAlerta("Campos incompletos", camposVacios.toString(), 
                 Alert.AlertType.WARNING);
+            return false;
+        }
+
+        // Validar que el nombre y apellido no contengan números ni espacios
+        if (!nombre.matches("[a-zA-Z]+") || !apellido.matches("[a-zA-Z]+")) {
+            mostrarAlerta("Nombre o Apellido inválido", 
+                "El nombre y apellido solo pueden contener letras.",
+                Alert.AlertType.ERROR);
             return false;
         }
 

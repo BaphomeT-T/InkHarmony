@@ -18,21 +18,23 @@
 <?import javafx.scene.text.Font?>
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1280.0" spacing="10" style="-fx-padding: 20; -fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.AdminUserControl.AdministracionUsuarioController">
-   <GridPane>
+   <GridPane fx:id="cerrarButtom" >
      <columnConstraints>
-       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+       <ColumnConstraints />
+         <ColumnConstraints hgrow="SOMETIMES" maxWidth="406.79998779296875" minWidth="0.0" prefWidth="18.800018310546875" />
+       <ColumnConstraints hgrow="SOMETIMES" maxWidth="1061.2" minWidth="10.0" prefWidth="1042.3999816894532" />
+         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
      </columnConstraints>
      <rowConstraints>
-       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
      </rowConstraints>
       <children>
-         <Label text="Administración Usuarios" textFill="white">
+         <Label prefHeight="46.0" prefWidth="348.0" text="Administración Usuarios" textFill="white" GridPane.columnIndex="2">
             <font>
                <Font size="30" />
             </font>
          </Label>
-         <MenuButton fx:id="menuPerfil" style="-fx-background-color: transparent;" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+         <MenuButton fx:id="menuPerfil" style="-fx-background-color: transparent;" GridPane.columnIndex="3" GridPane.halignment="RIGHT">
             <items>
                <MenuItem fx:id="btnCerrarSesion" onAction="#cerrarSesion" text="Cerrar Sesión" />
             </items>
@@ -40,6 +42,11 @@
                <Circle fx:id="imgPerfil" fill="DODGERBLUE" radius="23.0" stroke="BLACK" strokeType="INSIDE" />
             </graphic>
          </MenuButton>
+         <Label fx:id="cerrarButton" onMouseClicked="#cerrarVentana" text="X" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+            <font>
+               <Font size="40.0" />
+            </font>
+         </Label>
       </children>
    </GridPane>
    <GridPane style="-fx-background-color: #1B1A55; -fx-background-radius: 15; -fx-padding: 10;" VBox.vgrow="ALWAYS">
@@ -62,7 +69,7 @@
          </ImageView>
            <TextField fx:id="txtBuscarCorreo" prefHeight="26.0" prefWidth="696.0" promptText="Buscar usuarios..." style="-fx-pref-width: 300; -fx-background-color: #575a81; -fx-background-radius: 15; -fx-padding: 10; -fx-text-fill: #FFFFFF;" GridPane.columnIndex="1" GridPane.columnSpan="2" />
           
-          <TableView fx:id="tblUsuarios" minWidth="-Infinity" prefHeight="351.0" prefWidth="474.0" style="-fx-pref-height: 500; -fx-background-color: #B0BAC3;" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.rowSpan="2">
+          <TableView fx:id="tblUsuarios" minWidth="-Infinity" prefHeight="351.0" prefWidth="474.0" style="-fx-pref-height: 500; -fx-background-color: #B0BAC3;" stylesheets="@../CatalogoArtistas/catalogoArtistas.css" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.rowSpan="2">
               <columns>
                   <TableColumn fx:id="colNombre" prefWidth="100" text="Nombre" />
                   <TableColumn fx:id="colApellido" prefWidth="100" text="Apellido" />
@@ -131,34 +138,6 @@
                </Label>
             </children>
          </GridPane>
-      </children>
-   </GridPane>
-   <GridPane style="-fx-background-radius: 15; -fx-background-color: #1B1A55; -fx-padding: 10;" VBox.vgrow="ALWAYS">
-     <columnConstraints>
-       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-     </columnConstraints>
-     <rowConstraints>
-       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-     </rowConstraints>
-      <children>
-         <Label text="Canciones" textFill="white">
-            <font>
-               <Font size="30.0" />
-            </font>
-         </Label>
-         <Button fx:id="btnAgregarCancion" onAction="#agregarCancionesFxml" prefHeight="68.0" prefWidth="199.0" style="-fx-background-color: #b0a7d1;" text="Agregar canciones" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-            <font>
-               <Font size="16.0" />
-            </font>
-         </Button>
-         <Button fx:id="btnAgregarArtista" onAction="#agregarArtistaFxml" prefHeight="68.0" prefWidth="199.0" style="-fx-background-color: #b0a7d1;" text="Agregar Artistas" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-            <font>
-               <Font size="16.0" />
-            </font>
-         </Button>
       </children>
    </GridPane>
 </VBox>

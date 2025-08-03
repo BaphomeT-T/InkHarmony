@@ -1,7 +1,7 @@
 package DataAccessComponent.DAO;
 
 import DataAccessComponent.SQLiteDataHelper;
-
+//imports
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

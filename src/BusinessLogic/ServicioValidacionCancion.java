@@ -32,6 +32,7 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
         }
         return true;
     }
+
     public boolean validarAnio(int anio) {
         // Verifica que el año sea un valor positivo
         if (anio <= 0) {
@@ -44,6 +45,7 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
         }
         return true;
     }
+
     public boolean validarArtistas(List<ArtistaDTO> artistas) {
         // Verifica que la lista de artistas no sea nula ni vacía
         if (artistas == null || artistas.isEmpty()) {
@@ -51,6 +53,7 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
         }
         return true;
     }
+
     public boolean validarGeneros(List<Genero> generos) {
         // Verifica que la lista de géneros no sea nula ni vacía
         if (generos == null || generos.isEmpty()) {
@@ -60,16 +63,36 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
     }
 
     public boolean validarArchivoMP3(byte[] archivoMP3) {
-        //  Si es null, lo aceptamos (por ejemplo, en actualización sin cambio de archivo)
+        // Aceptamos null (por ejemplo en actualizaciones sin nuevo archivo)
         if (archivoMP3 == null) {
             return true;
         }
-        // Si no es null, validar tamaño
+
+        // Validar tamaño (10 MB máx)
         if (archivoMP3.length > 10 * 1024 * 1024) {
             return false;
         }
-        return true;
+
+        // Validar que tenga al menos 3 bytes para verificar la cabecera
+        if (archivoMP3.length < 3) {
+            return false;
+        }
+
+        // Verificar si empieza con "ID3"
+        if (archivoMP3[0] == 'I' && archivoMP3[1] == 'D' && archivoMP3[2] == '3') {
+            return true;
+        }
+
+        // Verificar si empieza con el encabezado típico de frame MPEG (0xFF 0xFB o similares)
+        if ((archivoMP3[0] & 0xFF) == 0xFF &&
+                ((archivoMP3[1] & 0xE0) == 0xE0)) {
+            return true;
+        }
+
+        // Si no cumple ninguno de los dos, no es MP3
+        return false;
     }
+
 
     public boolean validarPortada(byte[] portada) {
         // Si es null, lo aceptamos (por ejemplo, en actualización sin cambio de portada)
@@ -133,7 +156,6 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
     }
 
 
-
     @Override
     public boolean esNombreUnico(String nombre) {
         try {
@@ -153,5 +175,24 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
             return false; // En caso de error, se asume que el nombre no es único
         }
     }
-
 }
+
+/*
+-------------------------------------------------------------------------------------------------------------------
+ */
+
+//    public boolean esTituloCancionUnico(String titulo) {
+//        // Verifica si ya existe una canción con este título
+//        return !cancionDAO.existeCancionConTitulo(titulo);
+//    }
+//}
+
+
+//    // Necesitarás inyectar o acceder a tu DAO de playlists
+//    private final PlaylistDAO playlistDAO = new PlaylistDAO();
+//
+//    public boolean tieneElementosAsociados(CancionDTO cancion) {
+//        // Verificar si la canción está en alguna playlist
+//        return playlistDAO.existeCancionEnPlaylists(cancion.getIdCancion());
+//   }
+//}

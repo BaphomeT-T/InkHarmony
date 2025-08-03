@@ -10,11 +10,12 @@ Descripción: Clase de lógica de negocio (BL) que gestiona operaciones sobre ca
 package BusinessLogic;
 
 import DataAccessComponent.DAO.CancionDAO;
-import DataAccessComponent.DTO.CancionDTO;
 import DataAccessComponent.DTO.ArtistaDTO;
+import DataAccessComponent.DTO.CancionDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.Header;
 import java.io.ByteArrayInputStream;
@@ -69,27 +70,87 @@ public class Cancion {
     }
 
     /**
-     * Registra una nueva canción en el sistema.
-     * Crea internamente el objeto CancionDTO usando los parámetros recibidos
-     * y luego lo pasa al DAO para su almacenamiento.
+     * Registra una nueva canción en el sistema con un solo artista.
+     * MANTIENE COMPATIBILIDAD CON EL MÉTODO ORIGINAL.
      *
      * @param titulo Título de la canción.
-     * @param anio Año de publicación.
-     * @param archivoMP3 Archivo de audio en formato MP3.
-     * @param portada Imagen de portada.
-     * @param artistas Lista de artistas asociados.
+     * @param anio Año de lanzamiento.
+     * @param duracion Duración de la canción.
      * @param generos Lista de géneros asociados.
+     * @param letra Letra de la canción.
+     * @param portada Imagen de portada.
+     * @param archivoMP3 Archivo de audio en bytes.
+     * @param artista Artista asociado a la canción.
      * @return true si el registro fue exitoso.
      * @throws Exception si ocurre algún error en el DAO.
      */
-    public boolean registrar(String titulo, int anio,
-                             byte[] archivoMP3, byte[] portada,
-                             List<ArtistaDTO> artistas, List<Genero> generos) throws Exception {
+    public boolean registrar(String titulo, String anio,
+                             String duracion, List<Genero> generos,
+                             String letra, byte[] portada,
+                             byte[] archivoMP3, ArtistaDTO artista) throws Exception {
+
+        // Convertir el artista único a una lista para usar el método principal
+        List<ArtistaDTO> artistas = new ArrayList<>();
+        if (artista != null) {
+            artistas.add(artista);
+        }
+
+        return registrarConMultiplesArtistas(titulo, anio, duracion, generos,
+                letra, portada, archivoMP3, artistas);
+    }
+
+    /**
+     * NUEVO MÉTODO: Registra una nueva canción en el sistema con múltiples artistas.
+     * Este es el método principal que maneja tanto casos de uno como múltiples artistas.
+     *
+     * @param titulo Título de la canción.
+     * @param anio Año de lanzamiento.
+     * @param duracion Duración de la canción.
+     * @param generos Lista de géneros asociados.
+     * @param letra Letra de la canción.
+     * @param portada Imagen de portada.
+     * @param archivoMP3 Archivo de audio en bytes.
+     * @param artistas Lista de artistas asociados a la canción.
+     * @return true si el registro fue exitoso.
+     * @throws Exception si ocurre algún error en el DAO.
+     */
+    public boolean registrarConMultiplesArtistas(String titulo, String anio,
+                                                 String duracion, List<Genero> generos,
+                                                 String letra, byte[] portada,
+                                                 byte[] archivoMP3, List<ArtistaDTO> artistas) throws Exception {
 
         LocalDateTime fechaRegistro = LocalDateTime.now();
-        double duracion = obtenerDuracionDesdeMP3(archivoMP3);
-        CancionDTO nuevaCancion = new CancionDTO(titulo, duracion, anio, fechaRegistro,
-                archivoMP3, portada, artistas, generos);
+
+        // Convertir duración de formato "3:45" a segundos
+        String[] duracionParts = duracion.split(":");
+        double duracionSegundos = 0;
+        if (duracionParts.length == 2) {
+            duracionSegundos = Integer.parseInt(duracionParts[0]) * 60 + Integer.parseInt(duracionParts[1]);
+        }
+
+        // Validar que hay al menos un artista
+        if (artistas == null || artistas.isEmpty()) {
+            throw new IllegalArgumentException("Debe haber al menos un artista asociado a la canción");
+        }
+
+        // Crear DTO con constructor correcto
+        CancionDTO nuevaCancion = new CancionDTO(
+                titulo,
+                duracionSegundos,
+                Integer.parseInt(anio), // Convertir año de String a int
+                fechaRegistro,
+                archivoMP3, // Archivo MP3
+                portada,
+                artistas, // Lista de artistas (puede contener uno o múltiples)
+                generos
+        );
+
+        System.out.println("Registrando canción '" + titulo + "' con " + artistas.size() +
+                " artista(s): " + artistas.stream()
+                .map(ArtistaDTO::getNombre)
+                .reduce((a, b) -> a + ", " + b)
+                .orElse("Sin artistas"));
+
         return cancionDAO.registrar(nuevaCancion);
     }
 
@@ -156,6 +217,4 @@ public class Cancion {
             return 0;
         }
     }
-
-
 }

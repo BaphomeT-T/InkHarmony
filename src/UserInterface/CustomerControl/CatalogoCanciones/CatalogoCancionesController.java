@@ -3,18 +3,17 @@
 | © 2025 EPN-FIS, Todos los derechos reservados |
 | GR1SW                                         |
 |-----------------------------------------------|
-Autor: Sergio Rodríguez
+Autor: Grupo - A
 Descripción: Controlador del catálogo de canciones.
 */
 
 package UserInterface.CustomerControl.CatalogoCanciones;
 
-// Importación de clases necesarias de las capas de lógica y datos
+
 import BusinessLogic.Cancion;
+import DataAccessComponent.DTO.ArtistaDTO;
 import DataAccessComponent.DTO.CancionDTO;
 import BusinessLogic.Genero;
-
-// Importación de clases de JavaFX para interfaz gráfica
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -23,6 +22,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -31,68 +31,119 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+
+import javafx.event.ActionEvent;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.lang.Thread;
 
-// Clase principal del controlador del catálogo de canciones
+/**
+ * Clase CatalogoCancionesController que gestiona la interfaz gráfica del catálogo de canciones.
+ *
+ * Permite visualizar, filtrar, editar y eliminar canciones del sistema InkHarmony. La clase se
+ * comunica con la capa de lógica de negocio (Cancion) y manipula datos representados por objetos DTO.
+ * Utiliza JavaFX para construir una experiencia interactiva con elementos visuales como tablas, imágenes y botones.
+ *
+ * @author Grupo - A
+ * @version 3.0
+ * @since 18-07-2025
+ */
 public class CatalogoCancionesController {
+    @FXML
+    private Button cerrarButton;
+ /*
+    * Método para cerrar la ventana actual y redirigir a la pantalla de administración de usuarios.
+    * Utiliza FXMLLoader para cargar el nuevo FXML y cambiar la escena del Stage actual.
+    * Si ocurre un error al cargar el FXML, se imprime la traza de la excepción.
+  */
+    @FXML
+    private void cerrarVentana() {
+        try {
+            // Obtener el Stage actual a partir del botón cerrar
+            Stage stage = (Stage) cerrarButton.getScene().getWindow();
 
-    // Referencia a la tabla que muestra las canciones
+            // Cargar el nuevo FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/home.fxml"));
+            Parent root = loader.load();
+
+            // Crear la nueva escena con la interfaz de administración
+            Scene scene = new Scene(root);
+
+            // Cambiar la escena del Stage
+            stage.setScene(scene);
+            stage.setTitle("Administración de Usuarios");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private TableColumn<CancionDTO, Void> colAcciones;
+
+
+    // Referencia a la tabla principal que muestra las canciones
     @FXML
     private TableView<CancionDTO> tableCanciones;
 
     // Columnas de la tabla
     @FXML
     private TableColumn<CancionDTO, String> colGenero;
-
     @FXML
     private TableColumn<CancionDTO, String> colDuracion;
-
     @FXML
-    private TableColumn<CancionDTO, Void> colAcciones;
-
+    private TableColumn<CancionDTO, CancionDTO> colTituloConImagen;
     @FXML
-    private TextField txtBuscar; // Campo de búsqueda
+    private TableColumn<CancionDTO, String> colAnio;
+    @FXML
+    private TableColumn<CancionDTO, String> colArtista;
 
-    // Instancia de la capa de lógica para obtener canciones
+    // Campo de texto para búsqueda de canciones por título
+    @FXML
+    private TextField txtBuscar;
+
+    // Instancia de la capa de lógica de negocio para manejo de canciones
     private Cancion cancionBL = new Cancion();
 
-    // Lista observable para cargar la tabla
+    // Lista observable que se vincula a la tabla para actualización dinámica
     private ObservableList<CancionDTO> listaObservable;
 
-    @FXML
-    private TableColumn<CancionDTO, CancionDTO> colTituloConImagen; // Columna con imagen y título
-
-    // Método que se ejecuta al iniciar el controlador
+    /**
+     * Inicializa el controlador configurando la tabla, botones, búsqueda y cargando datos.
+     */
     @FXML
     public void initialize() {
         try {
-            configurarTabla();      // Configura columnas de la tabla
-            cargarCanciones();      // Carga canciones desde la base de datos
-            configurarBusqueda();   // Prepara el filtro de búsqueda
+            configurarTabla();
+            cargarCanciones();
+            configurarBusqueda();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // Configura el listener para el campo de búsqueda
+    /**
+     * Configura el campo de búsqueda para filtrar canciones en tiempo real.
+     */
     private void configurarBusqueda() {
         txtBuscar.textProperty().addListener((observable, oldValue, newValue) -> {
             filtrarCanciones(newValue);
         });
     }
 
-    // Filtra las canciones según el texto ingresado
+    /**
+     * Filtra la lista de canciones según el texto ingresado en el campo de búsqueda.
+     *
+     * @param filtro Texto para buscar coincidencias en los títulos de las canciones.
+     */
     private void filtrarCanciones(String filtro) {
         if (filtro == null || filtro.isBlank()) {
             tableCanciones.setItems(listaObservable);
-            agregarColumnaAcciones(); // Se asegura de mostrar los botones de acción
             return;
         }
 
-        // Aplica filtro por título de la canción
         ObservableList<CancionDTO> filtrados = FXCollections.observableArrayList(
                 listaObservable.stream()
                         .filter(cancion -> cancion.getTitulo().toLowerCase().contains(filtro.toLowerCase()))
@@ -100,26 +151,52 @@ public class CatalogoCancionesController {
         );
 
         tableCanciones.setItems(filtrados);
-        agregarColumnaAcciones();
     }
-
-    // Configura las columnas de la tabla
+/*
+    * Configura la tabla de canciones estableciendo políticas de ajuste, deshabilitando reordenamiento
+    * y definiendo las celdas para cada columna, incluyendo una columna personalizada con imagen y título.
+    * También se configura la columna de acciones para editar y eliminar canciones.
+ */
     private void configurarTabla() {
-        // Columna de géneros (pueden ser varios)
-        colGenero.setCellValueFactory(cellData -> {
-            List<Genero> generos = cellData.getValue().getGenero();
-            String texto = generos.stream().map(Enum::name).collect(Collectors.joining(", "));
-            return SimpleStringProperty.stringExpression(
-                    Bindings.createStringBinding(() -> texto));
+        System.out.println("=== CONFIGURANDO TABLA ===");
+
+        // Política de ajuste de columna
+        tableCanciones.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        // Deshabilitar reordenamiento de columnas
+        colTituloConImagen.setReorderable(false);
+        colGenero.setReorderable(false);
+        colDuracion.setReorderable(false);
+        colAcciones.setReorderable(false);
+
+        colArtista.setCellValueFactory(cellData -> {
+            List<ArtistaDTO> artistas = cellData.getValue().getArtistas();
+            String nombres = artistas.stream()
+                    .map(ArtistaDTO::getNombre)
+                    .collect(Collectors.joining(", "));
+            return new SimpleStringProperty(nombres);
         });
 
-        // Columna de duración
+
+
+        // Columna de géneros
+        colGenero.setCellValueFactory(cellData -> {
+            List<Genero> generos = cellData.getValue().getGeneros();
+            String texto = generos.stream().map(Enum::name).collect(Collectors.joining(", "));
+            return SimpleStringProperty.stringExpression(Bindings.createStringBinding(() -> texto));
+        });
+
+        // Año
+        colAnio.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getAnio())));
+
+        // Duración
         colDuracion.setCellValueFactory(new PropertyValueFactory<>("duracion"));
 
-        // Columna personalizada que incluye imagen y título de la canción
+
+        // Columna personalizada: imagen + título
         colTituloConImagen.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue()));
         colTituloConImagen.setCellFactory(column -> new TableCell<>() {
-            private final HBox contenedor = new HBox(10); // Contenedor con espacio entre elementos
+            private final HBox contenedor = new HBox(10);
             private final ImageView imageView = new ImageView();
             private final Label label = new Label();
 
@@ -128,33 +205,39 @@ public class CatalogoCancionesController {
                 imageView.setFitWidth(40);
                 contenedor.getChildren().addAll(imageView, label);
             }
-
+            /*
+            Método que actualiza el contenido de la celda con la imagen y el título de la canción.
+             */
             @Override
             protected void updateItem(CancionDTO cancion, boolean empty) {
                 super.updateItem(cancion, empty);
                 if (empty || cancion == null) {
                     setGraphic(null);
                 } else {
-                    if (cancion.getImagen() != null) {
+                    if (cancion.getPortada() != null) {
                         try {
-                            imageView.setImage(new Image(new ByteArrayInputStream(cancion.getImagen())));
+                            imageView.setImage(new Image(new ByteArrayInputStream(cancion.getPortada())));
                         } catch (Exception e) {
                             imageView.setImage(loadDefaultImage());
                         }
                     } else {
                         imageView.setImage(loadDefaultImage());
                     }
-
                     label.setText(cancion.getTitulo());
                     setGraphic(contenedor);
                 }
             }
         });
-
+        // Columna de acciones
         agregarColumnaAcciones();
     }
 
-    // Carga una imagen por defecto si no hay imagen en la canción
+
+    /**
+     * Carga una imagen por defecto si no existe portada en la canción.
+     *
+     * @return Objeto Image con la imagen por defecto o null si no se encuentra.
+     */
     private Image loadDefaultImage() {
         try {
             return new Image(getClass().getResourceAsStream("/UserInterface/Resources/img/CatalogoCanciones/Lupa.png"), 40, 40, true, true);
@@ -164,47 +247,59 @@ public class CatalogoCancionesController {
         }
     }
 
-    // Carga las canciones desde la base de datos usando la lógica de negocio
+    /**
+     * Carga las canciones desde la base de datos y las asigna a la tabla observable.
+     */
     private void cargarCanciones() throws Exception {
-        List<CancionDTO> lista = cancionBL.buscarTodo(); // Consulta todas las canciones
-        System.out.println("Canciones cargadas desde DAO:");
-        lista.forEach(System.out::println); // Log de depuración
+        System.out.println("Obteniendo canciones desde la base de datos...");
+        List<CancionDTO> lista = cancionBL.buscarTodo();
+        System.out.println("Canciones cargadas desde DAO (" + lista.size() + " canciones):");
+        lista.forEach(cancion -> System.out.println("  - " + cancion.getTitulo() + " (" + cancion.getAnio() + ")"));
+        
+        // Crear nueva lista observable
         listaObservable = FXCollections.observableArrayList(lista);
+        
+        // Actualizar la tabla
         tableCanciones.setItems(listaObservable);
+        
+        System.out.println("Tabla actualizada con " + listaObservable.size() + " canciones");
     }
-
-    // Agrega botones de acción (editar y eliminar) por cada fila de la tabla
+    /*
+    * Agrega una columna de acciones a la tabla que permite editar y eliminar canciones.
+    * (Con sus respectivos iconos)
+     */
     private void agregarColumnaAcciones() {
         colAcciones.setCellFactory(col -> new TableCell<>() {
             private final Button btnEditar = new Button();
             private final Button btnEliminar = new Button();
 
             {
-                // Se asignan íconos a los botones
-                btnEditar.setGraphic(loadIcon("/UserInterface/Resources/img/CatalogoCanciones/subir.png"));
-                btnEliminar.setGraphic(loadIcon("/UserInterface/Resources/img/CatalogoCanciones/camara.png"));
+                btnEditar.setGraphic(loadIcon("/UserInterface/Resources/img/CatalogoCanciones/tuerca.png"));
+                btnEliminar.setGraphic(loadIcon("/UserInterface/Resources/img/CatalogoCanciones/tacho.png"));
 
                 btnEditar.setStyle("-fx-background-color: transparent;");
                 btnEliminar.setStyle("-fx-background-color: transparent;");
 
-                // Acción del botón Editar
                 btnEditar.setOnAction(event -> {
                     CancionDTO cancion = getTableView().getItems().get(getIndex());
                     irAPantallaEditarCancion(cancion);
                 });
 
-                // Acción del botón Eliminar
                 btnEliminar.setOnAction(event -> {
                     CancionDTO cancion = getTableView().getItems().get(getIndex());
                     irAPantallaEliminarCancion(cancion);
                 });
             }
 
-            private final HBox contenedor = new HBox(10, btnEditar, btnEliminar); // Contenedor de botones
+            private final HBox contenedor = new HBox(10, btnEditar, btnEliminar);
+
             {
                 contenedor.setPadding(new Insets(5));
             }
-
+    /*
+            Método que actualiza el contenido de la celda con los botones de editar y eliminar.
+            Si la celda está vacía, no muestra nada.
+     */
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -213,40 +308,82 @@ public class CatalogoCancionesController {
         });
     }
 
-    // Carga un ícono desde una ruta del proyecto
+
+    /**
+     * Carga un icono desde una ruta específica del proyecto.
+     *
+     * @param path Ruta del recurso.
+     * @return ImageView con el icono o uno vacío si no se encontró.
+     */
     private ImageView loadIcon(String path) {
         try {
-            return new ImageView(new Image(getClass().getResourceAsStream(path), 18, 18, true, true));
+            Image image = new Image(getClass().getResourceAsStream(path), 18, 18, true, true);
+            if (image.isError()) {
+                System.out.println("Error al cargar imagen: " + path);
+                return new ImageView();
+            }
+            return new ImageView(image);
         } catch (Exception e) {
             System.out.println("Imagen no encontrada: " + path);
             return new ImageView();
         }
     }
 
-    // Abre la ventana para subir una nueva canción
+    /**
+     * Abre la ventana para subir una nueva canción.
+     */
     private void irAPantallaSubirCancion() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/CatalogoCanciones/frameNuevaCancion.fxml"));
             Parent root = loader.load();
-
             SubirCancionesController controller = loader.getController();
 
             Stage stage = new Stage();
             stage.setTitle("Subir Canción");
             stage.setScene(new Scene(root));
+            stage.setMaximized(false);
+            
+            // Configurar el controlador para que actualice el catálogo cuando se registre una canción
+            controller.setCatalogoController(this);
+            
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    // Método ligado al botón "Subir canción" desde la vista
+
+
+    /**
+     * Método público para refrescar la tabla de canciones.
+     * Se llama desde otros controladores cuando se registra, edita o elimina una canción.
+     */
+    public void refrescarTabla() {
+        try {
+            txtBuscar.clear();
+            cargarCanciones();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Acción asociada al botón "Subir canción".
+     */
     @FXML
     private void handlePantallaSubirCancion() {
         irAPantallaSubirCancion();
     }
+    
 
-    // Abre la ventana para eliminar una canción
+/*
+    * Abre la ventana para eliminar una canción específica.
+    * Utiliza FXMLLoader para cargar el FXML de la pantalla de eliminación.
+    * Configura el controlador con la canción seleccionada y el controlador del catálogo.
+    * Muestra la nueva ventana en un Stage separado.
+    *
+    * @param cancion Canción a eliminar, representada por un objeto CancionDTO.
+ */
     private void irAPantallaEliminarCancion(CancionDTO cancion) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/CatalogoCanciones/frameEliminarCancion.fxml"));
@@ -254,31 +391,42 @@ public class CatalogoCancionesController {
 
             EliminarCancionesController controller = loader.getController();
             controller.setCancion(cancion);
+            controller.setCatalogoController(this);
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Eliminar Canción");
+            stage.setMaximized(false);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-    // Abre la ventana para editar los datos de una canción seleccionada
-    private void irAPantallaEditarCancion(CancionDTO cancionSeleccionada) {
+/*
+    * Abre la ventana para editar una canción específica.
+    * Utiliza FXMLLoader para cargar el FXML de la pantalla de edición.
+    * Configura el controlador con la canción seleccionada y el controlador del catálogo.
+    * Muestra la nueva ventana en un Stage separado.
+    *
+    * @param cancion Canción a editar, representada por un objeto CancionDTO.
+ */
+    private void irAPantallaEditarCancion(CancionDTO cancion) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/CatalogoCanciones/frameEditarCancion.fxml"));
             Parent root = loader.load();
 
             EditarCancionesController controller = loader.getController();
-            controller.setCancion(cancionSeleccionada);
+            controller.setCancion(cancion);
+            controller.setCatalogoController(this);
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Editar Canción");
+            stage.setMaximized(false);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }
