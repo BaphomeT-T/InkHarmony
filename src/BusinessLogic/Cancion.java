@@ -1,12 +1,3 @@
-/*
-|-----------------------------------------------|
-| © 2025 EPN-FIS, Todos los derechos reservados |
-| GR1SW                                         |
-|-----------------------------------------------|
-Autores: Samira Arízaga, Paul Dávila, Sebastián Ramos
-Descripción: Clase de lógica de negocio (BL) que gestiona operaciones sobre canciones dentro del sistema InkHarmony.
-*/
-
 package BusinessLogic;
 
 import DataAccessComponent.DAO.CancionDAO;
@@ -36,33 +27,34 @@ import java.io.ByteArrayInputStream;
  */
 public class Cancion {
 
-    /** Objeto temporal para almacenar la canción actual manipulada */
+    /** Objeto en memoria que representa una canción manipulada actualmente */
     private CancionDTO cancion;
 
-    /** Objeto DAO que se encarga del acceso a la base de datos */
+
+    /** DAO responsable de operaciones de acceso a datos para canciones */
     private CancionDAO cancionDAO = new CancionDAO();
 
     /**
-     * Constructor vacío.
+     * Constructor por defecto.
      */
     public Cancion() {}
 
     /**
      * Recupera todas las canciones registradas en la base de datos.
      *
-     * @return Lista de objetos CancionDTO con todos los registros.
-     * @throws Exception si ocurre algún error en el acceso a datos.
+     * @return Lista de objetos {@link CancionDTO} con toda la información de canciones existentes.
+     * @throws Exception si ocurre un error en la operación DAO.
      */
     public List<CancionDTO> buscarTodo() throws Exception {
         return cancionDAO.buscarTodo();
     }
 
     /**
-     * Recupera una canción específica por su identificador.
+     * Recupera una canción por su identificador único.
      *
-     * @param idCancion ID de la canción a consultar.
-     * @return Objeto CancionDTO con los datos completos.
-     * @throws Exception si ocurre algún error.
+     * @param idCancion ID de la canción buscada.
+     * @return Objeto {@link CancionDTO} correspondiente.
+     * @throws Exception si ocurre un error durante la consulta.
      */
     public CancionDTO buscarPorId(int idCancion) throws Exception {
         cancion = cancionDAO.buscarPorId(idCancion);
@@ -70,26 +62,24 @@ public class Cancion {
     }
 
     /**
-     * Registra una nueva canción en el sistema con un solo artista.
-     * MANTIENE COMPATIBILIDAD CON EL MÉTODO ORIGINAL.
+     * Registra una nueva canción con un solo artista (para compatibilidad con versiones anteriores).
      *
-     * @param titulo Título de la canción.
-     * @param anio Año de lanzamiento.
-     * @param duracion Duración de la canción.
-     * @param generos Lista de géneros asociados.
-     * @param letra Letra de la canción.
-     * @param portada Imagen de portada.
-     * @param archivoMP3 Archivo de audio en bytes.
-     * @param artista Artista asociado a la canción.
-     * @return true si el registro fue exitoso.
-     * @throws Exception si ocurre algún error en el DAO.
+     * @param titulo     Título de la canción.
+     * @param anio       Año de lanzamiento.
+     * @param duracion   Duración de la canción (formato mm:ss).
+     * @param generos    Lista de géneros musicales.
+     * @param letra      Letra de la canción.
+     * @param portada    Imagen de portada en bytes.
+     * @param archivoMP3 Archivo MP3 en bytes.
+     * @param artista    Artista principal.
+     * @return true si el registro fue exitoso; false en caso contrario.
+     * @throws Exception si ocurre un error al registrar.
      */
     public boolean registrar(String titulo, String anio,
                              String duracion, List<Genero> generos,
                              String letra, byte[] portada,
                              byte[] archivoMP3, ArtistaDTO artista) throws Exception {
 
-        // Convertir el artista único a una lista para usar el método principal
         List<ArtistaDTO> artistas = new ArrayList<>();
         if (artista != null) {
             artistas.add(artista);
@@ -99,20 +89,20 @@ public class Cancion {
                 letra, portada, archivoMP3, artistas);
     }
 
+
     /**
-     * NUEVO MÉTODO: Registra una nueva canción en el sistema con múltiples artistas.
-     * Este es el método principal que maneja tanto casos de uno como múltiples artistas.
+     * Registra una nueva canción con uno o más artistas.
      *
-     * @param titulo Título de la canción.
-     * @param anio Año de lanzamiento.
-     * @param duracion Duración de la canción.
-     * @param generos Lista de géneros asociados.
-     * @param letra Letra de la canción.
-     * @param portada Imagen de portada.
-     * @param archivoMP3 Archivo de audio en bytes.
-     * @param artistas Lista de artistas asociados a la canción.
-     * @return true si el registro fue exitoso.
-     * @throws Exception si ocurre algún error en el DAO.
+     * @param titulo     Título de la canción.
+     * @param anio       Año de lanzamiento (en formato texto).
+     * @param duracion   Duración en formato "mm:ss".
+     * @param generos    Lista de géneros musicales asociados.
+     * @param letra      Letra de la canción.
+     * @param portada    Portada de la canción (formato byte array).
+     * @param archivoMP3 Archivo MP3 en formato byte array.
+     * @param artistas   Lista de artistas participantes.
+     * @return true si se registró correctamente.
+     * @throws Exception si ocurre un error en la operación DAO o en los datos de entrada.
      */
     public boolean registrarConMultiplesArtistas(String titulo, String anio,
                                                  String duracion, List<Genero> generos,
@@ -121,7 +111,7 @@ public class Cancion {
 
         LocalDateTime fechaRegistro = LocalDateTime.now();
 
-        // Convertir duración de formato "3:45" a segundos
+        // Conversión de duración a segundos
         String[] duracionParts = duracion.split(":");
         double duracionSegundos = 0;
         if (duracionParts.length == 2) {
@@ -133,15 +123,14 @@ public class Cancion {
             throw new IllegalArgumentException("Debe haber al menos un artista asociado a la canción");
         }
 
-        // Crear DTO con constructor correcto
         CancionDTO nuevaCancion = new CancionDTO(
                 titulo,
                 duracionSegundos,
-                Integer.parseInt(anio), // Convertir año de String a int
+                Integer.parseInt(anio),
                 fechaRegistro,
-                archivoMP3, // Archivo MP3
+                archivoMP3,
                 portada,
-                artistas, // Lista de artistas (puede contener uno o múltiples)
+                artistas,
                 generos
         );
 
@@ -155,46 +144,46 @@ public class Cancion {
     }
 
     /**
-     * Actualiza los datos de una canción ya existente.
+     * Actualiza los datos de una canción existente en la base de datos.
      *
-     * @param cancionDTO Objeto con los nuevos datos.
-     * @return true si se actualizó correctamente.
-     * @throws Exception si ocurre algún error.
+     * @param cancionDTO Objeto con la información actualizada de la canción.
+     * @return true si la actualización fue exitosa.
+     * @throws Exception si ocurre un error en la actualización.
      */
     public boolean actualizar(CancionDTO cancionDTO) throws Exception {
         return cancionDAO.actualizar(cancionDTO);
     }
 
     /**
-     * Elimina una canción según su ID.
+     * Elimina una canción del sistema según su ID.
      *
-     * @param idCancion ID de la canción a eliminar.
+     * @param idCancion Identificador de la canción a eliminar.
      * @return true si se eliminó correctamente.
-     * @throws Exception si ocurre algún error.
+     * @throws Exception si ocurre un error durante el proceso.
      */
     public boolean eliminar(int idCancion) throws Exception {
         return cancionDAO.eliminar(idCancion);
     }
 
     /**
-     * Busca canciones por coincidencia exacta del título.
+     * Busca canciones cuyo título coincida exactamente con el valor proporcionado.
      *
-     * @param titulo Nombre de la canción a buscar.
-     * @return Lista de canciones con ese título.
-     * @throws Exception si ocurre algún error.
+     * @param titulo Título exacto de la canción a buscar.
+     * @return Lista de {@link CancionDTO} con coincidencias.
+     * @throws Exception si ocurre un error en la búsqueda.
      */
     public List<CancionDTO> buscarPorTitulo(String titulo) throws Exception {
         return cancionDAO.buscarPorNombre(titulo);
     }
 
     /**
-     * Calcula la duración total de una canción a partir del archivo MP3 en forma de arreglo de bytes.
+     * Calcula la duración de un archivo MP3 utilizando su encabezado.
      *
-     * <p>Este método utiliza la librería JLayer para leer los encabezados de los fotogramas MP3
-     * y sumar su duración estimada en milisegundos. El resultado se convierte a segundos.</p>
+     * Utiliza la librería JLayer para analizar los fotogramas del MP3
+     * y calcular la duración total en segundos.
      *
-     * @param mp3Data Arreglo de bytes que representa el contenido binario del archivo MP3.
-     * @return Duración aproximada de la canción en segundos. Retorna 0 si ocurre algún error.
+     * @param mp3Data Arreglo de bytes correspondiente al archivo de audio.
+     * @return Duración estimada en segundos; retorna 0 si ocurre un error.
      */
     private double obtenerDuracionDesdeMP3(byte[] mp3Data) {
         try {
