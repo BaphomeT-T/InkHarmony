@@ -21,12 +21,7 @@
     @since 19-07-2025
 -->
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="832.0" prefWidth="1280.0"
-            style="-fx-background-color: #070F2B;"
-            xmlns="http://javafx.com/javafx/24.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="UserInterface.CustomerControl.CatalogoCanciones.CatalogoCancionesController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.CatalogoCanciones.CatalogoCancionesController">
     <children>
 
         <!--
@@ -36,18 +31,17 @@
             <children>
 
                 <!-- Título principal -->
-                <Label layoutX="54.0" layoutY="43.0" maxHeight="118.0" maxWidth="452.0" prefHeight="97.0" prefWidth="448.0" text="CANCIONES" textFill="WHITE">
+                <Label layoutX="79.0" layoutY="46.0" maxHeight="118.0" maxWidth="452.0" prefHeight="97.0" prefWidth="448.0" text="CANCIONES" textFill="WHITE">
                     <font>
                         <Font size="80.0" />
                     </font>
                 </Label>
-
-                <!-- Botón para cerrar la ventana -->
-                <Button fx:id="cerrarButton" layoutX="-10.0" layoutY="14.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="47.0" prefWidth="83.0" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-weight: normal;" text="X" textFill="WHITE">
-                    <font>
-                        <Font size="40.0" />
-                    </font>
-                </Button>
+            <Button fx:id="cerrarButton" layoutX="1152.0" layoutY="37.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="46.0" prefWidth="80.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;" />
+            <ImageView fitHeight="34.0" fitWidth="46.0" layoutX="1169.0" layoutY="43.0">
+               <image>
+                  <Image url="@../../Resources/img/regreso.png" />
+               </image>
+            </ImageView>
             </children>
         </AnchorPane>
 
@@ -55,12 +49,7 @@
         <!--
             Botón flotante para abrir la pantalla de subida de canciones
         -->
-        <Button fx:id="btnSubir"
-                layoutX="56.0" layoutY="155.0"
-                mnemonicParsing="false"
-                onAction="#handlePantallaSubirCancion"
-                prefHeight="55.0" prefWidth="57.0"
-                style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+        <Button fx:id="btnSubir" layoutX="78.0" layoutY="155.0" mnemonicParsing="false" onAction="#handlePantallaSubirCancion" prefHeight="55.0" prefWidth="57.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
             <graphic>
                 <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                     <image>
@@ -73,7 +62,7 @@
         <!--
             Barra de búsqueda para filtrar canciones por título u otro criterio
         -->
-        <HBox layoutX="136.0" layoutY="166.0" prefHeight="33.0" prefWidth="262.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+        <HBox layoutX="158.0" layoutY="166.0" prefHeight="33.0" prefWidth="262.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
             <children>
 
                 <!-- Campo de texto para ingresar búsqueda -->
@@ -95,11 +84,7 @@
         <!--
             Tabla principal donde se muestran las canciones disponibles
         -->
-        <TableView fx:id="tableCanciones"
-                   layoutX="50.0" layoutY="222.0"
-                   prefHeight="489.0" prefWidth="1176.0"
-                   style="-fx-background-color: #1B1A55; -fx-background-radius: 20;"
-                   stylesheets="@catologoCanciones.css">
+        <TableView fx:id="tableCanciones" layoutX="50.0" layoutY="222.0" prefHeight="489.0" prefWidth="1176.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 20;" stylesheets="@catologoCanciones.css">
             <columns>
 
                 <!-- Columna con título e imagen de la canción -->
