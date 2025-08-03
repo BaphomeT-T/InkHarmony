@@ -20,11 +20,6 @@
                   <Font size="80.0" />
                </font>
             </Label>
-            <Button fx:id="cerrarButton" layoutX="-10.0" layoutY="14.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="47.0" prefWidth="83.0" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-weight: normal;" text="X" textFill="WHITE">
-               <font>
-                  <Font size="40.0" />
-               </font>
-            </Button>
          </children>
       </AnchorPane>
       <Button fx:id="btnSubir" layoutX="56.0" layoutY="200.0" mnemonicParsing="false" onAction="#handlePantallaSubirArtista" prefHeight="45.0" prefWidth="54.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
@@ -58,5 +53,11 @@
             <TableColumn fx:id="colAcciones" prefWidth="166.209228515625" />
         </columns>
       </TableView>
+      <Button fx:id="cerrarButton" layoutX="1162.0" layoutY="47.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="46.0" prefWidth="80.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;" />
+      <ImageView fitHeight="34.0" fitWidth="46.0" layoutX="1179.0" layoutY="53.0">
+         <image>
+            <Image url="@../../Resources/img/regreso.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>
