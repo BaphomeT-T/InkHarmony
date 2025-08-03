@@ -646,66 +646,47 @@ public class SubirCancionesController {
                 // Cargar la imagen seleccionada
                 Image imagen = new Image(archivoSeleccionado.toURI().toString());
 
-                // Validar las dimensiones de la imagen (opcional)
-                if (imagen.getWidth() == 264.0 && imagen.getHeight() == 264.0) {
-                    cancionImageView.setImage(imagen);
-
-                    // Convertir imagen a bytes para almacenamiento
-                    URI uri = archivoSeleccionado.toURI();
-                    Path path = Paths.get(uri);
-                    imagenBytes = Files.readAllBytes(path);
-
-                    // Validar tamaño usando el validador
-                    ServicioValidacionCancion validador = new ServicioValidacionCancion();
-                    if (!validador.validarPortada(imagenBytes)) {
-                        mostrarAlerta("La imagen es demasiado grande. Máximo permitido: 5MB.");
-                        imagenBytes = null;
-                        // Restaurar imagen por defecto
-                        try {
-                            Image imagenDefault = new Image(
-                                    Objects.requireNonNull(getClass().getResourceAsStream(
-                                            "/UserInterface/Resources/img/CatalogoCanciones/camara.png"
-                                    ))
-                            );
-                            cancionImageView.setImage(imagenDefault);
-                        } catch (Exception ex) {
-                            System.out.println("No se pudo restaurar la imagen por defecto");
-                        }
-                        return;
-                    }
-
-                    System.out.println("Imagen cargada correctamente: " + archivoSeleccionado.getAbsolutePath());
-                } else {
-                    // Cargar la imagen aunque no tenga las dimensiones exactas
-                    cancionImageView.setImage(imagen);
-
-                    URI uri = archivoSeleccionado.toURI();
-                    Path path = Paths.get(uri);
-                    imagenBytes = Files.readAllBytes(path);
-
-                    // Validar tamaño usando el validador
-                    ServicioValidacionCancion validador = new ServicioValidacionCancion();
-                    if (!validador.validarPortada(imagenBytes)) {
-                        mostrarAlerta("La imagen es demasiado grande. Máximo permitido: 5MB.");
-                        imagenBytes = null;
-                        // Restaurar imagen por defecto
-                        try {
-                            Image imagenDefault = new Image(
-                                    Objects.requireNonNull(getClass().getResourceAsStream(
-                                            "/UserInterface/Resources/img/CatalogoCanciones/camara.png"
-                                    ))
-                            );
-                            cancionImageView.setImage(imagenDefault);
-                        } catch (Exception ex) {
-                            System.out.println("No se pudo restaurar la imagen por defecto");
-                        }
-                        return;
-                    }
-
-                    mostrarAdvertencia("La imagen no tiene las dimensiones recomendadas (264x264), pero se ha cargado.");
+                // VALIDACIÓN ESTRICTA: Solo permitir imágenes de 264x264 píxeles
+                if (imagen.getWidth() != 264.0 || imagen.getHeight() != 264.0) {
+                    mostrarAlerta("La imagen debe tener exactamente 264x264 píxeles.\n" +
+                            "Dimensiones actuales: " + (int)imagen.getWidth() + "x"
+                            + (int)imagen.getHeight() + " píxeles.\n\n" +
+                            "Por favor, redimensiona tu imagen y vuelve a intentarlo.");
+                    return; // No procesar la imagen
                 }
+
+                // Si llegamos aquí, la imagen tiene las dimensiones correctas
+                cancionImageView.setImage(imagen);
+
+                // Convertir imagen a bytes para almacenamiento
+                URI uri = archivoSeleccionado.toURI();
+                Path path = Paths.get(uri);
+                imagenBytes = Files.readAllBytes(path);
+
+                // Validar tamaño del archivo usando el validador
+                ServicioValidacionCancion validador = new ServicioValidacionCancion();
+                if (!validador.validarPortada(imagenBytes)) {
+                    mostrarAlerta("La imagen es demasiado grande. Máximo permitido: 5MB.");
+                    imagenBytes = null;
+                    // Restaurar imagen por defecto
+                    try {
+                        Image imagenDefault = new Image(
+                                Objects.requireNonNull(getClass().getResourceAsStream(
+                                        "/UserInterface/Resources/img/CatalogoCanciones/camara.png"
+                                ))
+                        );
+                        cancionImageView.setImage(imagenDefault);
+                    } catch (Exception ex) {
+                        System.out.println("No se pudo restaurar la imagen por defecto");
+                    }
+                    return;
+                }
+
+                System.out.println("Imagen cargada correctamente: " + archivoSeleccionado.getAbsolutePath());
+                mostrarExito("Imagen cargada correctamente.\nDimensiones: 264x264 píxeles ✓");
+
             } catch (Exception e) {
-                mostrarAlerta("Error al cargar la imagen.");
+                mostrarAlerta("Error al cargar la imagen: " + e.getMessage());
                 e.printStackTrace();
             }
         }
