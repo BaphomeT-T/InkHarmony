@@ -58,9 +58,8 @@ public class EstadoReproduciendo implements EstadoReproductor {
      */
     @Override
     public void detener() {
-        reproductor.cerrarReproduccionTotal();
+        reproductor.cerrarReproduccion();
         reproductor.setEstado(new EstadoDetenido(reproductor));
-        System.out.println("Reproductor detenido.");
     }
 
     /**
@@ -72,6 +71,8 @@ public class EstadoReproduciendo implements EstadoReproductor {
         detener();
         reproductor.getPlaylist().siguiente();
         reproductor.iniciarReproduccionDesde(0);
+        reproductor.setEstado(new EstadoReproduciendo(reproductor));
+        System.out.println("Siguiente canción en reproducción.");
     }
 
     /**
@@ -83,5 +84,6 @@ public class EstadoReproduciendo implements EstadoReproductor {
         detener();
         reproductor.getPlaylist().anterior();
         reproductor.iniciarReproduccionDesde(0);
+        reproductor.setEstado(new EstadoReproduciendo(reproductor));
     }
 }

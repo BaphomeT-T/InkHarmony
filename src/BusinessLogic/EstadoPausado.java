@@ -55,7 +55,7 @@ public class EstadoPausado implements EstadoReproductor {
      */
     @Override
     public void detener() {
-        reproductor.cerrarReproduccionTotal();
+        reproductor.cerrarReproduccion();
         reproductor.setEstado(new EstadoDetenido(reproductor));
         System.out.println("Reproducción detenida.");
     }

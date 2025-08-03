@@ -53,7 +53,6 @@ public class EstadoDetenido implements EstadoReproductor {
      */
     @Override
     public void detener() {
-        reproductor.cerrarReproduccionTotal();
         System.out.println("El reproductor ya está detenido.");
     }
 
@@ -62,8 +61,7 @@ public class EstadoDetenido implements EstadoReproductor {
      */
     @Override
     public void siguiente() {
-        reproductor.getPlaylist().siguiente();
-        System.out.println("Canción cambiada. Lista en espera para reproducir.");
+        System.out.println("No se puede avanzar si el reproductor esta detenido");
     }
 
     /**
@@ -71,8 +69,7 @@ public class EstadoDetenido implements EstadoReproductor {
      */
     @Override
     public void anterior() {
-        reproductor.getPlaylist().anterior();
-        System.out.println("Canción cambiada. Lista en espera para reproducir.");
+        System.out.println("No se puede retorceder si el reproductor esta detenido");
     }
 }
 
