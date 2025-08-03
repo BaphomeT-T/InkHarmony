@@ -3,7 +3,7 @@
 | © 2025 EPN-FIS, Todos los derechos reservados |
 | GR1SW                                         |
 |-----------------------------------------------|
-Autores: Samira Arízaga, Paul Dávila, Sebastián Ramos
+Autores: Grupo A
 Descripción: Objeto de transferencia de datos (DTO) que representa una canción dentro del sistema InkHarmony.
 */
 
@@ -21,9 +21,9 @@ import java.util.List;
 
 /**
  * Clase CancionDAO que implementa operaciones CRUD sobre la entidad Cancion.
- * Se comunica con la base de datos SQLite y transforma resultados en objetos CancionDTO.
+ * <p>Se comunica con la base de datos SQLite y transforma resultados en objetos {@link CancionDTO}.</p>
  *
- * Esta clase gestiona canciones, su metadata (título, duración, año), archivos binarios (MP3 y portada),
+ * <p>Esta clase gestiona canciones, su metadata (título, duración, año), archivos binarios (MP3 y portada),
  * así como sus relaciones con artistas y géneros musicales.</p>
  *
  * @author Grupo A
@@ -209,10 +209,14 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
     }
 
     /**
-     * Actualiza los atributos básicos de una canción (también actualiza artistas y géneros).
+     * Actualiza los atributos básicos de una canción.
      *
-     * @param entity Objeto DTO con los nuevos valores.
-     * @return true si se actualizó correctamente.
+     * <p>Actualiza título, año, y condicionalmente portada y archivo MP3 si están presentes. También
+     * reemplaza por completo las asociaciones con artistas y géneros.</p>
+     *
+     * @param entity Objeto {@link CancionDTO} con los nuevos valores.
+     * @return true si la actualización fue exitosa.
+     * @throws Exception si ocurre un error al actualizar la canción.
      */
     @Override
     public boolean actualizar(CancionDTO entity) throws Exception {
@@ -321,6 +325,7 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
      *
      * @param idCancion ID de la canción.
      * @return Lista de artistas relacionados.
+     * @throws Exception si ocurre un error al acceder a la base de datos.
      */
     private List<ArtistaDTO> getArtistasPorCancion(int idCancion) throws Exception {
         List<ArtistaDTO> lista = new ArrayList<>();
@@ -367,23 +372,4 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
         return lista;
     }
 
-    public boolean existeCancionConTitulo(String titulo) {
-        String sql = "SELECT COUNT(*) FROM Cancion WHERE Titulo = ? AND Estado = 'A'";
-
-        try {
-            Connection conn = openConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, titulo);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
-            }
-            return false;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 }

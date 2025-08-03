@@ -10,17 +10,24 @@ import java.util.HashSet;
 /**
  * Clase ServicioValidacionCancion que proporciona servicios de validación para canciones.
  *
- * <p>Esta clase se encarga de validar las propiedades de las canciones, como su nombre,
- * duración y otros atributos relevantes. Utiliza el DAO CancionDAO para acceder a los datos
- * necesarios para realizar las validaciones.</p>
+ * <p>Valida los campos de una canción como el título, año, artistas, géneros, archivo MP3 y portada.
+ * Es utilizada tanto para registros nuevos como actualizaciones.</p>
+ *
+ * <p>Implementa la interfaz {@link UnicoNombreValidable} para validar la unicidad del nombre.</p>
  *
  * @author Grupo A
  * @version 1.0
  * @since 19-07-2025
  */
 public class ServicioValidacionCancion implements UnicoNombreValidable {
+    /** DAO para acceder a las canciones registradas */
     private CancionDAO cancionDAO = new CancionDAO();
-
+    /**
+     * Valida que el título no sea nulo, vacío ni mayor a 100 caracteres.
+     *
+     * @param titulo Título de la canción.
+     * @return true si es válido, false en caso contrario.
+     */
     public boolean validarTitulo(String titulo) {
         // Verifica que el título no sea nulo ni vacío
         if (titulo == null || titulo.trim().isEmpty()) {
@@ -32,7 +39,12 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
         }
         return true;
     }
-
+    /**
+     * Valida que el año sea positivo y no mayor al año actual.
+     *
+     * @param anio Año de lanzamiento.
+     * @return true si el año es válido.
+     */
     public boolean validarAnio(int anio) {
         // Verifica que el año sea un valor positivo
         if (anio <= 0) {
@@ -45,7 +57,12 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
         }
         return true;
     }
-
+    /**
+     * Valida que la lista de artistas no sea nula ni vacía.
+     *
+     * @param artistas Lista de artistas.
+     * @return true si contiene al menos un artista.
+     */
     public boolean validarArtistas(List<ArtistaDTO> artistas) {
         // Verifica que la lista de artistas no sea nula ni vacía
         if (artistas == null || artistas.isEmpty()) {
@@ -53,7 +70,12 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
         }
         return true;
     }
-
+    /**
+     * Valida que la lista de géneros no sea nula ni vacía.
+     *
+     * @param generos Lista de géneros.
+     * @return true si contiene al menos un género.
+     */
     public boolean validarGeneros(List<Genero> generos) {
         // Verifica que la lista de géneros no sea nula ni vacía
         if (generos == null || generos.isEmpty()) {
@@ -61,7 +83,13 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
         }
         return true;
     }
-
+    /**
+     * Valida un archivo MP3 según su encabezado y tamaño.
+     * Acepta null si no se requiere un nuevo archivo (por ejemplo, en actualizaciones).
+     *
+     * @param archivoMP3 Archivo binario del MP3.
+     * @return true si cumple el formato MP3.
+     */
     public boolean validarArchivoMP3(byte[] archivoMP3) {
         // Aceptamos null (por ejemplo en actualizaciones sin nuevo archivo)
         if (archivoMP3 == null) {
@@ -93,7 +121,13 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
         return false;
     }
 
-
+    /**
+     * Valida el tamaño de la imagen de portada.
+     * Acepta null si no se requiere una nueva imagen (por ejemplo, en actualizaciones).
+     *
+     * @param portada Imagen binaria.
+     * @return true si cumple los requisitos.
+     */
     public boolean validarPortada(byte[] portada) {
         // Si es null, lo aceptamos (por ejemplo, en actualización sin cambio de portada)
         if (portada == null) {
@@ -105,7 +139,13 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
         }
         return true;
     }
-
+    /**
+     * Realiza la validación general de una canción, ya sea para registro o actualización.
+     *
+     * @param cancion Canción a validar.
+     * @param esActualizacion true si es actualización, false si es un nuevo registro.
+     * @return true si la canción es válida, false en caso contrario.
+     */
     public boolean validar(CancionDTO cancion, boolean esActualizacion) {
         boolean valida = true;
 
@@ -155,7 +195,12 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
         return valida;
     }
 
-
+    /**
+     * Verifica si un nombre de canción ya existe en el sistema.
+     *
+     * @param nombre Nombre a verificar.
+     * @return true si el nombre es único, false si ya existe.
+     */
     @Override
     public boolean esNombreUnico(String nombre) {
         try {
@@ -177,22 +222,4 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
     }
 }
 
-/*
--------------------------------------------------------------------------------------------------------------------
- */
 
-//    public boolean esTituloCancionUnico(String titulo) {
-//        // Verifica si ya existe una canción con este título
-//        return !cancionDAO.existeCancionConTitulo(titulo);
-//    }
-//}
-
-
-//    // Necesitarás inyectar o acceder a tu DAO de playlists
-//    private final PlaylistDAO playlistDAO = new PlaylistDAO();
-//
-//    public boolean tieneElementosAsociados(CancionDTO cancion) {
-//        // Verificar si la canción está en alguna playlist
-//        return playlistDAO.existeCancionEnPlaylists(cancion.getIdCancion());
-//   }
-//}

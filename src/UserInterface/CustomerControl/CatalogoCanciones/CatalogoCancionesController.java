@@ -41,11 +41,13 @@ import java.util.stream.Collectors;
 import java.lang.Thread;
 
 /**
- * Clase CatalogoCancionesController que gestiona la interfaz gráfica del catálogo de canciones.
+ * Controlador para la vista del catálogo de canciones en el sistema InkHarmony.
  *
- * Permite visualizar, filtrar, editar y eliminar canciones del sistema InkHarmony. La clase se
- * comunica con la capa de lógica de negocio (Cancion) y manipula datos representados por objetos DTO.
- * Utiliza JavaFX para construir una experiencia interactiva con elementos visuales como tablas, imágenes y botones.
+ * Este controlador permite visualizar, buscar, editar, eliminar y registrar nuevas canciones.
+ * Se comunica con la capa de lógica de negocio a través de {@link Cancion} y utiliza objetos
+ * de transferencia {@link CancionDTO} y {@link ArtistaDTO}.
+ *
+ * FXML asociado: frameCatalogoCanciones.fxml
  *
  * @author Grupo - A
  * @version 3.0
@@ -236,7 +238,7 @@ public class CatalogoCancionesController {
     /**
      * Carga una imagen por defecto si no existe portada en la canción.
      *
-     * @return Objeto Image con la imagen por defecto o null si no se encuentra.
+     * @return Imagen por defecto como objeto {@link Image}, o null si no se encuentra.
      */
     private Image loadDefaultImage() {
         try {
@@ -264,9 +266,9 @@ public class CatalogoCancionesController {
         
         System.out.println("Tabla actualizada con " + listaObservable.size() + " canciones");
     }
-    /*
-    * Agrega una columna de acciones a la tabla que permite editar y eliminar canciones.
-    * (Con sus respectivos iconos)
+    /**
+     * Agrega una columna de acciones a la tabla con botones de edición y eliminación.
+     * Cada botón tiene su respectivo ícono y acción definida.
      */
     private void agregarColumnaAcciones() {
         colAcciones.setCellFactory(col -> new TableCell<>() {
@@ -374,16 +376,13 @@ public class CatalogoCancionesController {
     private void handlePantallaSubirCancion() {
         irAPantallaSubirCancion();
     }
-    
 
-/*
-    * Abre la ventana para eliminar una canción específica.
-    * Utiliza FXMLLoader para cargar el FXML de la pantalla de eliminación.
-    * Configura el controlador con la canción seleccionada y el controlador del catálogo.
-    * Muestra la nueva ventana en un Stage separado.
-    *
-    * @param cancion Canción a eliminar, representada por un objeto CancionDTO.
- */
+
+    /**
+     * Abre la ventana para eliminar una canción específica.
+     *
+     * @param cancion Objeto CancionDTO que representa la canción a eliminar.
+     */
     private void irAPantallaEliminarCancion(CancionDTO cancion) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/CatalogoCanciones/frameEliminarCancion.fxml"));
