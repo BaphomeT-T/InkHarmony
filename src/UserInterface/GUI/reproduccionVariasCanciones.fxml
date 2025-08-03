@@ -1,82 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.ColorAdjust?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.effect.Light.Distant?>
+<?import javafx.scene.effect.Lighting?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280" style="-fx-border-radius: 15px; -fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.ReproduccionVariasCancionesController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280" style="-fx-border-radius: 15px; -fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.ReproduccionVariasCancionesController">
     <children>
-        <Label alignment="BASELINE_LEFT" contentDisplay="CENTER" layoutX="264.0" layoutY="15.0" prefHeight="49.0" prefWidth="743.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;" text="  ¿Qué quieres reproducir?" textAlignment="CENTER" textFill="#1f1f1f">
+        <TextField fx:id="txtBuscarCancion" alignment="TOP_LEFT" layoutX="264.0" layoutY="15.0" prefHeight="14.0" prefWidth="743.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;" text="  ¿Qué quieres reproducir?">
             <font>
-                <Font size="24.0" />
-            </font></Label>
+                <Font size="22.0" />
+            </font>
+        </TextField>
         <Button layoutX="821.0" layoutY="24.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="51.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2;" />
-        <ProgressBar cache="true" depthTest="DISABLE" layoutX="-5.0" layoutY="702.0" prefHeight="14.0" prefWidth="1288.0" progress="0.25">
+        <ProgressBar cache="true" depthTest="DISABLE" layoutX="-5.0" layoutY="702.0" prefHeight="14.0" prefWidth="1288.0" progress="0.25" style="-fx-accent: #FF0000;">
             <cursor>
                 <Cursor fx:constant="DEFAULT" />
             </cursor>
             <effect>
-                <Lighting bumpInput="$null" diffuseConstant="1.62" specularConstant="0.7" specularExponent="40.0">
-                    <light>
-                        <Light.Distant>
-                            <color>
-                                <Color red="0.6105263233184814" green="0.6060038805007935" blue="0.6060038805007935" />
-                            </color></Light.Distant>
-                    </light>
-                </Lighting>
+            <Lighting>
+               <light>
+                  <Light.Distant />
+               </light>
+               <bumpInput>
+                  <Glow />
+               </bumpInput>
+            </Lighting>
             </effect>
             <opaqueInsets>
                 <Insets />
             </opaqueInsets></ProgressBar>
-        <Pane layoutX="22.0" layoutY="734.0" prefHeight="70.0" prefWidth="76.0" style="-fx-background-color: #ffffff;" />
-        <Label layoutX="106.0" layoutY="741.0" prefHeight="57.0" prefWidth="152.0" text="Nombre cancion- Artistan" textFill="WHITE" wrapText="true">
+        <Pane fx:id="panImageAlbum1" layoutX="22.0" layoutY="734.0" prefHeight="70.0" prefWidth="76.0" style="-fx-background-color: #ffffff;" />
+        <Label layoutX="105.0" layoutY="738.0" prefHeight="35.0" prefWidth="250.0" text="Nombre cancion" textFill="WHITE" wrapText="true">
             <font>
                 <Font size="18.0" />
             </font></Label>
-        <Button layoutX="610.0" layoutY="750.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="89.0" style="-fx-background-color: #ffffff; -fx-border-radius: 25px; -fx-background-radius: 25px;">
+        <Button layoutX="610.0" layoutY="746.0" mnemonicParsing="false" onAction="#clickReproducir" prefHeight="43.0" prefWidth="89.0" style="-fx-background-color: #070F2B; -fx-border-radius: 25px; -fx-background-radius: 25px;">
             <graphic>
-                <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="26.0" fitWidth="29.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../Resources/img/play.png" />
                     </image>
+                    <effect>
+                        <ColorAdjust brightness="1.0" />
+                    </effect>
                 </ImageView>
             </graphic>
         </Button>
 
-        <Button layoutX="730.0" layoutY="750.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="57.0" style="-fx-background-color: #ffffff; -fx-border-radius: 25px; -fx-background-radius: 25px;">
+        <Button layoutX="730.0" layoutY="750.0" mnemonicParsing="false" onAction="#clickSiguiente" prefHeight="35.0" prefWidth="57.0" style="-fx-background-color: #070F2B; -fx-border-radius: 25px; -fx-background-radius: 25px;">
             <graphic>
-                <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="21.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../Resources/img/siguiente-pista.png" />
                     </image>
+                    <effect>
+                        <ColorAdjust brightness="1.0" />
+                    </effect>
                 </ImageView>
             </graphic>
         </Button>
 
-        <Button layoutX="520.0" layoutY="750.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="57.0" style="-fx-background-color: #ffffff; -fx-border-radius: 25px; -fx-background-radius: 25px;">
+        <Button layoutX="520.0" layoutY="750.0" mnemonicParsing="false" onAction="#clickAnterior" prefHeight="35.0" prefWidth="57.0" style="-fx-background-color: #070F2B; -fx-border-radius: 25px; -fx-background-radius: 25px;">
             <graphic>
-                <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="21.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../Resources/img/pista-anterior.png" />
                     </image>
+                    <effect>
+                        <ColorAdjust brightness="1.0" />
+                    </effect>
                 </ImageView>
             </graphic>
         </Button>
 
-        <Label layoutX="813.0" layoutY="761.0" text="Tiempo Cancion" textFill="WHITE">
-            <font>
-                <Font size="18.0" />
-            </font></Label>
-        <ImageView fitHeight="36.0" fitWidth="41.0" layoutX="899.0" layoutY="21.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-                <Image url="@../Resources/img/lupa.png" />
-            </image>
-        </ImageView>
+        <Button layoutX="934.0" layoutY="16.0" mnemonicParsing="false" onAction="#clickBuscarCancion" prefHeight="27.0" prefWidth="51.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2;">
+            <graphic>
+                <ImageView fitHeight="36.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../Resources/img/lupa.png" />
+                    </image>
+                </ImageView>
+            </graphic></Button>
+        <Button layoutX="1155.0" layoutY="19.0" mnemonicParsing="false" onAction="#clickRegresarPagina" prefHeight="40.0" prefWidth="66.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;">
+            <graphic>
+                <ImageView>
+                    <image>
+                        <Image url="@../Resources/img/regresar-pagina.png" />
+                    </image>
+                </ImageView>
+            </graphic></Button>
+
+        <Button layoutX="50.0" layoutY="15.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="57.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;">
+            <graphic>
+                <ImageView fitHeight="40.0" fitWidth="42.0">
+                    <image>
+                        <Image url="@../Resources/img/simbolo-aplicacion.png" />
+                    </image>
+                </ImageView>
+            </graphic></Button>
       <Pane layoutX="50.0" layoutY="86.0" prefHeight="587.0" prefWidth="339.0" style="-fx-background-color: #1B1A55;">
          <children>
             <Label layoutX="14.0" layoutY="14.0" prefHeight="49.0" prefWidth="234.0" text="Tu Biblioteca          " textFill="WHITE">
@@ -84,19 +118,24 @@
                   <Font name="System Bold" size="24.0" />
                </font>
             </Label>
-            <Button layoutX="235.0" layoutY="13.0" mnemonicParsing="false" style="-fx-background-color: #1B1A55;" text="+" textFill="WHITE">
+            <Button layoutX="235.0" layoutY="13.0" mnemonicParsing="false" onAction="#clickNuevaBiblioteca" style="-fx-background-color: #1B1A55;" text="+" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Button>
-            <Button layoutX="25.0" layoutY="82.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="65.0" style="-fx-background-color: #1B1A55;" />
+            <Button layoutX="14.0" layoutY="51.0" mnemonicParsing="false" onAction="#clickBuscarBiblioteca" prefHeight="36.0" prefWidth="65.0" style="-fx-background-color: #1B1A55;">
+               <graphic>
+                    <ImageView fitHeight="46.0" fitWidth="68.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                        <Image url="@../Resources/img/lupa.png" />
+                    </image>
+                     <effect>
+                        <ColorAdjust brightness="1.0" />
+                     </effect>
+                    </ImageView>
+               </graphic></Button>
             <Pane layoutX="25.0" layoutY="105.0" prefHeight="79.0" prefWidth="89.0" style="-fx-background-color: white;" />
-              <ImageView fitHeight="46.0" fitWidth="68.0" layoutX="14.0" layoutY="59.0" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                  <Image url="@../Resources/img/lupa.png" />
-              </image>
-              </ImageView>
-            <Pane layoutX="114.0" layoutY="105.0" prefHeight="79.0" prefWidth="201.0" style="-fx-background-color: #ffffff;" />
+            <Pane fx:id="panBiblioteca" layoutX="114.0" layoutY="105.0" prefHeight="79.0" prefWidth="201.0" style="-fx-background-color: #ffffff;" />
          </children>
       </Pane>
       <Pane layoutX="420.0" layoutY="88.0" prefHeight="587.0" prefWidth="811.0" style="-fx-background-color: #1B1A55;">
@@ -105,11 +144,16 @@
                <font>
                   <Font name="System Bold" size="24.0" />
                </font></Label>
-            <ScrollPane layoutX="53.0" layoutY="72.0" prefHeight="475.0" prefWidth="675.0">
+            <ScrollPane fx:id="panListaReproduccion" layoutX="53.0" layoutY="72.0" prefHeight="475.0" prefWidth="675.0">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
               </content>
             </ScrollPane>
          </children></Pane>
+      <Label layoutX="105.0" layoutY="778.0" prefHeight="14.0" prefWidth="250.0" text="Artista" textFill="WHITE" wrapText="true">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
     </children>
 </Pane>
