@@ -63,16 +63,36 @@ public class ServicioValidacionCancion implements UnicoNombreValidable {
     }
 
     public boolean validarArchivoMP3(byte[] archivoMP3) {
-        //  Si es null, lo aceptamos (por ejemplo, en actualización sin cambio de archivo)
+        // Aceptamos null (por ejemplo en actualizaciones sin nuevo archivo)
         if (archivoMP3 == null) {
             return true;
         }
-        // Si no es null, validar tamaño
+
+        // Validar tamaño (10 MB máx)
         if (archivoMP3.length > 10 * 1024 * 1024) {
             return false;
         }
-        return true;
+
+        // Validar que tenga al menos 3 bytes para verificar la cabecera
+        if (archivoMP3.length < 3) {
+            return false;
+        }
+
+        // Verificar si empieza con "ID3"
+        if (archivoMP3[0] == 'I' && archivoMP3[1] == 'D' && archivoMP3[2] == '3') {
+            return true;
+        }
+
+        // Verificar si empieza con el encabezado típico de frame MPEG (0xFF 0xFB o similares)
+        if ((archivoMP3[0] & 0xFF) == 0xFF &&
+                ((archivoMP3[1] & 0xE0) == 0xE0)) {
+            return true;
+        }
+
+        // Si no cumple ninguno de los dos, no es MP3
+        return false;
     }
+
 
     public boolean validarPortada(byte[] portada) {
         // Si es null, lo aceptamos (por ejemplo, en actualización sin cambio de portada)

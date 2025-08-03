@@ -408,12 +408,6 @@ public class SubirCancionesController {
             return;
         }
 
-        // Validación adicional de rango personalizada
-        if (anio < 1900) {
-            mostrarAlerta("El año debe ser mayor o igual a 1900.");
-            return;
-        }
-
         if (!validador.validarAnio(anio)) {
             int currentYear = java.time.LocalDate.now().getYear();
             mostrarAlerta("El año debe ser un valor positivo y no mayor al año actual (" + currentYear + ").");
@@ -431,13 +425,10 @@ public class SubirCancionesController {
             return;
         }
 
-        // 5. Validar archivo MP3
-        if (!validador.validarArchivoMP3(archivoMP3)) {
-            if (archivoMP3 == null) {
-                mostrarAlerta("Debes seleccionar un archivo MP3.");
-            } else {
-                mostrarAlerta("El archivo MP3 es demasiado grande. Máximo permitido: 10MB.");
-            }
+
+        // Validar archivo para subir
+        if (archivoMP3 == null || archivoMP3.length == 0) {
+            mostrarAlerta("Debes seleccionar un archivo MP3 válido.");
             return;
         }
 
@@ -526,10 +517,18 @@ public class SubirCancionesController {
                 archivoMP3 = Files.readAllBytes(path);
                 nombreArchivoMP3 = archivoSeleccionado.getName();
 
-                // Validar tamaño del archivo usando el validador
+                // Validar tamaño y formato del archivo usando el validador
                 ServicioValidacionCancion validador = new ServicioValidacionCancion();
                 if (!validador.validarArchivoMP3(archivoMP3)) {
-                    mostrarAlerta("El archivo MP3 es demasiado grande. Máximo permitido: 10MB.");
+                    // Si el archivo no es válido por tipo
+                    if (!(archivoMP3[0] == 'I' && archivoMP3[1] == 'D' && archivoMP3[2] == '3') &&
+                            !((archivoMP3[0] & 0xFF) == 0xFF && (archivoMP3[1] & 0xE0) == 0xE0)) {
+                        mostrarAlerta("Debes seleccionar un archivo MP3.");
+                    } else {
+                        // Si falló por tamaño u otra razón
+                        mostrarAlerta("El archivo MP3 es demasiado grande. Máximo permitido: 10MB.");
+                    }
+
                     archivoMP3 = null;
                     nombreArchivoMP3 = "";
                     duracionSegundos = 0.0;
