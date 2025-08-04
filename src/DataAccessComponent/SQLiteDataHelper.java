@@ -35,7 +35,7 @@ public abstract class SQLiteDataHelper {
 
     /** Ruta de conexión a la base de datos SQLite */
     private static String DBPathConnection =
-            "jdbc:sqlite:C:/Users/ASUS/Desktop/dsñ/InkHarmony/database/InkHarmony.sqlite";
+            "jdbc:sqlite:C:/Users/ASUS TUF F15/Desktop/Diseño/InkHarmony/database/InkHarmony.sqlite";
 
 
     /** Instancia única de la conexión a la base de datos */

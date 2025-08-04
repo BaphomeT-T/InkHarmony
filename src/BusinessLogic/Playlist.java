@@ -7,7 +7,7 @@ Autores: Grupo C
 Clase de lógica de negocio para gestión de playlists.
 Implementa el patrón Composite para manejar componentes de playlist.
 */
-package BusinessLogic;
+package BusinessLogic.ComponentePlaylist;
 
 import DataAccessComponent.DAO.PlaylistDAO;
 import DataAccessComponent.DAO.CancionDAO;
@@ -188,8 +188,9 @@ public class Playlist implements ComponentePlaylist {
     public void reproducir() throws Exception {
         List<byte[]> cancionesBytes = obtenerCancionesParaReproduccion();
         if (!cancionesBytes.isEmpty()) {
-            ReproductorMP3 reproductor = ReproductorMP3.getInstancia(cancionesBytes);
-            reproductor.reproducir();
+            //ReproductorMP3 reproductor = ReproductorMP3.getInstancia(cancionesBytes);
+            //reproductor.reproducir();
+            System.out.println("Reproduciendo playlist (funcionalidad pendiente)");
         } else {
             throw new Exception("La playlist está vacía o no tiene archivos de audio");
         }
@@ -214,7 +215,7 @@ public class Playlist implements ComponentePlaylist {
             if (playlistDTO != null) {
                 List<CancionDTO> canciones = playlistDAO.obtenerCancionesCompletasDePlaylist(playlistDTO.getIdPlaylist());
                 for (CancionDTO cancion : canciones) {
-                    duracionTotal += cancion.getDuracion();
+                     duracionTotal += cancion.getDuracion();
                 }
             }
         } catch (Exception e) {

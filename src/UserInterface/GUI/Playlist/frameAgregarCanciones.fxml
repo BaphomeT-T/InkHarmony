@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #070F2B;" stylesheets="@agregarCanciones.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.Playlist.AgregarCancionesController">
+
+    <!-- HEADER -->
+    <top>
+        <AnchorPane prefHeight="120.0" prefWidth="1200.0" style="-fx-background-color: #08072C;">
+            <children>
+                <Label alignment="CENTER" layoutX="400.0" layoutY="35.0" maxHeight="60.0" maxWidth="400.0" prefHeight="50.0" prefWidth="400.0" text="AGREGAR CANCIONES" textFill="WHITE">
+                    <font>
+                        <Font size="32.0" />
+                    </font>
+                </Label>
+                <Button fx:id="cerrarButton" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="47.0" prefWidth="83.0" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-weight: normal;">
+                    <graphic>
+                        <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../../Resources/img/CatalogoPlaylist/regresar.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <!-- NOMBRE DE LA PLAYLIST -->
+                <Label fx:id="lblNombrePlaylist" alignment="CENTER" layoutX="400.0" layoutY="85.0" maxHeight="30.0" maxWidth="400.0" prefHeight="25.0" prefWidth="400.0" text="Playlist: [Nombre]" textFill="#9190C2">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Label>
+            </children>
+        </AnchorPane>
+    </top>
+
+    <!-- CONTENIDO PRINCIPAL CENTRADO -->
+    <center>
+        <VBox alignment="CENTER" spacing="20.0" style="-fx-padding: 30;">
+            <children>
+                <!-- BARRA DE BÚSQUEDA Y DESCRIPCIÓN -->
+                <HBox alignment="CENTER" spacing="40.0">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+                            <children>
+                                <TextField fx:id="txtBuscar" onKeyReleased="#handleBuscar" prefWidth="250.0" promptText="Busca una canción por..." style="-fx-background-radius: 20; -fx-background-color: #9190C2; -fx-border-color: transparent;">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </TextField>
+                                <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../../Resources/img/CatalogoCanciones/Lupa.png" />
+                                    </image>
+                                </ImageView>
+                            </children>
+                        </HBox>
+
+                        <Label text="Selecciona las canciones que deseas agregar a la playlist" textFill="#9190C2">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+
+                <!-- TABLA DE CANCIONES DISPONIBLES CENTRADA -->
+                <TableView fx:id="tableCanciones" maxWidth="1100.0" prefHeight="450.0" prefWidth="1100.0" style="-fx-background-color: #1B1A55; -fx-control-inner-background: #1B1A55; -fx-selection-bar: #9190C2; -fx-selection-bar-non-focused: #9190C2; -fx-table-cell-border-color: #5A5A80; -fx-background-radius: 20; -fx-border-color: #5A5A80; -fx-border-width: 2; -fx-border-radius: 20;">
+                    <columns>
+                        <TableColumn fx:id="colSeleccionar" prefWidth="108.000009059906" text="Seleccionar" />
+                        <TableColumn fx:id="colTituloConImagen" prefWidth="292.00000762939453" text="Título" />
+                        <TableColumn fx:id="colArtista" prefWidth="170.0" text="Artista" />
+                        <TableColumn fx:id="colGenero" prefWidth="146.39996337890625" text="Género(s)" />
+                        <TableColumn fx:id="colAnio" prefWidth="129.20001220703125" text="Año" />
+                        <TableColumn fx:id="colDuracion" prefWidth="116.39996337890625" text="Duración" />
+                        <TableColumn fx:id="colAcciones" minWidth="0.0" prefWidth="140.0" text="Agregar" />
+                    </columns>
+                </TableView>
+
+                <!-- BOTONES INFERIORES CENTRADOS -->
+                <HBox alignment="CENTER" maxWidth="1100.0" prefHeight="60.0" prefWidth="1100.0" spacing="20.0" style="-fx-padding: 10;">
+                    <children>
+                        <!-- BOTÓN CERRAR -->
+                        <Button fx:id="btnCerrar" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #6C6C6C; -fx-background-radius: 20; -fx-text-fill: white;" text="Cerrar">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <!-- INFORMACIÓN DE SELECCIÓN -->
+                        <Label fx:id="lblCancionesSeleccionadas" text="0 canciones seleccionadas" textFill="#9190C2">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Label>
+
+                        <!-- Spacer para empujar el botón a la derecha -->
+                        <Region HBox.hgrow="ALWAYS" />
+
+                        <!-- BOTÓN AGREGAR TODAS LAS SELECCIONADAS -->
+                        <Button fx:id="btnAgregarTodas" mnemonicParsing="false" onAction="#handleAgregarTodasSeleccionadas" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #9190C2; -fx-background-radius: 25; -fx-text-fill: black; -fx-font-size: 14px; -fx-font-weight: bold;" text="+ Agregar Seleccionadas">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Button>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </center>
+
+</BorderPane>
