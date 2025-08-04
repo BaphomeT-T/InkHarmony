@@ -1,69 +1,214 @@
 package UserInterface.CustomerControl.Recomendaciones;
 
-import java.io.IOException;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.event.ActionEvent;
-import javafx.stage.Stage;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+
 
 public class RecomendacionesController {
 
-    @FXML private Button btnPlaylist;
-    @FXML private Button btnGenero;
-    @FXML private Button btnPersonalizadas;
-    @FXML private Button btnEstrenos;
+    private boolean isPressedGenero = false;
+    private boolean isPressedArtista = false;
+    private boolean isPressedPersonalizadas = false;
+    private boolean isPressedEstreno = false;
 
-    @FXML private Button btnVolver;
+    private final String baseStyle = "-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-background-radius: 40; -fx-padding: 20 40;";
+    private final String pressedStyle = "-fx-background-color: #48486A; -fx-text-fill: white; -fx-background-radius: 40; -fx-padding: 20 40;";
 
-    @FXML private StackPane contentPane;
+    @FXML
+    private Button btnEstrenos;
+
+    @FXML
+    private Button btnGenero;
+
+    @FXML
+    private Button btnPersonalizadas;
+
+    @FXML
+    private Button btnArtista;
 
     @FXML
     private Button cerrarButton;
 
     @FXML
-    public void initialize() {
-        // Acciones de los botones
-        btnPlaylist.setOnAction(e -> cargarVista("playlist.fxml"));
-        btnGenero.setOnAction(e -> cargarVista("porGenero.fxml"));
-        btnPersonalizadas.setOnAction(e -> cargarVista("personalizadas.fxml"));
-        btnEstrenos.setOnAction(e -> cargarVista("estrenos.fxml"));
+    private Button btnLimpiarFiltros;
+
+    @FXML
+    private TableColumn<?, ?> colAnio;
+
+    @FXML
+    private TableColumn<?, ?> colArtista;
+
+    @FXML
+    private TableColumn<?, ?> colDuracion;
+
+    @FXML
+    private TableColumn<?, ?> colImagen;
+
+    @FXML
+    private TableColumn<?, ?> colTitulo;
+
+    @FXML
+    private ComboBox<?> comboArtista;
+
+    @FXML
+    private ComboBox<?> comboGenero;
+
+    @FXML
+    private StackPane contentPane;
+
+    @FXML
+    private HBox filtrosBox;
+
+    @FXML
+    private TableView<?> tablaCanciones;
+
+    @FXML
+    private Label mensajeBienvenida;
+
+    @FXML
+    private Label mensajeSelecciona;
+
+    @FXML
+    private TextField txtBuscarArtista;
+
+    @FXML
+    private TextField txtBuscarGenero;
+
+
+    @FXML
+    void cerrarVentana(ActionEvent event) {
+
     }
 
-    private void cargarVista(String fxml) {
-        try {
-            AnchorPane vista = FXMLLoader.load(getClass().getResource("/UserInterface/GUI/Recomendaciones/" + fxml));
-
-            contentPane.getChildren().setAll(vista);
-        } catch (IOException e) {
-            e.printStackTrace();
+    // Función para alternar estilo
+    private void toggleButtonStyle(Button btn, boolean isPressed) {
+        if (isPressed) {
+            btn.setStyle(pressedStyle);
+        } else {
+            btn.setStyle(baseStyle);
         }
     }
 
     @FXML
-    void cerrarVentana(ActionEvent event) {
-        try {
-            // Obtener el Stage actual a partir del botón cerrar
-            Stage stage = (Stage) this.cerrarButton.getScene().getWindow();
+    private void initialize() {
+        // Ocultamos todo al inicio
+        filtrosBox.setVisible(false);
+        filtrosBox.setManaged(false);
 
-            // Cargar el nuevo FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/UserInterface/GUI/AdminUserControl/.fxml")); //Aquí iría la vista del menu principal
-            Parent root = loader.load();
+        txtBuscarGenero.setVisible(false);
+        txtBuscarGenero.setManaged(false);
 
-            // Crear la nueva escena con la interfaz de administración
-            Scene scene = new Scene(root);
+        txtBuscarArtista.setVisible(false);
+        txtBuscarArtista.setManaged(false);
+    }
 
-            // Cambiar la escena del Stage
-            stage.setScene(scene);
-            stage.setTitle("Administración de Usuarios");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
+    @FXML
+    private void handlePorArtista() {
+        if (!isPressedArtista){
+            isPressedArtista = true;
+            toggleButtonStyle(btnArtista, true);  // Cambia el estilo
+
+            filtrosBox.setVisible(true);
+            filtrosBox.setManaged(true);
+
+            txtBuscarArtista.setVisible(true);
+            txtBuscarArtista.setManaged(true);
+
+            mensajeBienvenida.setVisible(false);
+            mensajeBienvenida.setManaged(false);
+
+            mensajeSelecciona.setVisible(false);
+            mensajeSelecciona.setManaged(false);
         }
     }
+
+    @FXML
+    private void handlePorGenero() {
+        if (!isPressedGenero) {
+            isPressedGenero = true;
+            toggleButtonStyle(btnGenero, true);
+
+            filtrosBox.setVisible(true);
+            filtrosBox.setManaged(true);
+
+            txtBuscarGenero.setVisible(true);
+            txtBuscarGenero.setManaged(true);
+
+            mensajeBienvenida.setVisible(false);
+            mensajeBienvenida.setManaged(false);
+
+            mensajeSelecciona.setVisible(false);
+            mensajeSelecciona.setManaged(false);
+        }
+    }
+
+    @FXML
+    private void handlePersonalizadas(ActionEvent event) {
+        if (!isPressedPersonalizadas) {
+            isPressedPersonalizadas = true;
+            toggleButtonStyle(btnPersonalizadas, true);
+            filtrosBox.setVisible(true);
+            filtrosBox.setManaged(true);
+
+            mensajeBienvenida.setVisible(false);
+            mensajeBienvenida.setManaged(false);
+
+            mensajeSelecciona.setVisible(false);
+            mensajeSelecciona.setManaged(false);
+        }
+    }
+
+    @FXML
+    private void handleEstrenos(ActionEvent event) {
+        if (!isPressedEstreno) {
+            isPressedEstreno = true;
+            toggleButtonStyle(btnEstrenos, true);
+            filtrosBox.setVisible(true);
+            filtrosBox.setManaged(true);
+
+            mensajeBienvenida.setVisible(false);
+            mensajeBienvenida.setManaged(false);
+
+            mensajeSelecciona.setVisible(false);
+            mensajeSelecciona.setManaged(false);
+        }
+    }
+
+    @FXML
+    private void handleLimpiarFiltros() {
+        isPressedGenero = false;
+        toggleButtonStyle(btnGenero, isPressedGenero);
+
+        isPressedArtista = false;
+        toggleButtonStyle(btnArtista, isPressedArtista);
+
+        isPressedPersonalizadas = false;
+        toggleButtonStyle(btnPersonalizadas, isPressedPersonalizadas);
+
+        isPressedEstreno = false;
+        toggleButtonStyle(btnEstrenos, isPressedEstreno);
+
+        // Ocultar combos
+        txtBuscarGenero.setVisible(false);
+        txtBuscarGenero.setManaged(false);
+
+        txtBuscarArtista.setVisible(false);
+        txtBuscarArtista.setManaged(false);
+
+        // Si no hay filtros activos, ocultar el contenedor completo
+        filtrosBox.setVisible(false);
+        filtrosBox.setManaged(false);
+
+        mensajeBienvenida.setVisible(true);
+        mensajeBienvenida.setManaged(true);
+
+        mensajeSelecciona.setVisible(true);
+        mensajeSelecciona.setManaged(true);
+
+    }
+
+
 }
