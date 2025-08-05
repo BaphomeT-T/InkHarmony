@@ -31,13 +31,13 @@
             <children>
 
                 <!-- Título principal -->
-                <Label layoutX="79.0" layoutY="46.0" maxHeight="118.0" maxWidth="452.0" prefHeight="97.0" prefWidth="448.0" text="CANCIONES" textFill="WHITE">
+                <Label layoutX="76.0" layoutY="68.0" maxHeight="118.0" maxWidth="452.0" prefHeight="97.0" prefWidth="448.0" text="CANCIONES" textFill="WHITE">
                     <font>
                         <Font size="80.0" />
                     </font>
                 </Label>
-            <Button fx:id="cerrarButton" layoutX="1152.0" layoutY="37.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="46.0" prefWidth="80.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;" />
-            <ImageView fitHeight="34.0" fitWidth="46.0" layoutX="1169.0" layoutY="43.0">
+            <Button fx:id="cerrarButton" layoutX="22.0" layoutY="33.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="46.0" prefWidth="80.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;" />
+            <ImageView fitHeight="34.0" fitWidth="46.0" layoutX="39.0" layoutY="39.0">
                <image>
                   <Image url="@../../Resources/img/regreso.png" />
                </image>
@@ -49,7 +49,7 @@
         <!--
             Botón flotante para abrir la pantalla de subida de canciones
         -->
-        <Button fx:id="btnSubir" layoutX="78.0" layoutY="155.0" mnemonicParsing="false" onAction="#handlePantallaSubirCancion" prefHeight="55.0" prefWidth="57.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+        <Button fx:id="btnSubir" layoutX="96.0" layoutY="159.0" mnemonicParsing="false" onAction="#handlePantallaSubirCancion" prefHeight="46.0" prefWidth="46.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
             <graphic>
                 <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                     <image>
@@ -107,6 +107,7 @@
 
             </columns>
         </TableView>
+      <Label layoutX="83.0" layoutY="205.0" text="Subir canción" textFill="WHITE" />
 
     </children>
 </AnchorPane>
