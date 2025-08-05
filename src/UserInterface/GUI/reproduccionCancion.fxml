@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280" style="-fx-border-radius: 15px; -fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.ReproduccionCancionController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="582.4" prefWidth="896" style="-fx-border-radius: 15px; -fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.ReproduccionCancionController">
    <children>
       <Pane layoutX="50.0" layoutY="75.0" prefHeight="598.0" prefWidth="1171.0" style="-fx-background-color: #1B1A55;">
          <children>
