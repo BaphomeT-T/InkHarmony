@@ -20,10 +20,18 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javafx.fxml.Initializable;
+import java.net.URL;
+import java.util.ResourceBundle;
+import DataAccessComponent.DAO.CancionDAO;
+import DataAccessComponent.DTO.CancionDTO;
+import DataAccessComponent.DTO.ArtistaDTO;
 
 /**
  * Controlador para la interfaz de reproducción de canciones.
@@ -34,12 +42,13 @@ import java.util.TimerTask;
  * @version 1.0
  * @since 2025
  */
-public class ReproduccionCancionController {
+public class ReproduccionCancionController implements Initializable {
 
     private ReproductorMP3 reproductor;
-    private Timer timerActualizacion;
+    private Timeline timeline; // Cambiado de Timer a Timeline para mejor integración con JavaFX
     private boolean actualizandoProgress = false;
     private double duracionRealCancion = 0;
+    private double tiempoActualSegundos = 0; // Nueva variable para el tiempo actual
 
     /** Etiqueta que muestra el nombre del artista de la canción actual */
     @FXML
@@ -85,13 +94,26 @@ public class ReproduccionCancionController {
     @FXML
     private ImageView imgPlayPause;
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        try {
+            CancionDAO cancionDAO = new CancionDAO();
+            CancionDTO cancion = cancionDAO.buscarPorId(1);
+            mostrarInformacionCancion(cancion);
+        } catch (Exception e) {
+            System.out.println("Error al cargar la canción: " + e.getMessage());
+        }
+
+        inicializarTimeline(); // Cambiado de iniciarActualizacionProgressBar
+    }
+
     /**
-     * Inicializa el controlador, cargando las canciones de prueba.
+     * Inicializa el Timeline de JavaFX para actualizar el progreso cada 100ms.
+     * Reemplaza el Timer de Java por mejor integración con JavaFX.
      */
-    public void initialize() {
-        List<byte[]> canciones = cargarCanciones();
-        reproductor = ReproductorMP3.getInstancia(canciones);
-        iniciarActualizacionProgressBar();
+    private void inicializarTimeline() {
+        timeline = new Timeline(new KeyFrame(Duration.millis(100), e -> actualizarProgressBar()));
+        timeline.setCycleCount(Timeline.INDEFINITE);
     }
 
     /**
@@ -122,89 +144,76 @@ public class ReproduccionCancionController {
     }
 
     /**
-     * Inicia la actualización automática del progress bar.
-     * Se ejecuta cada 100ms para mostrar el progreso de reproducción.
-     */
-    private void iniciarActualizacionProgressBar() {
-        if (timerActualizacion != null) {
-            timerActualizacion.cancel();
-        }
-
-        timerActualizacion = new Timer();
-        timerActualizacion.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    actualizarProgressBar();
-                });
-            }
-        }, 0, 100); // Actualizar cada 100ms
-    }
-
-    /**
      * Actualiza el progress bar con el frame actual de la reproducción.
+     * Ahora maneja correctamente el tiempo actual vs tiempo total.
      */
     private void actualizarProgressBar() {
-        if (reproductor != null && reproductor.getMotor() != null) {
+        if (reproductor != null && reproductor.getMotor() != null && reproductor.estaReproduciendo()) {
             try {
                 int frameActual = reproductor.getMotor().getPlayer().getLastPosition();
-                double segundosActuales = frameActual / 26.0;
+                tiempoActualSegundos = frameActual / 26.0; // Actualizar tiempo actual
 
-                // ✅ Si aún no tenemos duración, intentar mostrar el tiempo parcial
+                // Actualizar barra de progreso si tenemos duración total
                 if (duracionRealCancion > 0) {
-                    double progreso = segundosActuales / duracionRealCancion;
+                    double progreso = tiempoActualSegundos / duracionRealCancion;
                     progreso = Math.max(0.0, Math.min(1.0, progreso));
                     pgbProgresoCancion.setProgress(progreso);
                 }
 
-                // Siempre actualiza el tiempo visible, incluso si no hay duración aún
-                actualizarTiempoCancion(segundosActuales, duracionRealCancion > 0 ? duracionRealCancion : 1);
+                // Actualizar etiqueta de tiempo (tiempo_actual / duracion_total)
+                actualizarTiempoCancion(tiempoActualSegundos, duracionRealCancion);
+
+                // Verificar si la canción ha terminado
+                if (tiempoActualSegundos >= duracionRealCancion && duracionRealCancion > 0) {
+                    onCancionTerminada();
+                }
 
             } catch (Exception e) {
                 pgbProgresoCancion.setProgress(0.0);
                 lblTiempoCancion.setText("00:00 / 00:00");
             }
+        } else if (!reproductor.estaReproduciendo()) {
+            // Si está pausado, mantener el tiempo actual pero no avanzar
+            actualizarTiempoCancion(tiempoActualSegundos, duracionRealCancion);
         }
     }
 
-
-
     /**
-     * Estima el total de frames basado en una duración aproximada.
-     * Como no tenemos acceso al total real, usamos una estimación.
+     * Maneja el evento cuando una canción termina de reproducirse.
      */
-    private int estimarFrameTotal() {
-        // Estimación: 3 minutos = 180 segundos * 26 frames/segundo = 4680 frames
-        // Esto es una aproximación, pero permite mostrar progreso
-        return 4680; // Aproximadamente 3 minutos de música
+    private void onCancionTerminada() {
+        timeline.stop();
+        cambiarAImagenPlay();
+        // Opcional: avanzar automáticamente a la siguiente canción
+        // clickSiguiente(null);
     }
 
     /**
-     * Actualiza la etiqueta de tiempo de la canción.
+     * Actualiza la etiqueta de tiempo de la canción con formato MM:SS / MM:SS.
+     * Ahora muestra correctamente tiempo_actual / duracion_total.
      */
     private void actualizarTiempoCancion(double segundosActuales, double segundosTotales) {
         try {
-            int minutosActuales = (int) (segundosActuales / 60);
-            int segundosRestantesActuales = (int) (segundosActuales % 60);
-            int minutosTotales = (int) (segundosTotales / 60);
-            int segundosRestantesTotales = (int) (segundosTotales % 60);
+            String tiempoActual = formatearTiempo(segundosActuales);
+            String tiempoTotal = formatearTiempo(segundosTotales > 0 ? segundosTotales : 0);
 
-            String tiempoFormateado = String.format("%02d:%02d / %02d:%02d",
-                    minutosActuales, segundosRestantesActuales,
-                    minutosTotales, segundosRestantesTotales);
-
-            lblTiempoCancion.setText(tiempoFormateado);
+            lblTiempoCancion.setText(tiempoActual + " / " + tiempoTotal);
         } catch (Exception e) {
             lblTiempoCancion.setText("00:00 / 00:00");
         }
     }
 
+    /**
+     * Formatea segundos a formato MM:SS.
+     */
+    private String formatearTiempo(double segundos) {
+        int minutos = (int) (segundos / 60);
+        int segundosRestantes = (int) (segundos % 60);
+        return String.format("%02d:%02d", minutos, segundosRestantes);
+    }
 
     /**
      * Maneja el evento de clic en el botón "Anterior".
-     * Cambia la reproducción a la canción anterior en la lista de reproducción.
-     *
-     * @param event El evento de acción generado por el clic del botón
      */
     @FXML
     void clickAnterior(ActionEvent event) {
@@ -212,12 +221,8 @@ public class ReproduccionCancionController {
         reiniciarProgresoYTiempo();
     }
 
-
     /**
      * Maneja el evento de clic en el botón de búsqueda de canciones.
-     * Permite al usuario buscar canciones específicas en la biblioteca musical.
-     *
-     * @param event El evento de acción generado por el clic del botón
      */
     @FXML
     void clickBuscarCancion(ActionEvent event) {
@@ -226,46 +231,54 @@ public class ReproduccionCancionController {
 
     /**
      * Maneja el evento de clic en el botón "Regresar".
-     * Navega de vuelta a la página anterior en la aplicación.
-     *
-     * @param event El evento de acción generado por el clic del botón
      */
     @FXML
     void clickRegresarPagina(ActionEvent event) {
+        // Detener timeline al salir
+        if (timeline != null) {
+            timeline.stop();
+        }
         System.out.println("Se ha regresado la pagina.");
     }
 
     /**
      * Maneja el evento de clic en el botón de reproducción/pausa.
-     * Inicia o pausa la reproducción de la canción actual y cambia la imagen del botón.
-     * BOTÓN ITERATIVO: Se puede usar n veces sin bloquearse.
-     *
-     * @param event El evento de acción generado por el clic del botón
+     * Ahora controla correctamente el Timeline.
      */
     @FXML
     void clickReproducir(ActionEvent event) {
         if (reproductor.estaReproduciendo()) {
+            // Pausar reproducción y timeline
             reproductor.pausar();
+            timeline.stop();
             cambiarAImagenPlay();
         } else {
             if (reproductor.getEstado() instanceof EstadoPausado) {
+                // Reanudar reproducción y timeline
                 reproductor.reanudar();
+                timeline.play();
             } else {
+                // Iniciar nueva reproducción
                 reproductor.reproducir();
                 reiniciarProgresoYTiempo();
+                timeline.play();
             }
             actualizarDuracionActual();
             cambiarAImagenPause();
         }
     }
 
+    /**
+     * Reinicia el progreso y tiempo cuando se cambia de canción.
+     */
     private void reiniciarProgresoYTiempo() {
+        timeline.stop(); // Detener timeline actual
         pgbProgresoCancion.setProgress(0.0);
-        lblTiempoCancion.setText("00:00 / 00:00");
+        tiempoActualSegundos = 0.0; // Resetear tiempo actual
         duracionRealCancion = 0.0;
+        lblTiempoCancion.setText("00:00 / 00:00");
 
-        // Asegura que la duración se calcule después de un breve delay
-        // para dar tiempo al motor de cargar la nueva canción
+        // Obtener duración de la nueva canción después de un breve delay
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
@@ -278,58 +291,47 @@ public class ReproduccionCancionController {
                     });
                 });
             }
-        }, 500); // Esperar 500 ms para asegurar que la canción está lista
+        }, 500);
     }
 
     /**
      * Cambia la imagen del botón a play (cuando está pausado).
-     * Usa boton-de-play.png específicamente.
      */
     private void cambiarAImagenPlay() {
         try {
-            // Cargar la imagen PNG específica de play
             Image imagenPlay = new Image(getClass().getResourceAsStream("../Resources/img/boton-de-play.png"));
             imgPlayPause.setImage(imagenPlay);
-            // Ajustar el tamaño para la imagen PNG
             imgPlayPause.setFitWidth(29.0);
             imgPlayPause.setFitHeight(26.0);
         } catch (Exception e) {
-            // Fallback: usar la imagen PNG de play original
             Image imagenPlay = new Image(getClass().getResourceAsStream("../Resources/img/play.png"));
             imgPlayPause.setImage(imagenPlay);
             imgPlayPause.setFitWidth(29.0);
             imgPlayPause.setFitHeight(26.0);
         }
-        // Mantener el estilo normal del botón (sin cambiar color)
         btnReproducir.setStyle("-fx-background-color: #070F2B; -fx-border-radius: 25px; -fx-background-radius: 25px;");
     }
 
     /**
      * Cambia la imagen del botón a pause (cuando está reproduciendo).
-     * Usa boton-de-pausa.png específicamente.
      */
     private void cambiarAImagenPause() {
         try {
-            // Cargar la imagen PNG específica de pause
             Image imagenPause = new Image(getClass().getResourceAsStream("../Resources/img/boton-de-pausa.png"));
             imgPlayPause.setImage(imagenPause);
-            // Ajustar el tamaño para la imagen PNG
             imgPlayPause.setFitWidth(40.0);
             imgPlayPause.setFitHeight(35.0);
         } catch (Exception e) {
-            // Fallback: usar la imagen PNG de pause original
             Image imagenPause = new Image(getClass().getResourceAsStream("../Resources/img/pause.png"));
             imgPlayPause.setImage(imagenPause);
             imgPlayPause.setFitWidth(35.0);
             imgPlayPause.setFitHeight(35.0);
         }
-        // Mantener el estilo normal del botón (sin cambiar color)
         btnReproducir.setStyle("-fx-background-color: #070F2B; -fx-border-radius: 25px; -fx-background-radius: 25px;");
     }
 
     /**
      * Actualiza la duración actual de la canción en reproducción.
-     * Se llama al iniciar la reproducción para establecer el tiempo correcto.
      */
     private void actualizarDuracionActual() {
         reproductor.obtenerDuracionCancionActual(duracion -> {
@@ -339,25 +341,26 @@ public class ReproduccionCancionController {
 
     /**
      * Maneja el evento de clic en el botón "Siguiente".
-     * Cambia la reproducción a la siguiente canción en la lista de reproducción.
-     *
-     * @param event El evento de acción generado por el clic del botón
      */
     @FXML
     void clickSiguiente(ActionEvent event) {
         reproductor.siguiente();
         reproductor.reproducir();
         reiniciarProgresoYTiempo();
+        timeline.play(); // Iniciar timeline para nueva canción
         cambiarAImagenPause();
     }
 
+    /**
+     * Muestra la información de una canción en la interfaz.
+     */
     public void mostrarInformacionCancion(CancionDTO cancion) {
         if (cancion != null) {
             // Mostrar título
             lblNombreCancion.setText(cancion.getTitulo());
             lblNombreCancion1.setText(cancion.getTitulo());
 
-            // Mostrar artista (solo el primero por simplicidad)
+            // Mostrar artista
             if (!cancion.getArtistas().isEmpty()) {
                 String nombreArtista = cancion.getArtistas().get(0).getNombre();
                 lblArtista.setText(nombreArtista);
@@ -369,15 +372,118 @@ public class ReproduccionCancionController {
 
             // Mostrar duración en formato mm:ss
             double duracion = cancion.getDuracion();
-            int minutos = (int) (duracion / 60);
-            int segundos = (int) (duracion % 60);
-            String duracionFormateada = String.format("%02d:%02d", minutos, segundos);
-            lblTiempoCancion.setText(duracionFormateada + " / " + duracionFormateada);
+            String duracionFormateada = formatearTiempo(duracion);
+            lblTiempoCancion.setText("00:00 / " + duracionFormateada);
 
             // Actualizar variable de duración para la barra de progreso
             duracionRealCancion = duracion;
+            tiempoActualSegundos = 0.0; // Inicializar tiempo actual
+
+            // Mostrar portada de la canción
+            mostrarPortadaCancion(cancion);
         }
     }
 
-}
+    /**
+     * Muestra la portada de la canción en ambos paneles.
+     * Si la canción no tiene portada (null), muestra una imagen genérica.
+     */
+    private void mostrarPortadaCancion(CancionDTO cancion) {
+        try {
+            Image portada;
 
+            // Verificar si la canción tiene portada (como byte[])
+            if (cancion.getPortada() != null && cancion.getPortada().length > 0) {
+                // Cargar portada específica de la canción desde bytes
+                java.io.ByteArrayInputStream bis = new java.io.ByteArrayInputStream(cancion.getPortada());
+                portada = new Image(bis);
+            } else {
+                // Cargar imagen genérica desde recursos
+                portada = new Image(getClass().getResourceAsStream("../Resources/img/portada-generica.png"));
+
+                // Si no encuentra la imagen en recursos, intentar con otras extensiones comunes
+                if (portada.isError()) {
+                    portada = new Image(getClass().getResourceAsStream("../Resources/img/portada-generica.jpg"));
+                }
+                if (portada.isError()) {
+                    portada = new Image(getClass().getResourceAsStream("../Resources/img/default-cover.png"));
+                }
+                if (portada.isError()) {
+                    portada = new Image(getClass().getResourceAsStream("../Resources/img/no-image.png"));
+                }
+                if (portada.isError()) {
+                    portada = new Image(getClass().getResourceAsStream("../Resources/img/album-cover.png"));
+                }
+            }
+
+            // Configurar imagen para el panel principal (grande)
+            if (!portada.isError()) {
+                ImageView imageViewGrande = new ImageView(portada);
+                imageViewGrande.setFitWidth(panImageAlbum.getPrefWidth());
+                imageViewGrande.setFitHeight(panImageAlbum.getPrefHeight());
+                imageViewGrande.setPreserveRatio(true);
+                imageViewGrande.setSmooth(true); // Suavizado para mejor calidad
+
+                // Limpiar panel y agregar imagen
+                panImageAlbum.getChildren().clear();
+                panImageAlbum.getChildren().add(imageViewGrande);
+
+                // Configurar imagen para el panel pequeño (reproductor inferior)
+                ImageView imageViewPequeno = new ImageView(portada);
+                imageViewPequeno.setFitWidth(panImageAlbum1.getPrefWidth());
+                imageViewPequeno.setFitHeight(panImageAlbum1.getPrefHeight());
+                imageViewPequeno.setPreserveRatio(true);
+                imageViewPequeno.setSmooth(true);
+
+                panImageAlbum1.getChildren().clear();
+                panImageAlbum1.getChildren().add(imageViewPequeno);
+            } else {
+                // Si todas las imágenes fallan, mostrar un color de fondo
+                mostrarPortadaPorDefecto();
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error al cargar portada: " + e.getMessage());
+            mostrarPortadaPorDefecto();
+        }
+    }
+
+    /**
+     * Muestra una portada por defecto cuando no se puede cargar ninguna imagen.
+     * Simplemente cambia el color de fondo de los paneles.
+     */
+    private void mostrarPortadaPorDefecto() {
+        // Limpiar paneles
+        panImageAlbum.getChildren().clear();
+        panImageAlbum1.getChildren().clear();
+
+        // Cambiar estilo para mostrar un color de fondo por defecto
+        panImageAlbum.setStyle("-fx-background-color: #9290C2; -fx-border-color: #070F2B; -fx-border-width: 2px;");
+        panImageAlbum1.setStyle("-fx-background-color: #9290C2; -fx-border-color: #070F2B; -fx-border-width: 2px;");
+
+        // Opcional: agregar un texto o ícono indicando "Sin portada"
+        Label lblSinPortada = new Label("♪");
+        lblSinPortada.setStyle("-fx-text-fill: white; -fx-font-size: 48px;");
+        lblSinPortada.setLayoutX(panImageAlbum.getPrefWidth() / 2 - 15);
+        lblSinPortada.setLayoutY(panImageAlbum.getPrefHeight() / 2 - 25);
+        panImageAlbum.getChildren().add(lblSinPortada);
+
+        Label lblSinPortadaPequeno = new Label("♪");
+        lblSinPortadaPequeno.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
+        lblSinPortadaPequeno.setLayoutX(panImageAlbum1.getPrefWidth() / 2 - 8);
+        lblSinPortadaPequeno.setLayoutY(panImageAlbum1.getPrefHeight() / 2 - 10);
+        panImageAlbum1.getChildren().add(lblSinPortadaPequeno);
+    }
+
+    /**
+     * Método de limpieza para liberar recursos al cerrar la ventana.
+     */
+    public void cleanup() {
+        if (timeline != null) {
+            timeline.stop();
+        }
+        if (reproductor != null) {
+            reproductor.detener();
+        }
+    }
+}
