@@ -351,4 +351,33 @@ public class ReproduccionCancionController {
         cambiarAImagenPause();
     }
 
+    public void mostrarInformacionCancion(CancionDTO cancion) {
+        if (cancion != null) {
+            // Mostrar título
+            lblNombreCancion.setText(cancion.getTitulo());
+            lblNombreCancion1.setText(cancion.getTitulo());
+
+            // Mostrar artista (solo el primero por simplicidad)
+            if (!cancion.getArtistas().isEmpty()) {
+                String nombreArtista = cancion.getArtistas().get(0).getNombre();
+                lblArtista.setText(nombreArtista);
+                lblArtista1.setText(nombreArtista);
+            } else {
+                lblArtista.setText("Desconocido");
+                lblArtista1.setText("Desconocido");
+            }
+
+            // Mostrar duración en formato mm:ss
+            double duracion = cancion.getDuracion();
+            int minutos = (int) (duracion / 60);
+            int segundos = (int) (duracion % 60);
+            String duracionFormateada = String.format("%02d:%02d", minutos, segundos);
+            lblTiempoCancion.setText(duracionFormateada + " / " + duracionFormateada);
+
+            // Actualizar variable de duración para la barra de progreso
+            duracionRealCancion = duracion;
+        }
+    }
+
 }
+
