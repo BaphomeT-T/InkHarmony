@@ -649,21 +649,27 @@ public class CatalogoPlaylistController implements Initializable {
                 playlist.getDescripcion() != null ? playlist.getDescripcion() : "Sin descripción"
         );
 
+        // AGREGAR CONFIGURACIÓN PARA LLENAR TODO EL ESPACIO (igual que en playlist vacía)
+        imgPortadaPlaylistCanciones.setPreserveRatio(false); // CLAVE: false para llenar completamente
+        imgPortadaPlaylistCanciones.setSmooth(true); // Mejor calidad visual
+
         // Cargar imagen de portada
         try {
             if (playlist.getImagenPortada() != null && playlist.getImagenPortada().length > 0) {
                 InputStream imageStream = new ByteArrayInputStream(playlist.getImagenPortada());
-                imgPortadaPlaylistCanciones.setImage(new Image(imageStream));
+                Image imagen = new Image(imageStream);
+                imgPortadaPlaylistCanciones.setImage(imagen);
+                System.out.println("Imagen de playlist con canciones cargada: " + imagen.getWidth() + "x" + imagen.getHeight());
             } else {
-                imgPortadaPlaylistCanciones.setImage(
-                        new Image("/UserInterface/Resources/img/CatalogoPlaylist/simbolo-aplicacion.png")
-                );
+                Image imagenDefecto = new Image("/UserInterface/Resources/img/CatalogoPlaylist/simbolo-aplicacion.png");
+                imgPortadaPlaylistCanciones.setImage(imagenDefecto);
+                System.out.println("Cargando imagen por defecto para playlist con canciones");
             }
         } catch (Exception e) {
-            imgPortadaPlaylistCanciones.setImage(
-                    new Image("/UserInterface/Resources/img/CatalogoPlaylist/simbolo-aplicacion.png")
-            );
-            e.printStackTrace(); // Ayuda a depurar si falla la carga
+            Image imagenDefecto = new Image("/UserInterface/Resources/img/CatalogoPlaylist/simbolo-aplicacion.png");
+            imgPortadaPlaylistCanciones.setImage(imagenDefecto);
+            System.out.println("Error cargando imagen para playlist con canciones, usando por defecto: " + e.getMessage());
+            e.printStackTrace();
         }
 
         // Actualizar información de canciones

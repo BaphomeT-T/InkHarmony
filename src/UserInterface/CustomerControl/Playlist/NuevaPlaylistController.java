@@ -157,6 +157,11 @@ public class NuevaPlaylistController implements Initializable {
         try {
             Image nuevaImagen = new Image(archivo.toURI().toString());
             imgPortada.setImage(nuevaImagen);
+            // Hacer que la imagen ocupe todo el contenedor
+            imgPortada.setFitWidth(200.0);  // Tamaño completo del AnchorPane
+            imgPortada.setFitHeight(200.0); // Tamaño completo del AnchorPane
+            imgPortada.setPreserveRatio(false); // Permite deformación para llenar completamente
+
             imagenSeleccionada = archivo;
             System.out.println("Nueva imagen de portada seleccionada: " + archivo.getName());
         } catch (Exception e) {
@@ -173,6 +178,10 @@ public class NuevaPlaylistController implements Initializable {
         try {
             Image iconoCamara = new Image(getClass().getResourceAsStream(RUTA_IMAGEN_DEFAULT));
             imgPortada.setImage(iconoCamara);
+            // Mantener las propiedades originales para el ícono de cámara
+            imgPortada.setFitWidth(120.0);
+            imgPortada.setFitHeight(120.0);
+            imgPortada.setPreserveRatio(true);
         } catch (Exception e) {
             System.out.println("No se pudo cargar el ícono de cámara por defecto");
             imgPortada.setImage(null);

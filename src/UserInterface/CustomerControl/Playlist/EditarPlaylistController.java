@@ -211,6 +211,12 @@ public class EditarPlaylistController implements Initializable {
     private void aplicarNuevaImagen(File archivo) {
         Image nuevaImagen = new Image(archivo.toURI().toString());
         imgPortada.setImage(nuevaImagen);
+
+        // Configurar para llenar todo el contenedor
+        imgPortada.setFitWidth(200.0);
+        imgPortada.setFitHeight(200.0);
+        imgPortada.setPreserveRatio(false);
+
         imagenSeleccionada = archivo;
     }
 
@@ -405,13 +411,18 @@ public class EditarPlaylistController implements Initializable {
             ByteArrayInputStream streamImagen = new ByteArrayInputStream(bytesImagen);
             Image imagen = new Image(streamImagen);
             imgPortada.setImage(imagen);
+
+            // Configurar para llenar todo el contenedor cuando es imagen existente
+            imgPortada.setFitWidth(200.0);
+            imgPortada.setFitHeight(200.0);
+            imgPortada.setPreserveRatio(false);
+
             imprimirLog("Imagen de portada cargada exitosamente");
         } catch (Exception e) {
             imprimirLog("Error al cargar imagen de portada: " + e.getMessage());
             cargarImagenPorDefecto();
         }
     }
-
     // =================== CARGA DE DATOS LEGACY ===================
 
     public void cargarDatosPlaylist(String titulo, String descripcion, String rutaImagen) {
@@ -469,6 +480,11 @@ public class EditarPlaylistController implements Initializable {
                 imgPortada.setImage(null);
             }
         }
+
+        // Configurar tamaño para ícono por defecto (centrado)
+        imgPortada.setFitWidth(120.0);
+        imgPortada.setFitHeight(120.0);
+        imgPortada.setPreserveRatio(true);
     }
 
     private boolean intentarCargarImagen(String ruta, String descripcion) {
@@ -499,6 +515,12 @@ public class EditarPlaylistController implements Initializable {
             ByteArrayInputStream streamImagen = new ByteArrayInputStream(playlistActual.getImagenPortada());
             Image imagenOriginal = new Image(streamImagen);
             imgPortada.setImage(imagenOriginal);
+
+            // Configurar para llenar todo el contenedor
+            imgPortada.setFitWidth(200.0);
+            imgPortada.setFitHeight(200.0);
+            imgPortada.setPreserveRatio(false);
+
             imagenSeleccionada = null;
             imprimirLog("Imagen restablecida a la original");
         } catch (Exception e) {
