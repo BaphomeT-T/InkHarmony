@@ -13,6 +13,7 @@
       <VBox style="-fx-background-color: #0A0E27; -fx-padding: 15px;">
          <children>
             <!-- Barra de búsqueda principal -->
+            <!-- En tu FXML, busca el HBox principal de la barra superior y reemplázalo con esto: -->
             <HBox alignment="CENTER_LEFT" spacing="10.0">
                <children>
                   <Button fx:id="btnRegresar" onAction="#handleRegresar" style="-fx-background-color: transparent; -fx-padding: 0;">
@@ -26,19 +27,21 @@
                   </Button>
                   <TextField fx:id="txtBusquedaPrincipal" onKeyReleased="#handleBusquedaPrincipal" prefWidth="400.0" promptText="¿Qué quieres reproducir?" style="-fx-background-color: #AFAFC7; -fx-text-fill: #0A0E27; -fx-prompt-text-fill: #666666; -fx-background-radius: 20px; -fx-padding: 10px 15px;" />
                   <Button fx:id="btnBuscar" onAction="#handleBuscar" style="-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-background-radius: 20px; -fx-min-width: 35px; -fx-min-height: 35px;" text="🔍" />
-                  <Pane HBox.hgrow="ALWAYS">
-                     <children>
-                        <Circle fill="#AFAFC7" layoutX="722.0" layoutY="33.0" radius="28" />
-                        <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="706.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <javafx.scene.image.Image url="@../../Resources/img/CatalogoPlaylist/simbolo-aplicacion.png" />
-                           </image>
-                        </ImageView>
-                     </children></Pane>
-                  <!-- Logo de la aplicación como botón al extremo derecho -->
+
+                  <!-- Spacer para empujar el logo a la derecha -->
+                  <Region HBox.hgrow="ALWAYS" />
+
+                  <!-- Logo movido a la derecha -->
                   <Button fx:id="btnLogo" onAction="#handleLogo" style="-fx-background-color: transparent; -fx-padding: 0;">
                      <graphic>
-                        <StackPane alignment="CENTER" />
+                        <StackPane alignment="CENTER">
+                           <Circle fill="#AFAFC7" radius="28" />
+                           <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <javafx.scene.image.Image url="@../../Resources/img/CatalogoPlaylist/simbolo-aplicacion.png" />
+                              </image>
+                           </ImageView>
+                        </StackPane>
                      </graphic>
                   </Button>
                </children>

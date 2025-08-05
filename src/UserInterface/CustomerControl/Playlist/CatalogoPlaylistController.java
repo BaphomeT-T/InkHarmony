@@ -231,7 +231,7 @@ public class CatalogoPlaylistController implements Initializable {
         colFechaAgregacion.setCellValueFactory(cellData -> {
             // Por ahora devolver fecha actual, luego se puede personalizar
             return new javafx.beans.property.SimpleStringProperty(
-                java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                    java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             );
         });
 
@@ -253,7 +253,7 @@ public class CatalogoPlaylistController implements Initializable {
                 int minutos = duracion / 60;
                 int segundos = duracion % 60;
                 return new javafx.beans.property.SimpleStringProperty(
-                    String.format("%d:%02d", minutos, segundos)
+                        String.format("%d:%02d", minutos, segundos)
                 );
             }
             return new javafx.beans.property.SimpleStringProperty("3:30");
@@ -265,35 +265,35 @@ public class CatalogoPlaylistController implements Initializable {
 
             {
                 btnEliminar.setStyle(
-                    "-fx-background-color: transparent; " +
-                    "-fx-text-fill: #ff6b6b; " +
-                    "-fx-font-size: 16px; " +
-                    "-fx-font-weight: bold; " +
-                    "-fx-cursor: hand; " +
-                    "-fx-padding: 5px 10px;"
-                );
-                
-                btnEliminar.setOnMouseEntered(e -> 
-                    btnEliminar.setStyle(
-                        "-fx-background-color: #ff6b6b; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-font-size: 16px; " +
-                        "-fx-font-weight: bold; " +
-                        "-fx-cursor: hand; " +
-                        "-fx-padding: 5px 10px; " +
-                        "-fx-background-radius: 15px;"
-                    )
-                );
-                
-                btnEliminar.setOnMouseExited(e -> 
-                    btnEliminar.setStyle(
                         "-fx-background-color: transparent; " +
-                        "-fx-text-fill: #ff6b6b; " +
-                        "-fx-font-size: 16px; " +
-                        "-fx-font-weight: bold; " +
-                        "-fx-cursor: hand; " +
-                        "-fx-padding: 5px 10px;"
-                    )
+                                "-fx-text-fill: #ff6b6b; " +
+                                "-fx-font-size: 16px; " +
+                                "-fx-font-weight: bold; " +
+                                "-fx-cursor: hand; " +
+                                "-fx-padding: 5px 10px;"
+                );
+
+                btnEliminar.setOnMouseEntered(e ->
+                        btnEliminar.setStyle(
+                                "-fx-background-color: #ff6b6b; " +
+                                        "-fx-text-fill: white; " +
+                                        "-fx-font-size: 16px; " +
+                                        "-fx-font-weight: bold; " +
+                                        "-fx-cursor: hand; " +
+                                        "-fx-padding: 5px 10px; " +
+                                        "-fx-background-radius: 15px;"
+                        )
+                );
+
+                btnEliminar.setOnMouseExited(e ->
+                        btnEliminar.setStyle(
+                                "-fx-background-color: transparent; " +
+                                        "-fx-text-fill: #ff6b6b; " +
+                                        "-fx-font-size: 16px; " +
+                                        "-fx-font-weight: bold; " +
+                                        "-fx-cursor: hand; " +
+                                        "-fx-padding: 5px 10px;"
+                        )
                 );
 
                 btnEliminar.setOnAction(e -> {
@@ -330,10 +330,10 @@ public class CatalogoPlaylistController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Eliminar Canción");
             alert.setHeaderText("¿Quitar canción de la playlist?");
-            
+
             final String nombreCancion;
             final int idCancion;
-            
+
             if (cancion instanceof CancionDTO) {
                 nombreCancion = ((CancionDTO) cancion).getTitulo();
                 idCancion = ((CancionDTO) cancion).getIdCancion();
@@ -341,7 +341,7 @@ public class CatalogoPlaylistController implements Initializable {
                 nombreCancion = cancion.toString();
                 idCancion = -1; // Para canciones de ejemplo
             }
-            
+
             alert.setContentText("¿Estás seguro de que quieres quitar \"" + nombreCancion + "\" de la playlist \"" + playlistSeleccionada.getTituloPlaylist() + "\"?\n\n(La canción no se eliminará de tu biblioteca)");
 
             alert.showAndWait().ifPresent(response -> {
@@ -349,19 +349,19 @@ public class CatalogoPlaylistController implements Initializable {
                     try {
                         // Eliminar de la tabla de la interfaz
                         listCancionesData.remove(cancion);
-                        
+
                         // Eliminar de la playlist en la base de datos (solo si es una canción real)
                         if (idCancion != -1) {
                             Playlist playlistLogic = new Playlist();
-                            
+
                             // Configurar la playlist en el objeto de lógica de negocio
                             playlistLogic.setPlaylistDTO(playlistSeleccionada);
-                            
+
                             boolean eliminado = playlistLogic.eliminarCancion(idCancion);
-                            
+
                             if (eliminado) {
                                 System.out.println("Canción eliminada de la playlist en BD: " + nombreCancion);
-                                
+
                                 // Actualizar la playlist seleccionada
                                 actualizarPlaylistSeleccionada();
                             } else {
@@ -372,12 +372,12 @@ public class CatalogoPlaylistController implements Initializable {
                                 return;
                             }
                         }
-                        
+
                         // Actualizar información de la playlist
                         actualizarInfoPlaylist();
-                        
+
                         System.out.println("Canción quitada de la playlist: " + nombreCancion);
-                        
+
                     } catch (Exception e) {
                         System.out.println("Error al eliminar canción de la playlist: " + e.getMessage());
                         e.printStackTrace();
@@ -389,7 +389,7 @@ public class CatalogoPlaylistController implements Initializable {
                     }
                 }
             });
-            
+
         } catch (Exception e) {
             System.out.println("Error al eliminar canción: " + e.getMessage());
             e.printStackTrace();
@@ -419,15 +419,15 @@ public class CatalogoPlaylistController implements Initializable {
      */
     private void actualizarInfoPlaylist() {
         if (playlistSeleccionada == null) return;
-        
+
         int numCanciones = listCancionesData.size();
-        
+
         // Actualizar labels según la vista actual
         if (vboxPlaylistConCanciones.isVisible()) {
             lblCantidadCanciones.setText(numCanciones + (numCanciones == 1 ? " canción" : " canciones"));
             lblDuracionTotal.setText("~" + (numCanciones * 3) + " min");
         }
-        
+
         // Si no quedan canciones, cambiar a vista vacía
         if (numCanciones == 0) {
             mostrarPlaylistVacia(playlistSeleccionada);
@@ -690,7 +690,17 @@ public class CatalogoPlaylistController implements Initializable {
 
     @FXML
     private void handleLogo() {
+        // Limpiar selección actual de playlist
+        listPlaylists.getSelectionModel().clearSelection();
+        playlistSeleccionada = null;
+
+        // Limpiar datos de canciones
+        listCancionesData.clear();
+
+        // Mostrar la vista del catálogo principal
         mostrarCatalogoPrincipal();
+
+        System.out.println("Regresando al catálogo principal desde el logo");
     }
 
     @FXML
@@ -855,7 +865,7 @@ public class CatalogoPlaylistController implements Initializable {
             if (playlist.getCancionesIds() != null && !playlist.getCancionesIds().isEmpty()) {
                 // Cargar las canciones reales desde la base de datos
                 CancionDAO cancionDAO = new CancionDAO();
-                
+
                 for (Integer idCancion : playlist.getCancionesIds()) {
                     try {
                         CancionDTO cancion = cancionDAO.buscarPorId(idCancion);
@@ -871,7 +881,7 @@ public class CatalogoPlaylistController implements Initializable {
                         listCancionesData.add("Error al cargar canción (ID: " + idCancion + ")");
                     }
                 }
-                
+
                 System.out.println("Total de canciones cargadas en la tabla: " + listCancionesData.size());
             } else {
                 System.out.println("La playlist no tiene canciones o la lista de IDs es nula");
