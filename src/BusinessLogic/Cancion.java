@@ -25,7 +25,7 @@ import java.io.ByteArrayInputStream;
  * @version 1.0
  * @since 19-07-2025
  */
-public class Cancion {
+public class Cancion implements ComponentePlaylist{
 
     /** Objeto en memoria que representa una canción manipulada actualmente */
     private CancionDTO cancion;
@@ -206,4 +206,26 @@ public class Cancion {
             return 0;
         }
     }
+
+    @Override
+    public void mostrarInformacion() {
+        if (cancion != null) {
+            System.out.println("Canción: " + cancion.getTitulo());
+            System.out.println("Duración: " + cancion.getDuracion() + " segundos");
+            System.out.println("Año: " + cancion.getAnio());
+            System.out.println("Géneros: " + cancion.getGeneros());
+            System.out.println("Artistas: " + cancion.getArtistas());
+        }
+    }
+
+    @Override
+    public double obtenerDuracion() {
+        return cancion != null ? cancion.getDuracion() : 0.0;
+    }
+
+    @Override
+    public String getTitulo() {
+        return cancion != null ? cancion.getTitulo() : "";
+    }
+    
 }

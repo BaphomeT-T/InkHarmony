@@ -109,7 +109,7 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
                 String titulo = rs.getString("titulo");
                 double duracion = rs.getDouble("duracion");
                 int anio = rs.getInt("anio");
-                LocalDateTime fechaRegistro = LocalDateTime.parse(rs.getString("fecha_registro"));
+                LocalDateTime fechaRegistro = LocalDateTime.parse(rs.getString("fecha_registro").replace(" ", "T"));
                 byte[] archivoMP3 = rs.getBytes("archivo_mp3");
                 byte[] portada = rs.getBytes("portada");
 
@@ -189,7 +189,7 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
                 String titulo = rs.getString("titulo");
                 double duracion = rs.getDouble("duracion");
                 int anio = rs.getInt("anio");
-                LocalDateTime fechaRegistro = LocalDateTime.parse(rs.getString("fecha_registro"));
+                LocalDateTime fechaRegistro = LocalDateTime.parse(rs.getString("fecha_registro").replace(" ", "T"));
                 byte[] archivoMP3 = rs.getBytes("archivo_mp3");
                 byte[] portada = rs.getBytes("portada");
 
@@ -370,6 +370,27 @@ public class CancionDAO extends SQLiteDataHelper implements IDAO<CancionDTO> {
             lista.add(Genero.valueOf(nombre));
         }
         return lista;
+    }
+
+
+        public boolean existeCancionConTitulo(String titulo) {
+        String sql = "SELECT COUNT(*) FROM Cancion WHERE Titulo = ? AND Estado = 'A'";
+
+        try {
+            Connection conn = openConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, titulo);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            return false;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }
