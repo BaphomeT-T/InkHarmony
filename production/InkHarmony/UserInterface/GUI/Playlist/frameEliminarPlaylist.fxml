@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="797.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.Playlist.EliminarPlaylistController">
+    <children>
+        <!-- Header con botones -->
+        <HBox alignment="CENTER_LEFT" layoutY="0.0" prefHeight="80.0" prefWidth="1280.0" style="-fx-padding: 20;">
+            <children>
+                <!-- Icono regresar en la esquina izquierda -->
+                <ImageView fx:id="imgRegresar" fitHeight="44.0" fitWidth="56.0" onMouseClicked="#handleRegresarImagen" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
+                    <image>
+                        <Image url="@../../Resources/img/CatalogoPlaylist/regresar.png" />
+                    </image>
+                </ImageView>
+
+                <!-- Spacer para empujar el botón cerrar a la derecha -->
+                <Region HBox.hgrow="ALWAYS" />
+
+                <!-- Botón cerrar -->
+                <Button fx:id="btnCerrar" mnemonicParsing="false" onAction="#handleCerrar" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" />
+            </children>
+        </HBox>
+
+        <!-- Contenido principal -->
+        <VBox alignment="CENTER" layoutX="50.0" layoutY="100.0" prefWidth="1180.0" spacing="25.0">
+            <children>
+                <!-- Título principal centrado -->
+                <Label text="ELIMINAR PLAYLIST" textFill="WHITE">
+                    <font>
+                        <Font size="48.0" />
+                    </font>
+                </Label>
+
+                <!-- Mensaje de advertencia -->
+                <Label text="⚠️ Los siguientes datos de la playlist serán eliminados permanentemente" textFill="#FF6B6B" wrapText="true">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+
+                <!-- Panel principal con fondo morado -->
+                <HBox alignment="CENTER" maxWidth="900.0" prefHeight="400.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 25; -fx-padding: 40;">
+                    <children>
+                        <!-- Sección izquierda - Datos de la playlist -->
+                        <VBox prefWidth="400.0" spacing="15.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <!-- Título de la playlist -->
+                                <Label text="Título de la playlist" textFill="#AFAFC7">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+
+                                <TextField fx:id="txtTitulo" editable="false" prefHeight="40.0" style="-fx-background-color: #7A7A9D; -fx-background-radius: 15; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 0 15 0 15; -fx-opacity: 0.8;">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </TextField>
+
+                                <!-- Descripción de la playlist -->
+                                <Label text="Descripción de la playlist" textFill="#AFAFC7">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+
+                                <TextArea fx:id="txtDescripcion" editable="false" prefHeight="100.0" style="-fx-background-color: #7A7A9D; -fx-background-radius: 15; -fx-text-fill: white; -fx-padding: 15; -fx-control-inner-background: #7A7A9D; -fx-opacity: 0.8;" wrapText="true">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </TextArea>
+
+                                <!-- Mensaje informativo -->
+                                <Label text="📝 Estos datos son de solo lectura" textFill="#9190C2" wrapText="true">
+                                    <font>
+                                        <Font size="12.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+
+                        <!-- Espaciador entre secciones -->
+                        <Region prefWidth="50.0" />
+
+                        <!-- Sección derecha - Portada de la playlist -->
+                        <VBox alignment="CENTER" prefHeight="300.0" prefWidth="229.0" spacing="15.0">
+                            <children>
+                                <Label text="Portada de la Playlist" textFill="#AFAFC7">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+
+                                <!-- Contenedor de imagen (sin interactividad) -->
+                                <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #7A7A9D; -fx-background-radius: 15; -fx-opacity: 0.8;">
+                                    <children>
+                                        <!-- ImageView que llena todo el contenedor - Sin imagen por defecto en FXML -->
+                                        <ImageView fx:id="imgPortada" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="false" smooth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    </children>
+                                </AnchorPane>
+
+                                <!-- Mensaje informativo -->
+                                <Label text="🖼️ Imagen actual de la playlist" textFill="#9190C2" wrapText="true">
+                                    <font>
+                                        <Font size="12.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+
+                <!-- Botón Eliminar Playlist centrado con estilo de advertencia -->
+                <Button fx:id="btnEliminar" mnemonicParsing="false" onAction="#handleEliminarPlaylist" prefHeight="45.0" prefWidth="200.0" style="-fx-background-color: #FF4444; -fx-background-radius: 20; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" text="🗑️ Eliminar Playlist" />
+
+                <!-- Texto de advertencia final -->
+                <Label maxWidth="600.0" text="Esta acción no se puede deshacer. La playlist y todas sus canciones asociadas serán eliminadas permanentemente." textAlignment="CENTER" textFill="#afafc7" wrapText="true">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

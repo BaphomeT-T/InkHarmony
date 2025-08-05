@@ -1,59 +1,50 @@
-/*
 package BusinessLogic;
 
-import java.util.*;
+import DataAccessComponent.DTO.PlaylistDTO;
 
+/**
+ * Servicio para validar datos de playlists.
+ */
 public class ServicioValidacionPlaylist {
 
-    public boolean validarDatosCompletos(Playlist playlist) {
+    /**
+     * Valida que los datos de la playlist estén completos.
+     */
+    public boolean validarDatosCompletos(PlaylistDTO playlist) {
         if (playlist == null) return false;
 
-        return validarTitulo(playlist.getTitulo()) &&
+        return validarTitulo(playlist.getTituloPlaylist()) &&
                 validarDescripcion(playlist.getDescripcion()) &&
-                playlist.getPropietario() != null;
+                playlist.getIdPropietario() > 0;
     }
 
-    public boolean tieneDuplicados(Playlist playlist) {
-        if (playlist == null || playlist.getComponentes().isEmpty()) {
+    /**
+     * Valida el título de la playlist.
+     */
+    public boolean validarTitulo(String titulo) {
+        return titulo != null &&
+                !titulo.trim().isEmpty() &&
+                titulo.length() <= 100 &&
+                titulo.length() >= 1;
+    }
+
+    /**
+     * Valida la descripción de la playlist.
+     */
+    public boolean validarDescripcion(String descripcion) {
+        // La descripción puede estar vacía, pero si existe debe tener longitud válida
+        return descripcion == null || descripcion.length() <= 500;
+    }
+
+    /**
+     * Verifica si una playlist tiene canciones duplicadas.
+     */
+    public boolean tieneDuplicados(PlaylistDTO playlist) {
+        if (playlist == null || playlist.getCancionesIds() == null) {
             return false;
         }
 
-        Set<String> cancionesVistas = new HashSet<>();
-        return verificarDuplicadosRecursivo(playlist.getComponentes(), cancionesVistas);
+        return playlist.getCancionesIds().size() !=
+                playlist.getCancionesIds().stream().distinct().count();
     }
-
-    private boolean verificarDuplicadosRecursivo(List<ComponentePlaylist> componentes,
-                                                 Set<String> cancionesVistas) {
-        for (ComponentePlaylist componente : componentes) {
-            if (componente instanceof Cancion) {
-                Cancion cancion = (Cancion) componente;
-                String idCancion = String.valueOf(cancion.getCancion().getIdCancion());
-
-                if (cancionesVistas.contains(idCancion)) {
-                    return true; // Duplicado encontrado
-                }
-                cancionesVistas.add(idCancion);
-
-            } else if (componente instanceof Playlist) {
-                Playlist subPlaylist = (Playlist) componente;
-                if (verificarDuplicadosRecursivo(subPlaylist.getComponentes(), cancionesVistas)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean validarDescripcion(String descripcion) {
-        return descripcion != null &&
-                descripcion.trim().length() >= 5 &&
-                descripcion.trim().length() <= 500;
-    }
-
-    public boolean validarTitulo(String titulo) {
-        return titulo != null &&
-                titulo.trim().length() >= 2 &&
-                titulo.trim().length() <= 100 &&
-                !titulo.trim().isEmpty();
-    }
-}*/
+}

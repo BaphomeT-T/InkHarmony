@@ -17,10 +17,12 @@ public class Login extends Application {
         Scene scene = new Scene(root);
         primaryStage.setTitle("Inicio de sesión");
         primaryStage.setScene(scene);
-
+        primaryStage.setResizable(false);
+        primaryStage.setHeight(800);
+        primaryStage.setWidth(800);
         // Establecer tamaño mínimo (para que no se pueda achicar más)
         primaryStage.setMinWidth(1280);
-        primaryStage.setMinHeight(680);
+        primaryStage.setMinHeight(580);
 
         primaryStage.show();
     }

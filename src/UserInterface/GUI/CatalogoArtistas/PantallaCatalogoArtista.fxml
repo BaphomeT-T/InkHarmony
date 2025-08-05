@@ -13,21 +13,22 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="797.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" stylesheets="@catalogoArtistas.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.CatalogoArtistas.CatalogoArtistasController">
    <children>
-      <AnchorPane layoutY="-13.0" prefHeight="168.0" prefWidth="1280.0" style="-fx-background-color: #08072C;">
+      <AnchorPane layoutX="-2.0" prefHeight="168.0" prefWidth="1280.0" style="-fx-background-color: #08072C;">
          <children>
-            <Label layoutX="56.0" layoutY="81.0" maxHeight="63.0" maxWidth="407.0" prefHeight="118.0" prefWidth="364.0" text="ARTISTA" textFill="WHITE">
+            <Label layoutX="54.0" layoutY="100.0" maxHeight="63.0" maxWidth="407.0" prefHeight="118.0" prefWidth="364.0" text="ARTISTA" textFill="WHITE">
                <font>
                   <Font size="80.0" />
                </font>
             </Label>
-            <Button fx:id="cerrarButton" layoutX="-10.0" layoutY="14.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="47.0" prefWidth="83.0" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-weight: normal;" text="X" textFill="WHITE">
-               <font>
-                  <Font size="40.0" />
-               </font>
-            </Button>
+            <Button fx:id="cerrarButton" layoutX="14.0" layoutY="43.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="46.0" prefWidth="80.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;" />
+            <ImageView fitHeight="34.0" fitWidth="46.0" layoutX="31.0" layoutY="49.0">
+               <image>
+                  <Image url="@../../Resources/img/regreso.png" />
+               </image>
+            </ImageView>
          </children>
       </AnchorPane>
-      <Button fx:id="btnSubir" layoutX="56.0" layoutY="200.0" mnemonicParsing="false" onAction="#handlePantallaSubirArtista" prefHeight="45.0" prefWidth="54.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+      <Button fx:id="btnSubir" layoutX="74.0" layoutY="205.0" mnemonicParsing="false" onAction="#handlePantallaSubirArtista" prefHeight="34.0" prefWidth="34.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
          <graphic>
             <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -58,5 +59,6 @@
             <TableColumn fx:id="colAcciones" prefWidth="166.209228515625" />
         </columns>
       </TableView>
+      <Label layoutX="62.0" layoutY="239.0" text="Subir artista" textFill="WHITE" />
    </children>
 </AnchorPane>

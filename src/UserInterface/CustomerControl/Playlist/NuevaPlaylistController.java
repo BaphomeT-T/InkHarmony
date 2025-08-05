@@ -1,139 +1,296 @@
-/*
 package UserInterface.CustomerControl.Playlist;
-
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.Alert;
+import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
+import javafx.application.Platform;
 import BusinessLogic.Playlist;
-import BusinessLogic.PlaylistDAO;
-import BusinessLogic.ServicioValidacionPlaylist;
-import java.awt.image.BufferedImage;
+import java.net.URL;
+import java.util.ResourceBundle;
+import java.util.ArrayList;
+import javafx.stage.FileChooser;
+import javafx.scene.image.Image;
 import java.io.File;
-import javax.imageio.ImageIO;
-import javax.swing.text.html.ImageView;
 
-public class NuevaPlaylistController {
+public class NuevaPlaylistController implements Initializable {
+
+    // Constantes
+    private static final String RUTA_IMAGEN_DEFAULT = "/UserInterface/Resources/img/CatalogoPlaylist/camara.png";
+    private static final String DESCRIPCION_DEFAULT = "Sin descripción";
+    private static final int PROPIETARIO_ID_DEFAULT = 1;
+    private static final String COLOR_BOTON_ACTIVO = "-fx-background-color: #9190C2; -fx-background-radius: 20; -fx-text-fill: black; -fx-font-size: 16px; -fx-font-weight: bold;";
+    private static final String COLOR_BOTON_INACTIVO = "-fx-background-color: #6B6B6B; -fx-background-radius: 20; -fx-text-fill: #999999; -fx-font-size: 16px; -fx-font-weight: bold;";
+    private static final String[] EXTENSIONES_IMAGEN = {"*.jpg", "*.jpeg", "*.png", "*.gif"};
+
+    // Campos FXML
     @FXML private TextField txtTitulo;
-    @FXML private TextField txtDescripcion;
-    @FXML private ComboBox<String> comboTipo;
+    @FXML private TextArea txtDescripcion;
     @FXML private ImageView imgPortada;
-    @FXML private Button btnSeleccionarImagen;
     @FXML private Button btnCrear;
+    @FXML private Button btnCerrar;
+    @FXML private Button btnRegresar;
+    @FXML private Button btnGuardarPlaylist;
+    @FXML private Button btnSeleccionarPortada;
+    @FXML private ImageView imgRegresar;
 
+    // Variables de instancia
     private File imagenSeleccionada;
-    private ServicioValidacionPlaylist validador = new ServicioValidacionPlaylist();
-    private PlaylistDAO playlistDAO = new PlaylistDAO();
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        configurarEventos();
+        cargarImagenPorDefecto();
+    }
+
+    private void configurarEventos() {
+        configurarEventoSeleccionImagen();
+        configurarValidacionTitulo();
+    }
+
+    private void configurarEventoSeleccionImagen() {
+        imgPortada.setOnMouseClicked(event -> handleSeleccionarPortada());
+    }
+
+    private void configurarValidacionTitulo() {
+        txtTitulo.textProperty().addListener((observable, oldValue, newValue) -> validarCampos());
+    }
+
+    private void validarCampos() {
+        boolean esTituloValido = esTituloValido();
+        actualizarEstadoBotonGuardar(esTituloValido);
+    }
+
+    private boolean esTituloValido() {
+        return txtTitulo != null && !txtTitulo.getText().trim().isEmpty();
+    }
+
+    private void actualizarEstadoBotonGuardar(boolean habilitado) {
+        if (btnGuardarPlaylist == null) return;
+
+        btnGuardarPlaylist.setDisable(!habilitado);
+        String estilo = habilitado ? COLOR_BOTON_ACTIVO : COLOR_BOTON_INACTIVO;
+        btnGuardarPlaylist.setStyle(estilo);
+    }
 
     @FXML
-    public void initialize() {
-        comboTipo.getItems().addAll("Pública", "Privada");
-        comboTipo.setValue("Pública"); // Valor por defecto
-        
-        btnSeleccionarImagen.setOnAction(e -> seleccionarImagen());
-        btnCrear.setOnAction(e -> crearPlaylist());
-        
-        // Configurar validación en tiempo real
-        txtTitulo.textProperty().addListener((observable, oldValue, newValue) -> validarCampo());
-        txtDescripcion.textProperty().addListener((observable, oldValue, newValue) -> validarCampo());
+    private void handleCerrar() {
+        cerrarVentana(btnCerrar);
     }
 
-    private void seleccionarImagen() {
+    @FXML
+    private void handleRegresar() {
+        cerrarVentana(imgRegresar);
+    }
+
+    @FXML
+    private void handleRegresarImagen() {
+        handleRegresar();
+    }
+
+    @FXML
+    private void handleCrearPlaylist() {
+        // Lógica para crear la playlist
+    }
+
+    @FXML
+    private void handleSeleccionarPortada() {
+        FileChooser fileChooser = crearFileChooser();
+        Stage ventana = obtenerVentana(imgPortada);
+        File archivo = fileChooser.showOpenDialog(ventana);
+
+        if (archivo != null) {
+            procesarImagenSeleccionada(archivo);
+        }
+    }
+
+    @FXML
+    private void handleGuardarPlaylist() {
+        DatosPlaylist datos = obtenerDatosFormulario();
+
+        if (!validarDatosPlaylist(datos)) {
+            return;
+        }
+
+        try {
+            boolean resultado = crearPlaylist(datos);
+            procesarResultadoCreacion(resultado);
+        } catch (Exception e) {
+            manejarErrorCreacion(e);
+        }
+    }
+
+    // Métodos de utilidad
+    private void cerrarVentana(Object fuente) {
+        Stage stage = obtenerVentana(fuente);
+        if (stage != null) {
+            stage.close();
+        }
+    }
+
+    private Stage obtenerVentana(Object fuente) {
+        if (fuente instanceof Button) {
+            return (Stage) ((Button) fuente).getScene().getWindow();
+        } else if (fuente instanceof ImageView) {
+            return (Stage) ((ImageView) fuente).getScene().getWindow();
+        }
+        return null;
+    }
+
+    private FileChooser crearFileChooser() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccionar imagen de portada");
-        fileChooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg")
+
+        FileChooser.ExtensionFilter filtroImagen = new FileChooser.ExtensionFilter(
+                "Archivos de imagen (*.jpg, *.jpeg, *.png, *.gif)",
+                EXTENSIONES_IMAGEN
         );
-        
-        File file = fileChooser.showOpenDialog(btnSeleccionarImagen.getScene().getWindow());
-        if (file != null) {
-            try {
-                imagenSeleccionada = file;
-                Image image = new Image(file.toURI().toString());
-                imgPortada.setImage(image);
-            } catch (Exception e) {
-                mostrarAlerta("Error al cargar la imagen: " + e.getMessage(), Alert.AlertType.ERROR);
-            }
-        }
+        fileChooser.getExtensionFilters().add(filtroImagen);
+
+        return fileChooser;
     }
 
-    private void validarCampo() {
-        String titulo = txtTitulo.getText().trim();
-        String descripcion = txtDescripcion.getText().trim();
-        
-        boolean tituloValido = validador.validarTitulo(titulo);
-        boolean descripcionValida = validador.validarDescripcion(descripcion);
-        
-        // Cambiar color de fondo según validación
-        txtTitulo.setStyle(tituloValido ? 
-            "-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;" :
-            "-fx-background-color: #8B0000; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;");
-            
-        txtDescripcion.setStyle(descripcionValida ? 
-            "-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;" :
-            "-fx-background-color: #8B0000; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;");
-    }
-
-    private void crearPlaylist() {
-        String titulo = txtTitulo.getText().trim();
-        String descripcion = txtDescripcion.getText().trim();
-        String tipo = comboTipo.getValue();
-        
-        // Validar campos
-        if (!validador.validarTitulo(titulo)) {
-            mostrarAlerta("El título debe tener entre 2 y 100 caracteres", Alert.AlertType.WARNING);
-            txtTitulo.requestFocus();
-            return;
-        }
-        
-        if (!validador.validarDescripcion(descripcion)) {
-            mostrarAlerta("La descripción debe tener entre 5 y 500 caracteres", Alert.AlertType.WARNING);
-            txtDescripcion.requestFocus();
-            return;
-        }
-        
-        // Crear perfil de usuario temporal (en una app real esto vendría del login)
-        Perfil propietario = new Perfil("Usuario Actual", "usuario@example.com");
-        
+    private void procesarImagenSeleccionada(File archivo) {
         try {
-            // Crear la playlist
-            Playlist playlist = new Playlist(titulo, descripcion, propietario);
-            
-            // Asignar imagen si se seleccionó una
-            if (imagenSeleccionada != null) {
-                BufferedImage bufferedImage = ImageIO.read(imagenSeleccionada);
-                playlist.setImagenPortada(bufferedImage);
-            }
-            
-            // Registrar en la base de datos
-            playlistDAO.registrarPlaylist(playlist);
-            
-            mostrarAlerta("¡Playlist creada exitosamente!", Alert.AlertType.INFORMATION);
-            
-            // Limpiar campos y cerrar ventana
-            limpiarCampos();
-            cerrarVentana();
-            
+            Image nuevaImagen = new Image(archivo.toURI().toString());
+            imgPortada.setImage(nuevaImagen);
+            imagenSeleccionada = archivo;
+            System.out.println("Nueva imagen de portada seleccionada: " + archivo.getName());
         } catch (Exception e) {
-            mostrarAlerta("Error al crear la playlist: " + e.getMessage(), Alert.AlertType.ERROR);
-            e.printStackTrace();
+            manejarErrorImagen(e);
         }
+    }
+
+    private void manejarErrorImagen(Exception e) {
+        System.out.println("Error al cargar la imagen: " + e.getMessage());
+        mostrarAlerta("Error", "No se pudo cargar la imagen seleccionada.");
+    }
+
+    private void cargarImagenPorDefecto() {
+        try {
+            Image iconoCamara = new Image(getClass().getResourceAsStream(RUTA_IMAGEN_DEFAULT));
+            imgPortada.setImage(iconoCamara);
+        } catch (Exception e) {
+            System.out.println("No se pudo cargar el ícono de cámara por defecto");
+            imgPortada.setImage(null);
+        }
+    }
+
+    private DatosPlaylist obtenerDatosFormulario() {
+        return new DatosPlaylist(
+                txtTitulo.getText().trim(),
+                txtDescripcion.getText().trim(),
+                imagenSeleccionada
+        );
+    }
+
+    private boolean validarDatosPlaylist(DatosPlaylist datos) {
+        if (datos.getTitulo().isEmpty()) {
+            mostrarAlerta("Error", "Por favor, ingresa un título para la playlist");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean crearPlaylist(DatosPlaylist datos) throws Exception {
+        Playlist playlistLogic = new Playlist();
+        byte[] imagenBytes = convertirImagenABytes(datos.getImagenArchivo());
+
+        return playlistLogic.registrar(
+                datos.getTitulo(),
+                datos.getDescripcionODefault(),
+                PROPIETARIO_ID_DEFAULT,
+                imagenBytes,
+                new ArrayList<>()
+        );
+    }
+
+    private byte[] convertirImagenABytes(File archivo) {
+        if (archivo == null) {
+            return null;
+        }
+
+        try {
+            byte[] bytes = java.nio.file.Files.readAllBytes(archivo.toPath());
+            System.out.println("Imagen convertida a bytes: " + bytes.length + " bytes");
+            return bytes;
+        } catch (Exception e) {
+            System.out.println("Error al convertir imagen a bytes: " + e.getMessage());
+            mostrarAlerta("Advertencia",
+                    "Se creará la playlist sin imagen debido a un error al procesar la imagen seleccionada.");
+            return null;
+        }
+    }
+
+    private void procesarResultadoCreacion(boolean exito) {
+        if (exito) {
+            mostrarMensajeExito();
+            Platform.runLater(this::handleRegresar);
+        } else {
+            mostrarAlerta("Error", "No se pudo crear la playlist");
+        }
+    }
+
+    private void mostrarMensajeExito() {
+        String mensaje = "Playlist creada correctamente";
+        if (imagenSeleccionada != null) {
+            mensaje += " con imagen de portada";
+        }
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Éxito");
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
+    private void manejarErrorCreacion(Exception e) {
+        mostrarAlerta("Error", "Error al crear playlist: " + e.getMessage());
+        e.printStackTrace();
+    }
+
+    private void mostrarAlerta(String titulo, String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }
 
     private void limpiarCampos() {
         txtTitulo.clear();
         txtDescripcion.clear();
-        comboTipo.setValue("Pública");
-        imgPortada.setImage(new Image("/UserInterface/Resources/img/CatalogoCanciones/camara.png"));
-        imagenSeleccionada = null;
     }
 
-    private void cerrarVentana() {
-        Stage stage = (Stage) btnCrear.getScene().getWindow();
-        stage.close();
-    }
+    // Clase interna para encapsular datos de playlist
+    private static class DatosPlaylist {
+        private final String titulo;
+        private final String descripcion;
+        private final File imagenArchivo;
 
-    private void mostrarAlerta(String mensaje, Alert.AlertType tipo) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle("Nueva Playlist");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        public DatosPlaylist(String titulo, String descripcion, File imagenArchivo) {
+            this.titulo = titulo;
+            this.descripcion = descripcion;
+            this.imagenArchivo = imagenArchivo;
+        }
+
+        public String getTitulo() {
+            return titulo;
+        }
+
+        public String getDescripcion() {
+            return descripcion;
+        }
+
+        public String getDescripcionODefault() {
+            return descripcion.isEmpty() ? DESCRIPCION_DEFAULT : descripcion;
+        }
+
+        public File getImagenArchivo() {
+            return imagenArchivo;
+        }
     }
-} */
+}

@@ -1,0 +1,91 @@
+/* Estilos para la tabla de agregar canciones */
+.table-view {
+    -fx-background-color: #1B1A55;
+    -fx-control-inner-background: #1B1A55;
+    -fx-selection-bar: #4CAF50;
+    -fx-selection-bar-non-focused: #4CAF50;
+    -fx-table-cell-border-color: #5A5A80;
+    -fx-background-radius: 20;
+    -fx-border-color: #5A5A80;
+    -fx-border-width: 2;
+    -fx-border-radius: 20;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #201D4E;
+}
+
+.table-view .column-header {
+    -fx-background-color: #201D4E;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-border-color: #5A5A80;
+    -fx-border-width: 0 1 1 0;
+}
+
+.table-view .table-cell {
+    -fx-background-color: #1B1A55;
+    -fx-text-fill: white;
+    -fx-border-color: #5A5A80;
+    -fx-border-width: 0 1 1 0;
+    -fx-font-size: 13px;
+    -fx-padding: 8px;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: #1B1A55;
+    -fx-text-fill: white;
+    -fx-border-color: #5A5A80;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.table-view .table-row-cell:selected .table-cell {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: #5A5A80;
+    -fx-text-fill: white;
+}
+
+.table-view .table-row-cell:hover .table-cell {
+    -fx-background-color: #5A5A80;
+    -fx-text-fill: white;
+}
+
+.table-view .placeholder {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+}
+
+/* Estilo para checkboxes */
+.check-box {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.check-box .box {
+    -fx-background-color: #1B1A55;
+    -fx-border-color: white;
+    -fx-border-width: 2;
+    -fx-border-radius: 3;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #4CAF50;
+    -fx-border-color: #4CAF50;
+}
+
+.check-box .mark {
+    -fx-background-color: white;
+    -fx-shape: "M2,6L6,10L14,2L12,0L6,6L4,4Z";
+}

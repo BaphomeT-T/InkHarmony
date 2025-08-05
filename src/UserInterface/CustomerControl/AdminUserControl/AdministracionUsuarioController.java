@@ -53,7 +53,7 @@ public class AdministracionUsuarioController {
     private Button btnDesactivarCuenta;
 
     @FXML
-    private Label cerrarButton;
+    private Button cerrarButton;
 
     @FXML
     private Button btnEliminarCuenta;

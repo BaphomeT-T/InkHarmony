@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="416.0" prefWidth="714.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.CatalogoArtistas.EliminarArtistasController">
+    <children>
+        <AnchorPane layoutX="54.4" layoutY="64.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="288.0" prefWidth="601.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 25;" AnchorPane.leftAnchor="54.0" AnchorPane.rightAnchor="59.0">
+            <children>
+                <StackPane layoutX="33.0" layoutY="269.0" prefWidth="428.0" style="-fx-background-radius: 20; -fx-border-radius: 20;" />
+                <Label layoutX="51.0" layoutY="14.0" prefHeight="51.0" prefWidth="497.0" text="¿Seguro de que quieres eliminar este artista?" textFill="WHITE">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+                <Label layoutX="203.0" layoutY="110.0" prefHeight="15.0" prefWidth="374.0" textFill="WHITE">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+                <ImageView  fx:id="imagenArtistaImageView" fitHeight="89.0" fitWidth="98.0" layoutX="76.0" layoutY="83.0" pickOnBounds="true" preserveRatio="true" />
+            </children>
+        </AnchorPane>
+
+        <Label fx:id="confirmarEliminación" layoutX="34.0" layoutY="14.0" prefHeight="57.0" prefWidth="412.0" text="Confirmar eliminación" textFill="WHITE">
+            <font>
+                <Font size="38.0" />
+            </font>
+        </Label>
+        <Label fx:id="nombreArtistaLabel" layoutX="290.0" layoutY="140.0" textFill="WHITE">
+            <font>
+                <Font size="20.0" />
+            </font>
+        </Label>
+
+        <Button fx:id="registrarButton" layoutX="129.0" layoutY="361.0" mnemonicParsing="false" onAction="#cancelar" prefHeight="32.0" prefWidth="162.0" style="-fx-background-color: #9190C2; -fx-background-radius: 10;" text="Cancelar">
+            <font>
+                <Font name="System Bold" size="19.0" />
+            </font>
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+        </Button>
+        <Button fx:id="registrarButton1" layoutX="416.0" layoutY="361.0" mnemonicParsing="false" onAction="#confirmarEliminacion" prefHeight="32.0" prefWidth="162.0" style="-fx-background-color: #9190C2; -fx-background-radius: 10;" text="Confirmar">
+            <font>
+                <Font name="System Bold" size="19.0" />
+            </font>
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+        </Button>
+    </children>
+</AnchorPane>

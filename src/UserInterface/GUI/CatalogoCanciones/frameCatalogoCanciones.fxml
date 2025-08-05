@@ -11,28 +11,45 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.CatalogoCanciones.CatalogoCancionesController">
+<!--
+    Archivo FXML que define la vista del catálogo de canciones del sistema InkHarmony.
+    Descripción: Interfaz gráfica que permite visualizar, buscar y administrar canciones.
+    Controlador asociado: CatalogoCancionesController
 
+    @author Grupo A
+    @version 1.0
+    @since 19-07-2025
+-->
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.CatalogoCanciones.CatalogoCancionesController">
     <children>
 
-        <!-- HEADER -->
+        <!--
+            Encabezado superior con título y botón de cierre
+        -->
         <AnchorPane layoutY="-13.0" prefHeight="168.0" prefWidth="1280.0" style="-fx-background-color: #08072C;">
             <children>
-                <Label layoutX="54.0" layoutY="43.0" maxHeight="118.0" maxWidth="452.0" prefHeight="97.0" prefWidth="448.0" text="CANCIONES" textFill="WHITE">
+
+                <!-- Título principal -->
+                <Label layoutX="76.0" layoutY="68.0" maxHeight="118.0" maxWidth="452.0" prefHeight="97.0" prefWidth="448.0" text="CANCIONES" textFill="WHITE">
                     <font>
                         <Font size="80.0" />
                     </font>
                 </Label>
-                <Button fx:id="cerrarButton" layoutX="-10.0" layoutY="14.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="47.0" prefWidth="83.0" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-weight: normal;" text="X" textFill="WHITE">
-                    <font>
-                        <Font size="40.0" />
-                    </font>
-                </Button>
+            <Button fx:id="cerrarButton" layoutX="22.0" layoutY="33.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="46.0" prefWidth="80.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;" />
+            <ImageView fitHeight="34.0" fitWidth="46.0" layoutX="39.0" layoutY="39.0">
+               <image>
+                  <Image url="@../../Resources/img/regreso.png" />
+               </image>
+            </ImageView>
             </children>
         </AnchorPane>
 
-        <!-- BOTÓN SUBIR -->
-        <Button fx:id="btnSubir" layoutX="56.0" layoutY="155.0" mnemonicParsing="false" onAction="#handlePantallaSubirCancion" prefHeight="55.0" prefWidth="57.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+
+        <!--
+            Botón flotante para abrir la pantalla de subida de canciones
+        -->
+        <Button fx:id="btnSubir" layoutX="96.0" layoutY="159.0" mnemonicParsing="false" onAction="#handlePantallaSubirCancion" prefHeight="46.0" prefWidth="46.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
             <graphic>
                 <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                     <image>
@@ -42,14 +59,20 @@
             </graphic>
         </Button>
 
-        <!-- BARRA DE BÚSQUEDA -->
-        <HBox layoutX="136.0" layoutY="166.0" prefHeight="33.0" prefWidth="262.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
+        <!--
+            Barra de búsqueda para filtrar canciones por título u otro criterio
+        -->
+        <HBox layoutX="158.0" layoutY="166.0" prefHeight="33.0" prefWidth="262.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;">
             <children>
+
+                <!-- Campo de texto para ingresar búsqueda -->
                 <TextField fx:id="txtBuscar" alignment="BASELINE_CENTER" promptText="Busca una canción por..." style="-fx-background-radius: 20; -fx-background-color: #9190C2;">
                     <font>
                         <Font size="14.0" />
                     </font>
                 </TextField>
+
+                <!-- Ícono de lupa decorativo -->
                 <ImageView fitHeight="34.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true" translateX="45.0" translateY="1.0" translateZ="5.0">
                     <image>
                         <Image url="@../../Resources/img/CatalogoCanciones/Lupa.png" />
@@ -58,17 +81,33 @@
             </children>
         </HBox>
 
-        <!-- TABLA DE CANCIONES -->
+        <!--
+            Tabla principal donde se muestran las canciones disponibles
+        -->
         <TableView fx:id="tableCanciones" layoutX="50.0" layoutY="222.0" prefHeight="489.0" prefWidth="1176.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 20;" stylesheets="@catologoCanciones.css">
             <columns>
+
+                <!-- Columna con título e imagen de la canción -->
                 <TableColumn fx:id="colTituloConImagen" prefWidth="372.0" text="Título" />
+
+                <!-- Columna de artistas -->
                 <TableColumn fx:id="colArtista" prefWidth="184.0" text="Artista" />
+
+                <!-- Columna de géneros -->
                 <TableColumn fx:id="colGenero" prefWidth="184.0" text="Género(s)" />
+
+                <!-- Columna del año de la canción -->
                 <TableColumn fx:id="colAnio" prefWidth="133.0" text="Año de la canción" />
+
+                <!-- Columna de duración -->
                 <TableColumn fx:id="colDuracion" prefWidth="120.0" text="Duración" />
+
+                <!-- Columna para botones de acción (editar y eliminar) -->
                 <TableColumn fx:id="colAcciones" minWidth="0.0" prefWidth="177.0" />
+
             </columns>
         </TableView>
+      <Label layoutX="83.0" layoutY="205.0" text="Subir canción" textFill="WHITE" />
 
     </children>
 </AnchorPane>
