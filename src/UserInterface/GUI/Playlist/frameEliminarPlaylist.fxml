@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="797.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.Playlist.EliminarPlaylistController">
+<AnchorPane prefHeight="797.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.Playlist.EliminarPlaylistController">
     <children>
         <!-- Header con botones -->
         <HBox alignment="CENTER_LEFT" layoutY="0.0" prefHeight="80.0" prefWidth="1280.0" style="-fx-padding: 20;">
@@ -36,7 +36,7 @@
                 </Label>
 
                 <!-- Mensaje de advertencia -->
-                <Label text="⚠️ Los siguientes datos de la playlist serán eliminados permanentemente" textFill="#FF6B6B" wrapText="true">
+                <Label text="Esta acción no se puede deshacer. La playlist y todas sus canciones asociadas serán eliminadas permanentemente." textFill="#afafc7" wrapText="true">
                     <font>
                         <Font size="18.0" />
                     </font>
@@ -115,10 +115,10 @@
                 </HBox>
 
                 <!-- Botón Eliminar Playlist centrado con estilo de advertencia -->
-                <Button fx:id="btnEliminar" mnemonicParsing="false" onAction="#handleEliminarPlaylist" prefHeight="45.0" prefWidth="200.0" style="-fx-background-color: #FF4444; -fx-background-radius: 20; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" text="🗑️ Eliminar Playlist" />
+                <Button fx:id="btnEliminar" mnemonicParsing="false" onAction="#handleEliminarPlaylist" prefHeight="45.0" prefWidth="200.0" style="-fx-background-color: #FF4444; -fx-background-radius: 20; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" text="🗑 Eliminar Playlist" />
 
                 <!-- Texto de advertencia final -->
-                <Label maxWidth="600.0" text="Esta acción no se puede deshacer. La playlist y todas sus canciones asociadas serán eliminadas permanentemente." textAlignment="CENTER" textFill="#afafc7" wrapText="true">
+                <Label maxWidth="600.0" textAlignment="CENTER" textFill="#afafc7" wrapText="true">
                     <font>
                         <Font size="14.0" />
                     </font>

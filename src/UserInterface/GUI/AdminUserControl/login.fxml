@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="840.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.AdminUserControl.LoginController">
+   <children>
+      <AnchorPane layoutX="390.0" layoutY="202.0" prefHeight="507.0" prefWidth="500.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 25;" AnchorPane.rightAnchor="390.0">
+         <children>
+            <Label layoutX="33.0" layoutY="127.0" prefHeight="28.39" prefWidth="197.81" text="Correo electrónico" textFill="#ffffff">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="33.0" layoutY="247.0" text="Contraseña" textFill="#ffffff">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="90.0" layoutY="430.0" text="¿No tienes cuenta?" textFill="#485763">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label fx:id="registrar" layoutX="295.0" layoutY="430.0" onMouseClicked="#registrarUsuario" text="Regístrate" textFill="#9190c2">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtEmail" layoutX="33.0" layoutY="162.0" prefHeight="60.0" prefWidth="434.0" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;">
+               <font>
+                  <Font size="20.0" />
+               </font></TextField>
+            <PasswordField fx:id="txtContrasenia" layoutX="33.0" layoutY="282.0" prefHeight="60.0" prefWidth="434.0" style="-fx-background-color: #575a81; -fx-background-radius: 20; -fx-text-fill: #FFFFFF;">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </PasswordField>
+            <Button fx:id="iniciarSesion" layoutX="78.0" layoutY="362.0" mnemonicParsing="false" onAction="#iniciarSesion" prefHeight="60.0" prefWidth="345.0" style="-fx-background-color: #9190C2; -fx-background-radius: 10;" text="Iniciar Sesión">
+               <font>
+                  <Font name="System Bold" size="26.0" />
+               </font>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </Button>
+            <ImageView fitHeight="91.0" fitWidth="100.0" layoutX="205.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../Resources/img/Perfil.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <Label layoutX="430.0" layoutY="85.0" text="InkHarmony" textAlignment="CENTER" textFill="WHITE">
+         <font>
+            <Font size="80.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

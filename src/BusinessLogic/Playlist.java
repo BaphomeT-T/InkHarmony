@@ -7,7 +7,7 @@ Autores: Grupo C
 Clase de lógica de negocio para gestión de playlists.
 Implementa el patrón Composite para manejar componentes de playlist.
 */
-package BusinessLogic.ComponentePlaylist;
+package BusinessLogic;
 
 import DataAccessComponent.DAO.PlaylistDAO;
 import DataAccessComponent.DAO.CancionDAO;
@@ -188,9 +188,8 @@ public class Playlist implements ComponentePlaylist {
     public void reproducir() throws Exception {
         List<byte[]> cancionesBytes = obtenerCancionesParaReproduccion();
         if (!cancionesBytes.isEmpty()) {
-            //ReproductorMP3 reproductor = ReproductorMP3.getInstancia(cancionesBytes);
-            //reproductor.reproducir();
-            System.out.println("Reproduciendo playlist (funcionalidad pendiente)");
+            // ReproductorMP3 reproductor = ReproductorMP3.getInstancia(cancionesBytes);
+            // reproductor.reproducir();
         } else {
             throw new Exception("La playlist está vacía o no tiene archivos de audio");
         }
@@ -215,7 +214,7 @@ public class Playlist implements ComponentePlaylist {
             if (playlistDTO != null) {
                 List<CancionDTO> canciones = playlistDAO.obtenerCancionesCompletasDePlaylist(playlistDTO.getIdPlaylist());
                 for (CancionDTO cancion : canciones) {
-                     duracionTotal += cancion.getDuracion();
+                    duracionTotal += cancion.getDuracion();
                 }
             }
         } catch (Exception e) {
@@ -267,11 +266,55 @@ public class Playlist implements ComponentePlaylist {
             for (Integer idCancion : playlistDTO.getCancionesIds()) {
                 CancionDTO cancionDTO = cancionDAO.buscarPorId(idCancion);
                 if (cancionDTO != null) {
-                    Cancion cancion = new Cancion();
-                    // Aquí se puede cargar la canción completa si es necesario
-                    componentes.add(cancion);
+                    // Crear un componente adaptador que encapsula el CancionDTO
+                    CancionComponente cancionComponente = new CancionComponente(cancionDTO);
+                    componentes.add(cancionComponente);
                 }
             }
+        }
+    }
+
+    /**
+     * Clase interna que actúa como adaptador para CancionDTO.
+     * Permite que los objetos CancionDTO se comporten como ComponentePlaylist.
+     */
+    private static class CancionComponente implements ComponentePlaylist {
+        private final CancionDTO cancionDTO;
+
+        public CancionComponente(CancionDTO cancionDTO) {
+            this.cancionDTO = cancionDTO;
+        }
+
+        @Override
+        public void mostrarInformacion() {
+            if (cancionDTO != null) {
+                System.out.println("Canción: " + cancionDTO.getTitulo());
+                System.out.println("Duración: " + cancionDTO.getDuracion() + " segundos");
+                if (cancionDTO.getArtistas() != null && !cancionDTO.getArtistas().isEmpty()) {
+                    System.out.println("Artista(s): " + 
+                        cancionDTO.getArtistas().stream()
+                            .map(artista -> artista.getNombre())
+                            .reduce((a, b) -> a + ", " + b)
+                            .orElse("Sin artistas"));
+                }
+            }
+        }
+
+        @Override
+        public double obtenerDuracion() {
+            return cancionDTO != null ? cancionDTO.getDuracion() : 0.0;
+        }
+
+        @Override
+        public String getTitulo() {
+            return cancionDTO != null ? cancionDTO.getTitulo() : "";
+        }
+
+        /**
+         * Getter para acceder al CancionDTO encapsulado.
+         */
+        public CancionDTO getCancionDTO() {
+            return cancionDTO;
         }
     }
 

@@ -28,8 +28,8 @@
                   <Button fx:id="btnBuscar" onAction="#handleBuscar" style="-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-background-radius: 20px; -fx-min-width: 35px; -fx-min-height: 35px;" text="🔍" />
                   <Pane HBox.hgrow="ALWAYS">
                      <children>
-                        <Circle fill="#AFAFC7" layoutX="811.0" layoutY="33.0" radius="28" />
-                        <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="795.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+                        <Circle fill="#AFAFC7" layoutX="722.0" layoutY="33.0" radius="28" />
+                        <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="706.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <javafx.scene.image.Image url="@../../Resources/img/CatalogoPlaylist/simbolo-aplicacion.png" />
                            </image>

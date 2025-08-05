@@ -17,6 +17,7 @@ import DataAccessComponent.DTO.PlaylistDTO;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.io.ByteArrayInputStream;
+import java.util.Optional;
 
 /**
  * Controlador para la interfaz de eliminar playlists.
@@ -28,256 +29,419 @@ import java.io.ByteArrayInputStream;
  */
 public class EliminarPlaylistController implements Initializable {
 
-    @FXML
-    private TextField txtTitulo;
+    // Constantes de configuración
+    private static final String ESTILO_CAMPO_LECTURA = "-fx-background-color: #7A7A9D; -fx-background-radius: 15; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 0 15 0 15; -fx-opacity: 0.8;";
+    private static final String ESTILO_TEXTAREA_LECTURA = "-fx-background-color: #7A7A9D; -fx-background-radius: 15; -fx-text-fill: white; -fx-padding: 15; -fx-control-inner-background: #7A7A9D; -fx-opacity: 0.8;";
+    private static final String ESTILO_DIALOGO = "-fx-background-color: #1B1A55;";
+    private static final String RUTA_IMAGEN_SIMBOLO = "/UserInterface/Resources/img/CatalogoPlaylist/simbolo-aplicacion.png";
+    private static final String RUTA_IMAGEN_DEFAULT = "/UserInterface/Resources/img/CatalogoPlaylist/playlist-default.png";
 
-    @FXML
-    private TextArea txtDescripcion;
+    // Constantes de diseño
+    private static final String COLOR_FONDO_PLAYLIST = "#1B1A55";
+    private static final String COLOR_FONDO_DEGRADADO = "#201D4E";
+    private static final String COLOR_TEXTO_ICONO = "#AFAFC7";
+    private static final int CANVAS_DIMENSIONS = 300;
+    private static final int FONT_SIZE_ICONO = 40;
+    private static final int FONT_SIZE_TEXTO = 16;
 
-    @FXML
-    private ImageView imgPortada;
+    // Componentes FXML
+    @FXML private TextField txtTitulo;
+    @FXML private TextArea txtDescripcion;
+    @FXML private ImageView imgPortada;
+    @FXML private Button btnEliminar;
+    @FXML private Button btnCerrar;
+    @FXML private Button btnRegresar;
+    @FXML private ImageView imgRegresar;
 
-    @FXML
-    private Button btnEliminar;
-
-    @FXML
-    private Button btnCerrar;
-
-    @FXML
-    private Button btnRegresar;
-
-    @FXML
-    private ImageView imgRegresar;
-
-    // Playlist actual a eliminar
     private PlaylistDTO playlistActual;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Configurar campos como solo lectura
-        configurarCamposLectura();
-
-        // Configurar el ImageView
-        configurarImageView();
-
-        // Establecer imagen por defecto
+        configurarInterfaz();
         establecerImagenPorDefecto();
+    }
+
+    /**
+     * Configura todos los elementos de la interfaz
+     */
+    private void configurarInterfaz() {
+        configurarCamposLectura();
+        configurarImageView();
     }
 
     /**
      * Configura los campos de texto como solo lectura
      */
     private void configurarCamposLectura() {
-        // Hacer campos no editables
         txtTitulo.setEditable(false);
         txtDescripcion.setEditable(false);
 
-        // Cambiar estilo para indicar que son solo lectura
-        txtTitulo.setStyle("-fx-background-color: #7A7A9D; -fx-background-radius: 15; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 0 15 0 15; -fx-opacity: 0.8;");
-        txtDescripcion.setStyle("-fx-background-color: #7A7A9D; -fx-background-radius: 15; -fx-text-fill: white; -fx-padding: 15; -fx-control-inner-background: #7A7A9D; -fx-opacity: 0.8;");
+        txtTitulo.setStyle(ESTILO_CAMPO_LECTURA);
+        txtDescripcion.setStyle(ESTILO_TEXTAREA_LECTURA);
 
-        // Hacer que no se puedan seleccionar con tab
         txtTitulo.setFocusTraversable(false);
         txtDescripcion.setFocusTraversable(false);
     }
 
     /**
-     * Configura el ImageView
+     * Configura el ImageView de la portada
      */
     private void configurarImageView() {
-        // Asegurar que el ImageView mantenga las proporciones adecuadas
         imgPortada.setPreserveRatio(false);
         imgPortada.setSmooth(true);
-
-        // Remover interactividad del ImageView
         imgPortada.setOnMouseClicked(null);
         imgPortada.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 2);");
     }
 
+    // Event Handlers
     @FXML
     private void handleCerrar() {
-        Stage stage = (Stage) btnCerrar.getScene().getWindow();
-        stage.close();
+        cerrarVentana();
     }
 
     @FXML
     private void handleRegresar() {
-        Stage stage = (Stage) btnRegresar.getScene().getWindow();
-        stage.close();
+        cerrarVentana();
+    }
+
+    @FXML
+    private void handleRegresarImagen() {
+        cerrarVentana();
+    }
+
+    /**
+     * Cierra la ventana actual de forma segura
+     */
+    private void cerrarVentana() {
+        try {
+            Stage stage = obtenerStageActual();
+            if (stage != null) {
+                stage.close();
+            }
+        } catch (Exception e) {
+            System.err.println("Error al cerrar ventana: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Obtiene el Stage actual de forma segura
+     */
+    private Stage obtenerStageActual() {
+        if (btnCerrar != null && btnCerrar.getScene() != null) {
+            return (Stage) btnCerrar.getScene().getWindow();
+        }
+        return null;
     }
 
     @FXML
     private void handleEliminarPlaylist() {
-        if (playlistActual == null) {
-            mostrarAlerta("Error", "No hay playlist seleccionada para eliminar.", Alert.AlertType.ERROR);
+        if (!esPlaylistValida()) {
+            mostrarError("No hay playlist seleccionada para eliminar.");
             return;
         }
 
-        // Crear alerta de confirmación personalizada
+        Optional<ButtonType> confirmacion = mostrarDialogoConfirmacion();
+        if (confirmacion.isPresent() && esConfirmacionPositiva(confirmacion.get())) {
+            procesarEliminacion();
+        }
+    }
+
+    /**
+     * Valida si hay una playlist seleccionada
+     */
+    private boolean esPlaylistValida() {
+        return playlistActual != null;
+    }
+
+    /**
+     * Muestra el diálogo de confirmación de eliminación
+     */
+    private Optional<ButtonType> mostrarDialogoConfirmacion() {
+        Alert confirmacion = crearDialogoConfirmacion();
+        return confirmacion.showAndWait();
+    }
+
+    /**
+     * Crea el diálogo de confirmación
+     */
+    private Alert crearDialogoConfirmacion() {
         Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+
+        configurarContenidoDialogo(confirmacion);
+        configurarBotonesDialogo(confirmacion);
+
+        return confirmacion;
+    }
+
+    /**
+     * Configura el contenido del diálogo de confirmación
+     */
+    private void configurarContenidoDialogo(Alert confirmacion) {
         confirmacion.setTitle("Confirmar eliminación");
         confirmacion.setHeaderText("¿Estás seguro de que quieres eliminar esta playlist?");
-        confirmacion.setContentText(
-                "Playlist: " + playlistActual.getTituloPlaylist() +
-                        "\n\nEsta acción eliminará permanentemente la playlist y todas sus canciones asociadas." +
-                        "\n\n⚠️ Esta acción no se puede deshacer.");
+        confirmacion.setContentText(construirMensajeConfirmacion());
+        confirmacion.getDialogPane().setStyle(ESTILO_DIALOGO);
+    }
 
-        // Personalizar botones
+    /**
+     * Construye el mensaje de confirmación personalizado
+     */
+    private String construirMensajeConfirmacion() {
+        return String.format(
+                "Playlist: %s\n\n" +
+                        "Esta acción eliminará permanentemente la playlist y todas sus canciones asociadas.\n\n" +
+                        "⚠️ Esta acción no se puede deshacer.",
+                playlistActual.getTituloPlaylist()
+        );
+    }
+
+    /**
+     * Configura los botones del diálogo
+     */
+    private void configurarBotonesDialogo(Alert confirmacion) {
         ButtonType btnEliminar = new ButtonType("Sí, eliminar playlist", ButtonBar.ButtonData.OK_DONE);
         ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
         confirmacion.getButtonTypes().setAll(btnEliminar, btnCancelar);
+    }
 
-        // Cambiar el estilo de la alerta para que sea más visible
-        confirmacion.getDialogPane().setStyle("-fx-background-color: #1B1A55;");
+    /**
+     * Verifica si la respuesta es positiva
+     */
+    private boolean esConfirmacionPositiva(ButtonType response) {
+        return response.getButtonData() == ButtonBar.ButtonData.OK_DONE;
+    }
 
-        // Mostrar confirmación y procesar respuesta
-        confirmacion.showAndWait().ifPresent(response -> {
-            if (response == btnEliminar) {
-                eliminarPlaylist();
+    /**
+     * Procesa la eliminación de la playlist
+     */
+    private void procesarEliminacion() {
+        try {
+            registrarInicioEliminacion();
+
+            boolean eliminacionExitosa = ejecutarEliminacion();
+
+            if (eliminacionExitosa) {
+                manejarEliminacionExitosa();
+            } else {
+                mostrarError("No se pudo eliminar la playlist. Puede que ya haya sido eliminada o que ocurriera un error en el sistema.");
+            }
+
+        } catch (Exception e) {
+            manejarErrorEliminacion(e);
+        }
+    }
+
+    /**
+     * Registra el inicio del proceso de eliminación
+     */
+    private void registrarInicioEliminacion() {
+        System.out.println("=== INICIANDO ELIMINACIÓN DE PLAYLIST ===");
+        System.out.println("Playlist ID: " + playlistActual.getIdPlaylist());
+        System.out.println("Título: " + playlistActual.getTituloPlaylist());
+    }
+
+    /**
+     * Ejecuta la eliminación en la capa de lógica de negocio
+     */
+    private boolean ejecutarEliminacion() throws Exception {
+        Playlist playlistLogic = new Playlist();
+        boolean resultado = playlistLogic.eliminar(playlistActual.getIdPlaylist());
+        System.out.println("Resultado de eliminación: " + resultado);
+        return resultado;
+    }
+
+    /**
+     * Maneja el caso de eliminación exitosa
+     */
+    private void manejarEliminacionExitosa() {
+        System.out.println("Playlist eliminada exitosamente");
+
+        Alert alertaExito = crearAlertaExito();
+        alertaExito.showAndWait();
+
+        // Cerrar ventana inmediatamente después del diálogo
+        cerrarVentanaInmediatamente();
+    }
+
+    /**
+     * Crea la alerta de éxito
+     */
+    private Alert crearAlertaExito() {
+        Alert exito = new Alert(Alert.AlertType.INFORMATION);
+        exito.setTitle("Playlist eliminada");
+        exito.setHeaderText("✅ Eliminación exitosa");
+        exito.setContentText(String.format(
+                "La playlist '%s' ha sido eliminada exitosamente del sistema.",
+                playlistActual.getTituloPlaylist()
+        ));
+        exito.getDialogPane().setStyle(ESTILO_DIALOGO);
+        return exito;
+    }
+
+    /**
+     * Cierra la ventana de forma inmediata y segura
+     */
+    private void cerrarVentanaInmediatamente() {
+        Platform.runLater(() -> {
+            try {
+                Stage stage = obtenerStageActual();
+                if (stage != null && stage.isShowing()) {
+                    System.out.println("Cerrando ventana...");
+                    stage.close();
+                    System.out.println("Ventana cerrada exitosamente");
+                }
+            } catch (Exception e) {
+                System.err.println("Error al cerrar ventana después de eliminación: " + e.getMessage());
+                e.printStackTrace();
             }
         });
     }
 
     /**
-     * Ejecuta la eliminación de la playlist
+     * Maneja errores durante la eliminación
      */
-    private void eliminarPlaylist() {
-        try {
-            System.out.println("=== INICIANDO ELIMINACIÓN DE PLAYLIST ===");
-            System.out.println("Playlist ID: " + playlistActual.getIdPlaylist());
-            System.out.println("Título: " + playlistActual.getTituloPlaylist());
-
-            // Usar BusinessLogic.Playlist para eliminar
-            Playlist playlistLogic = new Playlist();
-            boolean resultado = playlistLogic.eliminar(playlistActual.getIdPlaylist());
-
-            System.out.println("Resultado de eliminación: " + resultado);
-
-            if (resultado) {
-                // Mostrar mensaje de éxito
-                Alert exito = new Alert(Alert.AlertType.INFORMATION);
-                exito.setTitle("Playlist eliminada");
-                exito.setHeaderText("✅ Eliminación exitosa");
-                exito.setContentText("La playlist '" + playlistActual.getTituloPlaylist() + "' ha sido eliminada exitosamente del sistema.");
-
-                // Personalizar el estilo del diálogo de éxito
-                exito.getDialogPane().setStyle("-fx-background-color: #1B1A55;");
-
-                exito.showAndWait();
-
-                System.out.println("Playlist eliminada exitosamente, cerrando ventana...");
-
-                // Cerrar ventana automáticamente después del mensaje
-                Platform.runLater(() -> handleRegresar());
-
-            } else {
-                mostrarAlerta("Error", "No se pudo eliminar la playlist. Puede que ya haya sido eliminada o que ocurriera un error en el sistema.", Alert.AlertType.ERROR);
-                System.out.println("ERROR: No se pudo eliminar la playlist");
-            }
-
-        } catch (Exception e) {
-            System.out.println("EXCEPCIÓN durante eliminación: " + e.getMessage());
-            e.printStackTrace();
-            mostrarAlerta("Error", "Error al eliminar playlist: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
+    private void manejarErrorEliminacion(Exception e) {
+        System.err.println("EXCEPCIÓN durante eliminación: " + e.getMessage());
+        e.printStackTrace();
+        mostrarError("Error al eliminar playlist: " + e.getMessage());
     }
 
+    // Métodos de manejo de imágenes
+
     /**
-     * Establece la imagen por defecto (ícono de playlist genérico)
+     * Establece la imagen por defecto
      */
     private void establecerImagenPorDefecto() {
         try {
-            // Intentar cargar la imagen por defecto del catálogo
-            Image imagenPorDefecto = new Image(getClass().getResourceAsStream(
-                    "/UserInterface/Resources/img/CatalogoPlaylist/simbolo-aplicacion.png"));
+            Image imagen = cargarImagenPorDefecto();
 
-            if (imagenPorDefecto.isError()) {
-                // Si falla, intentar con playlist-default.png
-                imagenPorDefecto = new Image(getClass().getResourceAsStream(
-                        "/UserInterface/Resources/img/CatalogoPlaylist/playlist-default.png"));
-            }
-
-            if (!imagenPorDefecto.isError()) {
-                imgPortada.setImage(imagenPorDefecto);
-                System.out.println("Imagen por defecto cargada exitosamente");
+            if (esImagenValida(imagen)) {
+                aplicarImagen(imagen);
             } else {
-                System.out.println("Error al cargar imagen por defecto, creando placeholder");
                 crearImagenPlaceholder();
             }
 
         } catch (Exception e) {
-            System.err.println("No se pudo cargar la imagen por defecto de playlist: " + e.getMessage());
-            e.printStackTrace();
-            // Crear una imagen de placeholder si no se puede cargar
-            crearImagenPlaceholder();
-        }
-    }
-
-
-
-    private void crearImagenPlaceholder() {
-        try {
-            javafx.scene.canvas.Canvas canvas = new javafx.scene.canvas.Canvas(300, 300);
-            javafx.scene.canvas.GraphicsContext gc = canvas.getGraphicsContext2D();
-
-            // Fondo con gradiente (simular el estilo de Spotify)
-            javafx.scene.paint.LinearGradient gradient = new javafx.scene.paint.LinearGradient(
-                    0, 0, 1, 1, true, javafx.scene.paint.CycleMethod.NO_CYCLE,
-                    new javafx.scene.paint.Stop(0, javafx.scene.paint.Color.web("#1B1A55")),
-                    new javafx.scene.paint.Stop(1, javafx.scene.paint.Color.web("#201D4E"))
-            );
-            gc.setFill(gradient);
-            gc.fillRect(0, 0, 300, 300);
-
-            // Dibujar un ícono musical simple
-            gc.setFill(javafx.scene.paint.Color.web("#AFAFC7"));
-            gc.setFont(javafx.scene.text.Font.font("Arial", javafx.scene.text.FontWeight.BOLD, 40));
-
-            // Símbolo musical ♪
-            gc.fillText("♪", 130, 140);
-
-            // Texto descriptivo
-            gc.setFont(javafx.scene.text.Font.font("Arial", javafx.scene.text.FontWeight.NORMAL, 16));
-            gc.fillText("Playlist", 110, 170);
-            gc.fillText("sin imagen", 95, 190);
-
-            // Convertir canvas a imagen
-            javafx.scene.SnapshotParameters params = new javafx.scene.SnapshotParameters();
-            params.setFill(javafx.scene.paint.Color.TRANSPARENT);
-            Image placeholder = canvas.snapshot(params, null);
-
-            imgPortada.setImage(placeholder);
-            System.out.println("Imagen placeholder creada exitosamente");
-
-        } catch (Exception e) {
-            System.err.println("No se pudo crear imagen placeholder: " + e.getMessage());
-            e.printStackTrace();
-
-            // Como último recurso, crear una imagen sólida simple
-            try {
-                javafx.scene.canvas.Canvas simpleCanvas = new javafx.scene.canvas.Canvas(300, 300);
-                javafx.scene.canvas.GraphicsContext simpleGc = simpleCanvas.getGraphicsContext2D();
-
-                simpleGc.setFill(javafx.scene.paint.Color.web("#201D4E"));
-                simpleGc.fillRect(0, 0, 300, 300);
-
-                simpleGc.setFill(javafx.scene.paint.Color.WHITE);
-                simpleGc.setFont(javafx.scene.text.Font.font(18));
-                simpleGc.fillText("Sin imagen", 100, 150);
-
-                javafx.scene.SnapshotParameters simpleParams = new javafx.scene.SnapshotParameters();
-                Image simpleImage = simpleCanvas.snapshot(simpleParams, null);
-                imgPortada.setImage(simpleImage);
-
-            } catch (Exception finalE) {
-                System.err.println("Error crítico creando imagen: " + finalE.getMessage());
-                imgPortada.setImage(null);
-            }
+            manejarErrorImagen(e);
         }
     }
 
     /**
-     * Muestra una alerta con el mensaje especificado
+     * Carga la imagen por defecto desde recursos
+     */
+    private Image cargarImagenPorDefecto() {
+        Image imagen = new Image(getClass().getResourceAsStream(RUTA_IMAGEN_SIMBOLO));
+
+        if (imagen.isError()) {
+            imagen = new Image(getClass().getResourceAsStream(RUTA_IMAGEN_DEFAULT));
+        }
+
+        return imagen;
+    }
+
+    /**
+     * Valida si la imagen es correcta
+     */
+    private boolean esImagenValida(Image imagen) {
+        return imagen != null && !imagen.isError();
+    }
+
+    /**
+     * Aplica la imagen al ImageView
+     */
+    private void aplicarImagen(Image imagen) {
+        imgPortada.setImage(imagen);
+        System.out.println("Imagen cargada exitosamente");
+    }
+
+    /**
+     * Maneja errores al cargar imagen
+     */
+    private void manejarErrorImagen(Exception e) {
+        System.err.println("Error al cargar imagen: " + e.getMessage());
+        crearImagenPlaceholder();
+    }
+
+    /**
+     * Crea una imagen placeholder programáticamente
+     */
+    private void crearImagenPlaceholder() {
+        try {
+            Image placeholder = generarImagenPlaceholder();
+            imgPortada.setImage(placeholder);
+            System.out.println("Imagen placeholder creada");
+
+        } catch (Exception e) {
+            System.err.println("Error creando placeholder: " + e.getMessage());
+            imgPortada.setImage(null);
+        }
+    }
+
+    /**
+     * Genera la imagen placeholder con canvas
+     */
+    private Image generarImagenPlaceholder() {
+        javafx.scene.canvas.Canvas canvas = new javafx.scene.canvas.Canvas(CANVAS_DIMENSIONS, CANVAS_DIMENSIONS);
+        javafx.scene.canvas.GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        dibujarFondoGradiente(gc);
+        dibujarIconoMusical(gc);
+        dibujarTextoDescriptivo(gc);
+
+        return crearImagenDesdeCanvas(canvas);
+    }
+
+    /**
+     * Dibuja el fondo con gradiente
+     */
+    private void dibujarFondoGradiente(javafx.scene.canvas.GraphicsContext gc) {
+        javafx.scene.paint.LinearGradient gradient = new javafx.scene.paint.LinearGradient(
+                0, 0, 1, 1, true, javafx.scene.paint.CycleMethod.NO_CYCLE,
+                new javafx.scene.paint.Stop(0, javafx.scene.paint.Color.web(COLOR_FONDO_PLAYLIST)),
+                new javafx.scene.paint.Stop(1, javafx.scene.paint.Color.web(COLOR_FONDO_DEGRADADO))
+        );
+        gc.setFill(gradient);
+        gc.fillRect(0, 0, CANVAS_DIMENSIONS, CANVAS_DIMENSIONS);
+    }
+
+    /**
+     * Dibuja el icono musical
+     */
+    private void dibujarIconoMusical(javafx.scene.canvas.GraphicsContext gc) {
+        gc.setFill(javafx.scene.paint.Color.web(COLOR_TEXTO_ICONO));
+        gc.setFont(javafx.scene.text.Font.font("Arial", javafx.scene.text.FontWeight.BOLD, FONT_SIZE_ICONO));
+        gc.fillText("♪", 130, 140);
+    }
+
+    /**
+     * Dibuja el texto descriptivo
+     */
+    private void dibujarTextoDescriptivo(javafx.scene.canvas.GraphicsContext gc) {
+        gc.setFont(javafx.scene.text.Font.font("Arial", javafx.scene.text.FontWeight.NORMAL, FONT_SIZE_TEXTO));
+        gc.fillText("Playlist", 110, 170);
+        gc.fillText("sin imagen", 95, 190);
+    }
+
+    /**
+     * Crea imagen desde canvas
+     */
+    private Image crearImagenDesdeCanvas(javafx.scene.canvas.Canvas canvas) {
+        javafx.scene.SnapshotParameters params = new javafx.scene.SnapshotParameters();
+        params.setFill(javafx.scene.paint.Color.TRANSPARENT);
+        return canvas.snapshot(params, null);
+    }
+
+    // Métodos de utilidad para alertas
+
+    /**
+     * Muestra un mensaje de error
+     */
+    private void mostrarError(String mensaje) {
+        mostrarAlerta("Error", mensaje, Alert.AlertType.ERROR);
+    }
+
+    /**
+     * Muestra una alerta genérica
      */
     private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
         Alert alert = new Alert(tipo);
@@ -285,66 +449,104 @@ public class EliminarPlaylistController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
 
-        // Personalizar estilo según el tipo
         if (tipo == Alert.AlertType.ERROR) {
-            alert.getDialogPane().setStyle("-fx-background-color: #1B1A55;");
+            alert.getDialogPane().setStyle(ESTILO_DIALOGO);
         }
 
         alert.showAndWait();
     }
 
-    @FXML
-    private void handleRegresarImagen() {
-        Stage stage = (Stage) imgRegresar.getScene().getWindow();
-        stage.close();
-    }
+    // Métodos públicos
 
     /**
-     * Método público para establecer la playlist a eliminar
-     * @param playlist PlaylistDTO con los datos de la playlist a eliminar
+     * Establece la playlist a eliminar
      */
     public void setPlaylist(PlaylistDTO playlist) {
-        System.out.println("=== CARGANDO PLAYLIST PARA ELIMINAR ===");
+        registrarCargaPlaylist(playlist);
         this.playlistActual = playlist;
 
         if (playlist != null) {
-            System.out.println("Playlist ID: " + playlist.getIdPlaylist());
+            cargarDatosPlaylist(playlist);
+            cargarImagenPlaylist(playlist);
+            System.out.println("Playlist cargada para eliminación");
+        } else {
+            System.err.println("ERROR: Playlist recibida es null");
+        }
+    }
+
+    /**
+     * Registra información de la playlist cargada
+     */
+    private void registrarCargaPlaylist(PlaylistDTO playlist) {
+        System.out.println("=== CARGANDO PLAYLIST PARA ELIMINAR ===");
+        if (playlist != null) {
+            System.out.println("ID: " + playlist.getIdPlaylist());
             System.out.println("Título: " + playlist.getTituloPlaylist());
-            System.out.println("Descripción: " + (playlist.getDescripcion() != null ? playlist.getDescripcion() : "null"));
-            System.out.println("Tiene imagen: " + (playlist.getImagenPortada() != null ? "Sí (" + playlist.getImagenPortada().length + " bytes)" : "No"));
+            System.out.println("Descripción: " + obtenerDescripcionSegura(playlist));
+            System.out.println("Imagen: " + evaluarImagen(playlist));
+        }
+    }
 
-            // Cargar datos de la playlist en los controles (solo lectura)
-            txtTitulo.setText(playlist.getTituloPlaylist());
-            txtDescripcion.setText(playlist.getDescripcion() != null ? playlist.getDescripcion() : "Sin descripción");
+    /**
+     * Obtiene la descripción de forma segura
+     */
+    private String obtenerDescripcionSegura(PlaylistDTO playlist) {
+        return playlist.getDescripcion() != null ? playlist.getDescripcion() : "Sin descripción";
+    }
 
-            // Cargar imagen si existe
-            if (playlist.getImagenPortada() != null && playlist.getImagenPortada().length > 0) {
-                try {
-                    // Convertir bytes a imagen
-                    ByteArrayInputStream bis = new ByteArrayInputStream(playlist.getImagenPortada());
-                    Image imagen = new Image(bis);
+    /**
+     * Evalúa si la playlist tiene imagen
+     */
+    private String evaluarImagen(PlaylistDTO playlist) {
+        return playlist.getImagenPortada() != null
+                ? "Sí (" + playlist.getImagenPortada().length + " bytes)"
+                : "No";
+    }
 
-                    if (!imagen.isError()) {
-                        imgPortada.setImage(imagen);
-                        System.out.println("Imagen de portada cargada exitosamente");
-                        System.out.println("Dimensiones imagen: " + imagen.getWidth() + "x" + imagen.getHeight());
-                    } else {
-                        System.out.println("Error en la imagen cargada desde bytes");
-                        establecerImagenPorDefecto();
-                    }
-                } catch (Exception e) {
-                    System.out.println("Error al cargar imagen de portada: " + e.getMessage());
-                    e.printStackTrace();
-                    establecerImagenPorDefecto();
-                }
+    /**
+     * Carga los datos de la playlist en los campos
+     */
+    private void cargarDatosPlaylist(PlaylistDTO playlist) {
+        txtTitulo.setText(playlist.getTituloPlaylist());
+        txtDescripcion.setText(obtenerDescripcionSegura(playlist));
+    }
+
+    /**
+     * Carga la imagen de la playlist
+     */
+    private void cargarImagenPlaylist(PlaylistDTO playlist) {
+        if (tieneImagen(playlist)) {
+            cargarImagenDesdeBytes(playlist.getImagenPortada());
+        } else {
+            establecerImagenPorDefecto();
+        }
+    }
+
+    /**
+     * Verifica si la playlist tiene imagen
+     */
+    private boolean tieneImagen(PlaylistDTO playlist) {
+        return playlist.getImagenPortada() != null && playlist.getImagenPortada().length > 0;
+    }
+
+    /**
+     * Carga imagen desde array de bytes
+     */
+    private void cargarImagenDesdeBytes(byte[] imagenBytes) {
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(imagenBytes);
+            Image imagen = new Image(bis);
+
+            if (esImagenValida(imagen)) {
+                imgPortada.setImage(imagen);
+                System.out.println("Imagen de portada cargada - " + imagen.getWidth() + "x" + imagen.getHeight());
             } else {
-                System.out.println("No hay imagen de portada, cargando imagen por defecto");
                 establecerImagenPorDefecto();
             }
 
-            System.out.println("Playlist cargada completamente para eliminación");
-        } else {
-            System.out.println("ERROR: Playlist recibida es null");
+        } catch (Exception e) {
+            System.err.println("Error cargando imagen: " + e.getMessage());
+            establecerImagenPorDefecto();
         }
     }
 }

@@ -17,82 +17,103 @@ import java.io.ByteArrayInputStream;
 
 public class EditarPlaylistController implements Initializable {
 
-    @FXML
-    private TextField txtTitulo;
+    // Constantes
+    private static final long TAMAÑO_MAXIMO_IMAGEN_MB = 5;
+    private static final long TAMAÑO_MAXIMO_IMAGEN_BYTES = TAMAÑO_MAXIMO_IMAGEN_MB * 1024 * 1024;
+    private static final String RUTA_IMAGEN_CAMARA = "/UserInterface/Resources/img/CatalogoPlaylist/camara.png";
+    private static final String RUTA_IMAGEN_SIMBOLO = "/UserInterface/Resources/img/CatalogoPlaylist/simbolo-aplicacion.png";
 
-    @FXML
-    private TextArea txtDescripcion;
+    // Estilos para botones
+    private static final String ESTILO_BOTON_GUARDAR_CAMBIOS =
+            "-fx-background-color: #9190C2; -fx-background-radius: 20; -fx-text-fill: black; -fx-font-size: 16px; -fx-font-weight: bold;";
+    private static final String ESTILO_BOTON_SIN_CAMBIOS =
+            "-fx-background-color: #4CAF50; -fx-background-radius: 20; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;";
+    private static final String ESTILO_BOTON_DESHABILITADO =
+            "-fx-background-color: #6B6B6B; -fx-background-radius: 20; -fx-text-fill: #999999; -fx-font-size: 16px; -fx-font-weight: bold;";
 
-    @FXML
-    private ImageView imgPortada;
+    // Componentes FXML
+    @FXML private TextField txtTitulo;
+    @FXML private TextArea txtDescripcion;
+    @FXML private ImageView imgPortada;
+    @FXML private Button btnRegresar;
+    @FXML private Button btnCerrar;
+    @FXML private Button btnActualizarPlaylist;
+    @FXML private ImageView imgRegresar;
 
-    @FXML
-    private Button btnRegresar;
-
-    @FXML
-    private Button btnCerrar;
-
-    @FXML
-    private Button btnActualizarPlaylist;
-
+    // Variables de estado
     private File imagenSeleccionada;
     private String tituloOriginal;
     private String descripcionOriginal;
     private String rutaImagenOriginal;
     private PlaylistDTO playlistActual;
-    @FXML
-    private ImageView imgRegresar;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        configurarEventos();
+        configurarEventosDeValidacion();
+        configurarEventosDeInteraccion();
     }
 
-    private void configurarEventos() {
-        // Validación en tiempo real de los campos
-        txtTitulo.textProperty().addListener((observable, oldValue, newValue) -> {
-            validarCampos();
-        });
+    // =================== CONFIGURACIÓN INICIAL ===================
 
-        txtDescripcion.textProperty().addListener((observable, oldValue, newValue) -> {
-            validarCampos();
-        });
-
-        // Hacer que el área de imagen sea clickeable para seleccionar imagen
-        imgPortada.setOnMouseClicked(event -> handleSeleccionarPortada());
+    private void configurarEventosDeValidacion() {
+        txtTitulo.textProperty().addListener((observable, oldValue, newValue) -> validarCampos());
+        txtDescripcion.textProperty().addListener((observable, oldValue, newValue) -> validarCampos());
     }
 
-    // MEJORAR EL MÉTODO validarCampos() para considerar cambios de imagen
+    private void configurarEventosDeInteraccion() {
+        imgPortada.setOnMouseClicked(event -> seleccionarNuevaPortada());
+    }
+
+    // =================== VALIDACIÓN Y ESTADO DE UI ===================
+
     private void validarCampos() {
-        // Habilitar/deshabilitar el botón según si hay título
-        boolean tituloValido = !txtTitulo.getText().trim().isEmpty();
+        boolean tituloEsValido = esTituloValido();
+        boolean hayCambiosPendientes = verificarCambiosPendientes();
+
+        actualizarEstadoBotonActualizar(tituloEsValido, hayCambiosPendientes);
+    }
+
+    private boolean esTituloValido() {
+        return !obtenerTextoLimpio(txtTitulo).isEmpty();
+    }
+
+    private void actualizarEstadoBotonActualizar(boolean tituloValido, boolean hayCambios) {
         btnActualizarPlaylist.setDisable(!tituloValido);
 
-        // Verificar si hay cambios
-        boolean hayCambios = huboCambios();
-
-        // Cambiar el texto del botón según el estado
-        if (tituloValido) {
-            if (hayCambios) {
-                btnActualizarPlaylist.setText("Guardar Cambios");
-                btnActualizarPlaylist.setStyle("-fx-background-color: #9190C2; -fx-background-radius: 20; -fx-text-fill: black; -fx-font-size: 16px; -fx-font-weight: bold;");
-            } else {
-                btnActualizarPlaylist.setText("Sin Cambios");
-                btnActualizarPlaylist.setStyle("-fx-background-color: #4CAF50; -fx-background-radius: 20; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
-            }
+        if (!tituloValido) {
+            configurarBotonComoDeshabilitado();
+        } else if (hayCambios) {
+            configurarBotonParaGuardarCambios();
         } else {
-            btnActualizarPlaylist.setText("Título Requerido");
-            btnActualizarPlaylist.setStyle("-fx-background-color: #6B6B6B; -fx-background-radius: 20; -fx-text-fill: #999999; -fx-font-size: 16px; -fx-font-weight: bold;");
+            configurarBotonSinCambios();
         }
     }
+
+    private void configurarBotonComoDeshabilitado() {
+        btnActualizarPlaylist.setText("Título Requerido");
+        btnActualizarPlaylist.setStyle(ESTILO_BOTON_DESHABILITADO);
+    }
+
+    private void configurarBotonParaGuardarCambios() {
+        btnActualizarPlaylist.setText("Guardar Cambios");
+        btnActualizarPlaylist.setStyle(ESTILO_BOTON_GUARDAR_CAMBIOS);
+    }
+
+    private void configurarBotonSinCambios() {
+        btnActualizarPlaylist.setText("Sin Cambios");
+        btnActualizarPlaylist.setStyle(ESTILO_BOTON_SIN_CAMBIOS);
+    }
+
+    // =================== MANEJO DE EVENTOS FXML ===================
 
     @FXML
     private void handleRegresar() {
         cerrarVentana();
     }
+
     @FXML
     private void handleRegresarImagen() {
-        handleRegresar(); // Reutiliza la lógica que ya tienes
+        handleRegresar();
     }
 
     @FXML
@@ -100,174 +121,313 @@ public class EditarPlaylistController implements Initializable {
         cerrarVentana();
     }
 
-    // MODIFICAR EL MÉTODO handleSeleccionarPortada() para mejorar la experiencia
     @FXML
     private void handleSeleccionarPortada() {
+        seleccionarNuevaPortada();
+    }
+
+    @FXML
+    private void handleActualizarPlaylist() {
+        procesarActualizacionPlaylist();
+    }
+
+    @FXML
+    private void handleRestablecerImagen() {
+        restablecerImagenOriginal();
+    }
+
+    // =================== SELECCIÓN DE IMAGEN ===================
+
+    private void seleccionarNuevaPortada() {
+        File archivoSeleccionado = mostrarSelectorDeArchivos();
+
+        if (archivoSeleccionado != null) {
+            procesarArchivoDeImagen(archivoSeleccionado);
+        }
+    }
+
+    private File mostrarSelectorDeArchivos() {
+        FileChooser fileChooser = crearSelectorDeImagenes();
+        Stage ventanaActual = obtenerVentanaActual();
+        return fileChooser.showOpenDialog(ventanaActual);
+    }
+
+    private FileChooser crearSelectorDeImagenes() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccionar nueva imagen de portada");
 
-        // Filtros para archivos de imagen
-        FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter(
+        FileChooser.ExtensionFilter filtroImagenes = new FileChooser.ExtensionFilter(
                 "Archivos de imagen (*.jpg, *.jpeg, *.png, *.gif)",
                 "*.jpg", "*.jpeg", "*.png", "*.gif"
         );
-        fileChooser.getExtensionFilters().add(imageFilter);
+        fileChooser.getExtensionFilters().add(filtroImagenes);
 
-        // Obtener la ventana actual
-        Stage stage = (Stage) imgPortada.getScene().getWindow();
+        return fileChooser;
+    }
 
-        // Mostrar el selector de archivos
-        File archivo = fileChooser.showOpenDialog(stage);
-
-        if (archivo != null) {
-            try {
-                // Validar que el archivo sea una imagen válida
-                Image nuevaImagen = new Image(archivo.toURI().toString());
-
-                // Verificar que la imagen se cargó correctamente
-                if (nuevaImagen.isError()) {
-                    mostrarAlerta("Error", "El archivo seleccionado no es una imagen válida.");
-                    return;
-                }
-
-                // Verificar el tamaño del archivo (opcional: limitar a 5MB)
-                long tamañoEnBytes = archivo.length();
-                long tamañoMaximo = 5 * 1024 * 1024; // 5MB
-
-                if (tamañoEnBytes > tamañoMaximo) {
-                    mostrarAlerta("Error", "La imagen es demasiado grande. Por favor, selecciona una imagen menor a 5MB.");
-                    return;
-                }
-
-                imgPortada.setImage(nuevaImagen);
-                imagenSeleccionada = archivo;
-
-                System.out.println("Nueva imagen de portada seleccionada: " + archivo.getName());
-                System.out.println("Tamaño: " + (tamañoEnBytes / 1024) + " KB");
-
-                // Validar campos para habilitar el botón de guardar
-                validarCampos();
-
-            } catch (Exception e) {
-                System.out.println("Error al cargar la imagen: " + e.getMessage());
-                mostrarAlerta("Error", "No se pudo cargar la imagen seleccionada: " + e.getMessage());
+    private void procesarArchivoDeImagen(File archivo) {
+        try {
+            if (!esImagenValida(archivo)) {
+                return;
             }
+
+            if (!esTamañoImagenPermitido(archivo)) {
+                return;
+            }
+
+            aplicarNuevaImagen(archivo);
+            registrarSeleccionDeImagen(archivo);
+            validarCampos();
+
+        } catch (Exception e) {
+            manejarErrorEnSeleccionImagen(e);
         }
     }
 
-    // MEJORAR EL MÉTODO handleActualizarPlaylist() con mejor manejo de errores
-    @FXML
-    private void handleActualizarPlaylist() {
-        String titulo = txtTitulo.getText().trim();
-        String descripcion = txtDescripcion.getText().trim();
+    private boolean esImagenValida(File archivo) {
+        Image imagen = new Image(archivo.toURI().toString());
 
-        System.out.println("=== INICIANDO ACTUALIZACIÓN DE PLAYLIST ===");
-        System.out.println("Título: " + titulo);
-        System.out.println("Descripción: " + descripcion);
-        System.out.println("Nueva imagen seleccionada: " + (imagenSeleccionada != null ? "Sí" : "No"));
+        if (imagen.isError()) {
+            mostrarMensajeError("Error", "El archivo seleccionado no es una imagen válida.");
+            return false;
+        }
 
-        // Validación básica
-        if (titulo.isEmpty()) {
-            mostrarAlerta("Error", "Por favor, ingresa un título para la playlist.");
+        return true;
+    }
+
+    private boolean esTamañoImagenPermitido(File archivo) {
+        long tamañoArchivo = archivo.length();
+
+        if (tamañoArchivo > TAMAÑO_MAXIMO_IMAGEN_BYTES) {
+            mostrarMensajeError("Error",
+                    "La imagen es demasiado grande. Por favor, selecciona una imagen menor a "
+                            + TAMAÑO_MAXIMO_IMAGEN_MB + "MB.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void aplicarNuevaImagen(File archivo) {
+        Image nuevaImagen = new Image(archivo.toURI().toString());
+        imgPortada.setImage(nuevaImagen);
+        imagenSeleccionada = archivo;
+    }
+
+    private void registrarSeleccionDeImagen(File archivo) {
+        long tamañoEnKB = archivo.length() / 1024;
+        imprimirLog("Nueva imagen de portada seleccionada: " + archivo.getName());
+        imprimirLog("Tamaño: " + tamañoEnKB + " KB");
+    }
+
+    private void manejarErrorEnSeleccionImagen(Exception e) {
+        String mensajeError = "No se pudo cargar la imagen seleccionada: " + e.getMessage();
+        imprimirLog("Error al cargar la imagen: " + e.getMessage());
+        mostrarMensajeError("Error", mensajeError);
+    }
+
+    // =================== ACTUALIZACIÓN DE PLAYLIST ===================
+
+    private void procesarActualizacionPlaylist() {
+        if (!validarDatosParaActualizacion()) {
             return;
+        }
+
+        if (!verificarCambiosPendientes()) {
+            mostrarMensajeInformativo("Información", "No se han realizado cambios en la playlist.");
+            return;
+        }
+
+        ejecutarActualizacionPlaylist();
+    }
+
+    private boolean validarDatosParaActualizacion() {
+        String titulo = obtenerTextoLimpio(txtTitulo);
+
+        if (titulo.isEmpty()) {
+            mostrarMensajeError("Error", "Por favor, ingresa un título para la playlist.");
+            return false;
         }
 
         if (playlistActual == null) {
-            mostrarAlerta("Error", "No hay playlist cargada para editar.");
-            System.out.println("ERROR: playlistActual es null");
-            return;
+            mostrarMensajeError("Error", "No hay playlist cargada para editar.");
+            imprimirLog("ERROR: playlistActual es null");
+            return false;
         }
 
-        // Verificar si realmente hay cambios
-        if (!huboCambios()) {
-            mostrarAlerta("Información", "No se han realizado cambios en la playlist.");
-            return;
-        }
+        return true;
+    }
 
-        System.out.println("Playlist actual ID: " + playlistActual.getIdPlaylist());
-        System.out.println("Título original: " + playlistActual.getTituloPlaylist());
-
+    private void ejecutarActualizacionPlaylist() {
         try {
-            // Usar BusinessLogic.Playlist para actualizar
-            Playlist playlistLogic = new Playlist();
+            imprimirInicioActualizacion();
 
-            // Actualizar los datos en el DTO
-            playlistActual.setTituloPlaylist(titulo);
-            playlistActual.setDescripcion(descripcion.isEmpty() ? null : descripcion);
+            actualizarDatosPlaylist();
+            procesarImagenSiEsNecesario();
 
-            // Si hay nueva imagen, convertirla a bytes
-            if (imagenSeleccionada != null) {
-                System.out.println("Procesando nueva imagen: " + imagenSeleccionada.getName());
-                try {
-                    // Leer archivo de imagen y convertir a bytes
-                    java.nio.file.Path path = imagenSeleccionada.toPath();
-                    byte[] imagenBytes = java.nio.file.Files.readAllBytes(path);
-                    playlistActual.setImagenPortada(imagenBytes);
-                    System.out.println("Imagen convertida a bytes: " + imagenBytes.length + " bytes");
-                } catch (Exception e) {
-                    System.out.println("Error al procesar imagen: " + e.getMessage());
-                    mostrarAlerta("Advertencia", "Se actualizará la playlist sin cambiar la imagen debido a un error al procesarla.");
-                }
-            } else {
-                System.out.println("No hay nueva imagen seleccionada, manteniendo imagen actual");
-            }
-
-            System.out.println("Llamando a playlistLogic.actualizar()...");
-            // Actualizar en la base de datos usando BusinessLogic
-            boolean resultado = playlistLogic.actualizar(playlistActual);
-
-            System.out.println("Resultado de actualización: " + resultado);
-
-            if (resultado) {
-                // Mostrar mensaje de éxito
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Éxito");
-                alert.setHeaderText(null);
-
-                String mensaje = "Playlist actualizada correctamente";
-                if (imagenSeleccionada != null) {
-                    mensaje += " con nueva imagen de portada";
-                }
-
-                alert.setContentText(mensaje);
-                alert.showAndWait();
-
-                System.out.println("Playlist actualizada exitosamente, cerrando ventana...");
-                // Cerrar ventana automáticamente después del mensaje
-                Platform.runLater(() -> cerrarVentana());
-            } else {
-                mostrarAlerta("Error", "No se pudo actualizar la playlist.");
-                System.out.println("ERROR: No se pudo actualizar la playlist");
-            }
+            boolean resultadoActualizacion = guardarCambiosEnBaseDatos();
+            manejarResultadoActualizacion(resultadoActualizacion);
 
         } catch (Exception e) {
-            System.out.println("EXCEPCIÓN durante actualización: " + e.getMessage());
-            e.printStackTrace();
-            mostrarAlerta("Error", "Error al actualizar playlist: " + e.getMessage());
+            manejarErrorEnActualizacion(e);
         }
     }
 
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+    private void imprimirInicioActualizacion() {
+        String titulo = obtenerTextoLimpio(txtTitulo);
+        String descripcion = obtenerTextoLimpio(txtDescripcion);
+
+        imprimirLog("=== INICIANDO ACTUALIZACIÓN DE PLAYLIST ===");
+        imprimirLog("Título: " + titulo);
+        imprimirLog("Descripción: " + descripcion);
+        imprimirLog("Nueva imagen seleccionada: " + (imagenSeleccionada != null ? "Sí" : "No"));
+        imprimirLog("Playlist actual ID: " + playlistActual.getIdPlaylist());
+        imprimirLog("Título original: " + playlistActual.getTituloPlaylist());
     }
 
-    private void cerrarVentana() {
-        Stage stage = (Stage) btnRegresar.getScene().getWindow();
-        stage.close();
+    private void actualizarDatosPlaylist() {
+        String titulo = obtenerTextoLimpio(txtTitulo);
+        String descripcion = obtenerTextoLimpio(txtDescripcion);
+
+        playlistActual.setTituloPlaylist(titulo);
+        playlistActual.setDescripcion(descripcion.isEmpty() ? null : descripcion);
     }
 
-    // Método público para cargar los datos existentes de la playlist
+    private void procesarImagenSiEsNecesario() {
+        if (imagenSeleccionada == null) {
+            imprimirLog("No hay nueva imagen seleccionada, manteniendo imagen actual");
+            return;
+        }
+
+        try {
+            byte[] bytesImagen = convertirImagenABytes(imagenSeleccionada);
+            playlistActual.setImagenPortada(bytesImagen);
+            imprimirLog("Imagen convertida a bytes: " + bytesImagen.length + " bytes");
+        } catch (Exception e) {
+            imprimirLog("Error al procesar imagen: " + e.getMessage());
+            mostrarMensajeAdvertencia("Advertencia",
+                    "Se actualizará la playlist sin cambiar la imagen debido a un error al procesarla.");
+        }
+    }
+
+    private byte[] convertirImagenABytes(File archivoImagen) throws Exception {
+        java.nio.file.Path rutaArchivo = archivoImagen.toPath();
+        return java.nio.file.Files.readAllBytes(rutaArchivo);
+    }
+
+    private boolean guardarCambiosEnBaseDatos() throws Exception {
+        Playlist logicaPlaylist = new Playlist();
+        imprimirLog("Llamando a playlistLogic.actualizar()...");
+
+        boolean resultado = logicaPlaylist.actualizar(playlistActual);
+        imprimirLog("Resultado de actualización: " + resultado);
+
+        return resultado;
+    }
+
+    private void manejarResultadoActualizacion(boolean exitoso) {
+        if (exitoso) {
+            mostrarMensajeExitoYCerrar();
+        } else {
+            mostrarMensajeError("Error", "No se pudo actualizar la playlist.");
+            imprimirLog("ERROR: No se pudo actualizar la playlist");
+        }
+    }
+
+    private void mostrarMensajeExitoYCerrar() {
+        String mensaje = construirMensajeExito();
+        mostrarMensajeInformativo("Éxito", mensaje);
+
+        imprimirLog("Playlist actualizada exitosamente, cerrando ventana...");
+        Platform.runLater(this::cerrarVentana);
+    }
+
+    private String construirMensajeExito() {
+        String mensajeBase = "Playlist actualizada correctamente";
+        return imagenSeleccionada != null ? mensajeBase + " con nueva imagen de portada" : mensajeBase;
+    }
+
+    private void manejarErrorEnActualizacion(Exception e) {
+        imprimirLog("EXCEPCIÓN durante actualización: " + e.getMessage());
+        e.printStackTrace();
+        mostrarMensajeError("Error", "Error al actualizar playlist: " + e.getMessage());
+    }
+
+    // =================== CARGA DE DATOS ===================
+
+    public void setPlaylist(PlaylistDTO playlist) {
+        imprimirLog("=== CARGANDO PLAYLIST PARA EDITAR ===");
+        this.playlistActual = playlist;
+
+        if (playlist == null) {
+            imprimirLog("ERROR: Playlist recibida es null");
+            return;
+        }
+
+        imprimirDatosPlaylist(playlist);
+        cargarDatosEnControles(playlist);
+        guardarValoresOriginales(playlist);
+        cargarImagenDePortada(playlist);
+        validarCampos();
+
+        imprimirLog("Playlist cargada completamente para edición");
+    }
+
+    private void imprimirDatosPlaylist(PlaylistDTO playlist) {
+        imprimirLog("Playlist ID: " + playlist.getIdPlaylist());
+        imprimirLog("Título: " + playlist.getTituloPlaylist());
+        imprimirLog("Descripción: " + (playlist.getDescripcion() != null ? playlist.getDescripcion() : "null"));
+        imprimirLog("Tiene imagen: " + (playlist.getImagenPortada() != null ?
+                "Sí (" + playlist.getImagenPortada().length + " bytes)" : "No"));
+    }
+
+    private void cargarDatosEnControles(PlaylistDTO playlist) {
+        txtTitulo.setText(playlist.getTituloPlaylist());
+        txtDescripcion.setText(playlist.getDescripcion() != null ? playlist.getDescripcion() : "");
+    }
+
+    private void guardarValoresOriginales(PlaylistDTO playlist) {
+        tituloOriginal = playlist.getTituloPlaylist();
+        descripcionOriginal = playlist.getDescripcion();
+    }
+
+    private void cargarImagenDePortada(PlaylistDTO playlist) {
+        if (playlist.getImagenPortada() != null) {
+            cargarImagenDesdeBytes(playlist.getImagenPortada());
+        } else {
+            imprimirLog("No hay imagen de portada, cargando imagen por defecto");
+            cargarImagenPorDefecto();
+        }
+    }
+
+    private void cargarImagenDesdeBytes(byte[] bytesImagen) {
+        try {
+            ByteArrayInputStream streamImagen = new ByteArrayInputStream(bytesImagen);
+            Image imagen = new Image(streamImagen);
+            imgPortada.setImage(imagen);
+            imprimirLog("Imagen de portada cargada exitosamente");
+        } catch (Exception e) {
+            imprimirLog("Error al cargar imagen de portada: " + e.getMessage());
+            cargarImagenPorDefecto();
+        }
+    }
+
+    // =================== CARGA DE DATOS LEGACY ===================
+
     public void cargarDatosPlaylist(String titulo, String descripcion, String rutaImagen) {
-        // Guardar datos originales
+        guardarDatosOriginalesLegacy(titulo, descripcion, rutaImagen);
+        cargarDatosEnControlesLegacy(titulo, descripcion);
+        cargarImagenExistente(rutaImagen);
+        validarCampos();
+    }
+
+    private void guardarDatosOriginalesLegacy(String titulo, String descripcion, String rutaImagen) {
         this.tituloOriginal = titulo;
         this.descripcionOriginal = descripcion;
         this.rutaImagenOriginal = rutaImagen;
+    }
 
-        // Cargar datos en los campos
+    private void cargarDatosEnControlesLegacy(String titulo, String descripcion) {
         if (titulo != null) {
             txtTitulo.setText(titulo);
         }
@@ -275,146 +435,161 @@ public class EditarPlaylistController implements Initializable {
         if (descripcion != null) {
             txtDescripcion.setText(descripcion);
         }
-
-        // Cargar imagen existente
-        cargarImagenExistente(rutaImagen);
-
-        // Validar campos después de cargar datos
-        validarCampos();
     }
 
     private void cargarImagenExistente(String rutaImagen) {
         try {
             if (rutaImagen != null && !rutaImagen.isEmpty()) {
-                // Si hay una ruta de imagen, cargarla
-                Image imagenExistente;
-
-                // Verificar si es una ruta de archivo local o un recurso
-                if (rutaImagen.startsWith("file:") || new File(rutaImagen).exists()) {
-                    imagenExistente = new Image(rutaImagen);
-                } else {
-                    // Asumir que es un recurso en el classpath
-                    imagenExistente = new Image(getClass().getResourceAsStream(rutaImagen));
-                }
-
+                Image imagenExistente = crearImagenDesdeRuta(rutaImagen);
                 imgPortada.setImage(imagenExistente);
-                System.out.println("Imagen de playlist cargada: " + rutaImagen);
-
+                imprimirLog("Imagen de playlist cargada: " + rutaImagen);
             } else {
-                // Si no hay imagen, cargar imagen por defecto
                 cargarImagenPorDefecto();
             }
         } catch (Exception e) {
-            System.out.println("Error al cargar imagen existente: " + e.getMessage());
+            imprimirLog("Error al cargar imagen existente: " + e.getMessage());
             cargarImagenPorDefecto();
         }
     }
 
-    // MEJORAR EL MÉTODO cargarImagenPorDefecto()
+    private Image crearImagenDesdeRuta(String rutaImagen) {
+        if (rutaImagen.startsWith("file:") || new File(rutaImagen).exists()) {
+            return new Image(rutaImagen);
+        } else {
+            return new Image(getClass().getResourceAsStream(rutaImagen));
+        }
+    }
+
+    // =================== MANEJO DE IMÁGENES ===================
+
     private void cargarImagenPorDefecto() {
-        try {
-            // Intentar cargar ícono de cámara por defecto
-            Image iconoCamara = new Image(getClass().getResourceAsStream("/UserInterface/Resources/img/CatalogoPlaylist/camara.png"));
-            imgPortada.setImage(iconoCamara);
-            System.out.println("Imagen por defecto (cámara) cargada");
-        } catch (Exception e) {
-            try {
-                // Si no existe el ícono de cámara, intentar cargar imagen por defecto de playlist
-                Image imagenDefecto = new Image(getClass().getResourceAsStream("/UserInterface/Resources/img/CatalogoPlaylist/simbolo-aplicacion.png"));
-                imgPortada.setImage(imagenDefecto);
-                System.out.println("Imagen por defecto (símbolo aplicación) cargada");
-            } catch (Exception e2) {
-                System.out.println("No se pudo cargar ninguna imagen por defecto");
+        if (!intentarCargarImagen(RUTA_IMAGEN_CAMARA, "cámara")) {
+            if (!intentarCargarImagen(RUTA_IMAGEN_SIMBOLO, "símbolo aplicación")) {
+                imprimirLog("No se pudo cargar ninguna imagen por defecto");
                 imgPortada.setImage(null);
             }
         }
     }
 
-    // AGREGAR MÉTODO PARA RESTABLECER IMAGEN ORIGINAL
-    @FXML
-    private void handleRestablecerImagen() {
-        if (playlistActual != null && playlistActual.getImagenPortada() != null) {
-            try {
-                // Restablecer a la imagen original de la playlist
-                ByteArrayInputStream bis = new ByteArrayInputStream(playlistActual.getImagenPortada());
-                Image imagenOriginal = new Image(bis);
-                imgPortada.setImage(imagenOriginal);
-
-                // Limpiar la selección de nueva imagen
-                imagenSeleccionada = null;
-
-                System.out.println("Imagen restablecida a la original");
-            } catch (Exception e) {
-                System.out.println("Error al restablecer imagen original: " + e.getMessage());
-                cargarImagenPorDefecto();
-            }
-        } else {
-            // Si no hay imagen original, cargar imagen por defecto
-            cargarImagenPorDefecto();
-            imagenSeleccionada = null;
+    private boolean intentarCargarImagen(String ruta, String descripcion) {
+        try {
+            Image imagen = new Image(getClass().getResourceAsStream(ruta));
+            imgPortada.setImage(imagen);
+            imprimirLog("Imagen por defecto (" + descripcion + ") cargada");
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 
-    // MEJORAR EL MÉTODO huboCambios() para incluir imagen
-    public boolean huboCambios() {
-        String tituloActual = txtTitulo.getText().trim();
-        String descripcionActual = txtDescripcion.getText().trim();
+    private void restablecerImagenOriginal() {
+        if (tieneImagenOriginal()) {
+            restablecerDesdeBytes();
+        } else {
+            restablecerAImagenPorDefecto();
+        }
+    }
 
-        boolean cambioTitulo = !tituloActual.equals(tituloOriginal != null ? tituloOriginal : "");
-        boolean cambioDescripcion = !descripcionActual.equals(descripcionOriginal != null ? descripcionOriginal : "");
+    private boolean tieneImagenOriginal() {
+        return playlistActual != null && playlistActual.getImagenPortada() != null;
+    }
+
+    private void restablecerDesdeBytes() {
+        try {
+            ByteArrayInputStream streamImagen = new ByteArrayInputStream(playlistActual.getImagenPortada());
+            Image imagenOriginal = new Image(streamImagen);
+            imgPortada.setImage(imagenOriginal);
+            imagenSeleccionada = null;
+            imprimirLog("Imagen restablecida a la original");
+        } catch (Exception e) {
+            imprimirLog("Error al restablecer imagen original: " + e.getMessage());
+            cargarImagenPorDefecto();
+        }
+    }
+
+    private void restablecerAImagenPorDefecto() {
+        cargarImagenPorDefecto();
+        imagenSeleccionada = null;
+    }
+
+    // =================== VERIFICACIÓN DE CAMBIOS ===================
+
+    public boolean verificarCambiosPendientes() {
+        String tituloActual = obtenerTextoLimpio(txtTitulo);
+        String descripcionActual = obtenerTextoLimpio(txtDescripcion);
+
+        boolean cambioTitulo = !tituloActual.equals(obtenerTextoSeguro(tituloOriginal));
+        boolean cambioDescripcion = !descripcionActual.equals(obtenerTextoSeguro(descripcionOriginal));
         boolean cambioImagen = imagenSeleccionada != null;
 
-        System.out.println("=== VERIFICANDO CAMBIOS ===");
-        System.out.println("Cambio título: " + cambioTitulo);
-        System.out.println("Cambio descripción: " + cambioDescripcion);
-        System.out.println("Cambio imagen: " + cambioImagen);
+        imprimirVerificacionCambios(cambioTitulo, cambioDescripcion, cambioImagen);
 
         return cambioTitulo || cambioDescripcion || cambioImagen;
     }
-    /**
-     * Método para establecer la playlist a editar
-     * @param playlist PlaylistDTO con los datos de la playlist
-     */
-    public void setPlaylist(PlaylistDTO playlist) {
-        System.out.println("=== CARGANDO PLAYLIST PARA EDITAR ===");
-        this.playlistActual = playlist;
-        
-        if (playlist != null) {
-            System.out.println("Playlist ID: " + playlist.getIdPlaylist());
-            System.out.println("Título: " + playlist.getTituloPlaylist());
-            System.out.println("Descripción: " + (playlist.getDescripcion() != null ? playlist.getDescripcion() : "null"));
-            System.out.println("Tiene imagen: " + (playlist.getImagenPortada() != null ? "Sí (" + playlist.getImagenPortada().length + " bytes)" : "No"));
-            
-            // Cargar datos de la playlist en los controles
-            txtTitulo.setText(playlist.getTituloPlaylist());
-            txtDescripcion.setText(playlist.getDescripcion() != null ? playlist.getDescripcion() : "");
-            
-            // Guardar valores originales
-            tituloOriginal = playlist.getTituloPlaylist();
-            descripcionOriginal = playlist.getDescripcion();
-            
-            // Cargar imagen si existe
-            if (playlist.getImagenPortada() != null) {
-                try {
-                    // Convertir bytes a imagen
-                    ByteArrayInputStream bis = new ByteArrayInputStream(playlist.getImagenPortada());
-                    Image imagen = new Image(bis);
-                    imgPortada.setImage(imagen);
-                    System.out.println("Imagen de portada cargada exitosamente");
-                } catch (Exception e) {
-                    System.out.println("Error al cargar imagen de portada: " + e.getMessage());
-                    cargarImagenPorDefecto();
-                }
-            } else {
-                System.out.println("No hay imagen de portada, cargando imagen por defecto");
-                cargarImagenPorDefecto();
-            }
-            
-            // Validar campos después de cargar
-            validarCampos();
-            System.out.println("Playlist cargada completamente para edición");
-        } else {
-            System.out.println("ERROR: Playlist recibida es null");
-        }
+
+    private void imprimirVerificacionCambios(boolean cambioTitulo, boolean cambioDescripcion, boolean cambioImagen) {
+        imprimirLog("=== VERIFICANDO CAMBIOS ===");
+        imprimirLog("Cambio título: " + cambioTitulo);
+        imprimirLog("Cambio descripción: " + cambioDescripcion);
+        imprimirLog("Cambio imagen: " + cambioImagen);
+    }
+
+    // Método legacy para compatibilidad
+    public boolean huboCambios() {
+        return verificarCambiosPendientes();
+    }
+
+    // =================== MÉTODOS UTILITARIOS ===================
+
+    private String obtenerTextoLimpio(TextField campo) {
+        return campo.getText().trim();
+    }
+
+    private String obtenerTextoLimpio(TextArea campo) {
+        return campo.getText().trim();
+    }
+
+    private String obtenerTextoSeguro(String texto) {
+        return texto != null ? texto : "";
+    }
+
+    private Stage obtenerVentanaActual() {
+        return (Stage) imgPortada.getScene().getWindow();
+    }
+
+    private void cerrarVentana() {
+        Stage ventana = (Stage) btnRegresar.getScene().getWindow();
+        ventana.close();
+    }
+
+    private void imprimirLog(String mensaje) {
+        System.out.println(mensaje);
+    }
+
+    // =================== MENSAJES DE USUARIO ===================
+
+    private void mostrarMensajeError(String titulo, String mensaje) {
+        mostrarAlerta(Alert.AlertType.ERROR, titulo, mensaje);
+    }
+
+    private void mostrarMensajeInformativo(String titulo, String mensaje) {
+        mostrarAlerta(Alert.AlertType.INFORMATION, titulo, mensaje);
+    }
+
+    private void mostrarMensajeAdvertencia(String titulo, String mensaje) {
+        mostrarAlerta(Alert.AlertType.WARNING, titulo, mensaje);
+    }
+
+    private void mostrarAlerta(Alert.AlertType tipo, String titulo, String mensaje) {
+        Alert alerta = new Alert(tipo);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
+    }
+
+    // Método legacy para compatibilidad
+    private void mostrarAlerta(String titulo, String mensaje) {
+        mostrarMensajeInformativo(titulo, mensaje);
     }
 }

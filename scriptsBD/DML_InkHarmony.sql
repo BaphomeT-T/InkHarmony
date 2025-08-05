@@ -23,7 +23,6 @@ INSERT INTO Usuario (nombre_usuario, apellido_usuario, correo, contraseña, tipo
 ('Jonas', 'Garcia', 'jonas@gmail.com', '$2a$10$wFBV8MmGWPzIwsnhJ3/w0eWNici2F8dXx1RUM7F0TxTAa1T2CWfPK', 'ADMINISTRADOR',  '1', 'activo');
 SELECT * FROM Usuario;
 UPDATE Usuario
-<<<<<<< HEAD
                     SET  estado_cuenta= "activo"
                     WHERE correo = "jonas@gmail.com";
 
@@ -46,7 +45,3 @@ INSERT INTO Artista_Genero(id_artista, id_genero) VALUES
                                                       (6,17),
                                                       (7,6);
 
-=======
-SET  estado_cuenta= "activo"
-WHERE correo = "jonas@gmail.com";
->>>>>>> 13a7d7a8b979e880d7ed8bd7bb3eb477cc5ac00f
