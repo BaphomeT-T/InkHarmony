@@ -1,7 +1,12 @@
 package BusinessLogic;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
+import java.util.function.Consumer;
 import BusinessLogic.utilities.AdvancedPlayerAcc;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 /**
  * Clase principal que representa el controlador de reproducción de audio MP3.
@@ -109,6 +114,7 @@ public class ReproductorMP3 {
         estadoActual.anterior();
     }
 
+
     // --------------------------
     // Métodos internos
     // --------------------------
@@ -123,6 +129,8 @@ public class ReproductorMP3 {
         List<byte[]> lista = playlist.getCanciones();
         if (lista != null) {
             byte[] cancion = playlist.obtenerCancionActual();
+            // Cambiar el estado a Reproduciendo antes de iniciar
+            setEstado(new EstadoReproduciendo(this));
             motor.reproducir(cancion, frameInicial, () -> {
                 playlist.siguiente();
                 iniciarReproduccionDesde(0);
@@ -170,6 +178,38 @@ public class ReproductorMP3 {
         estadoActual = new EstadoDetenido(this);
     }
 
+    /* Obtener la duración total de la canción actual.
+     *
+     * @return Duración total en milisegundos
+     */
+    public void obtenerDuracionCancionActual(Consumer<Double> callback) {
+        try {
+            byte[] cancion = playlist.obtenerCancionActual();
+            if (cancion == null) {
+                callback.accept(0.0);
+                return;
+            }
+
+            File tempFile = File.createTempFile("duracion", ".mp3");
+            try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+                fos.write(cancion);
+            }
+
+            Media media = new Media(tempFile.toURI().toString());
+            MediaPlayer tempPlayer = new MediaPlayer(media);
+
+            tempPlayer.setOnReady(() -> {
+                double duracion = media.getDuration().toSeconds();
+                callback.accept(duracion);
+            });
+
+        } catch (Exception e) {
+            System.out.println("Error al obtener duración: " + e.getMessage());
+            callback.accept(0.0);
+        }
+    }
+
+
     // --------------------------
     // Getters y Setters
     // --------------------------
@@ -209,4 +249,10 @@ public class ReproductorMP3 {
     public void setEstado(EstadoReproductor estado) {
         this.estadoActual = estado;
     }
+
+    public boolean estaReproduciendo() {
+        return estadoActual instanceof EstadoReproduciendo;
+    }
+
+
 }
