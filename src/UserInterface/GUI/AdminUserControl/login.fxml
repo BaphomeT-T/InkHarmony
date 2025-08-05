@@ -10,8 +10,17 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="840.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.AdminUserControl.LoginController">
+<AnchorPane centerShape="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="840.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.AdminUserControl.LoginController">
    <children>
+      <AnchorPane prefHeight="200.0" prefWidth="1280.0" AnchorPane.rightAnchor="390.0">
+         <children>
+            <Label depthTest="ENABLE" layoutX="803.0" layoutY="81.0" pickOnBounds="false" text="InkHarmony" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font size="80.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
       <AnchorPane layoutX="390.0" layoutY="202.0" prefHeight="507.0" prefWidth="500.0" style="-fx-background-color: #1B1A55; -fx-background-radius: 25;" AnchorPane.rightAnchor="390.0">
          <children>
             <Label layoutX="33.0" layoutY="127.0" prefHeight="28.39" prefWidth="197.81" text="Correo electrónico" textFill="#ffffff">
@@ -58,10 +67,5 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <Label layoutX="430.0" layoutY="85.0" text="InkHarmony" textAlignment="CENTER" textFill="WHITE">
-         <font>
-            <Font size="80.0" />
-         </font>
-      </Label>
    </children>
 </AnchorPane>

@@ -10,6 +10,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
@@ -18,11 +19,11 @@
 <?import javafx.scene.text.Font?>
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1280.0" spacing="10" style="-fx-padding: 20; -fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.AdminUserControl.AdministracionUsuarioController">
-   <GridPane fx:id="cerrarButtom" >
+   <GridPane fx:id="cerrarButtom">
      <columnConstraints>
        <ColumnConstraints />
-         <ColumnConstraints hgrow="SOMETIMES" maxWidth="406.79998779296875" minWidth="0.0" prefWidth="18.800018310546875" />
-       <ColumnConstraints hgrow="SOMETIMES" maxWidth="1061.2" minWidth="10.0" prefWidth="1042.3999816894532" />
+         <ColumnConstraints hgrow="SOMETIMES" maxWidth="406.79998779296875" minWidth="0.0" prefWidth="77.99999389648437" />
+       <ColumnConstraints hgrow="SOMETIMES" maxWidth="1061.2" minWidth="10.0" prefWidth="1053.2000061035158" />
          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
      </columnConstraints>
      <rowConstraints>
@@ -42,11 +43,16 @@
                <Circle fx:id="imgPerfil" fill="DODGERBLUE" radius="23.0" stroke="BLACK" strokeType="INSIDE" />
             </graphic>
          </MenuButton>
-         <Label fx:id="cerrarButton" onMouseClicked="#cerrarVentana" text="X" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER">
-            <font>
-               <Font size="40.0" />
-            </font>
-         </Label>
+         <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+            <children>
+               <Button fx:id="cerrarButton" layoutX="13.0" layoutY="1.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="30.0" prefWidth="54.0" style="-fx-background-color: #9190C2; -fx-background-radius: 20;" />
+               <ImageView fitHeight="22.0" fitWidth="44.0" layoutX="19.0" layoutY="7.0">
+                  <image>
+                     <Image url="@../../Resources/img/regreso.png" />
+                  </image>
+               </ImageView>
+            </children>
+         </AnchorPane>
       </children>
    </GridPane>
    <GridPane style="-fx-background-color: #1B1A55; -fx-background-radius: 15; -fx-padding: 10;" VBox.vgrow="ALWAYS">
