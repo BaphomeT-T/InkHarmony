@@ -3,7 +3,7 @@
 | © 2025 EPN-FIS, Todos los derechos reservados |
 | GR1SW                                         |
 |-----------------------------------------------|
-Autores: Samira Arízaga, Paul Dávila, Sebastián Ramos
+Autores: Grupo B en base a Cancion DTO de Samira Arízaga, Paul Dávila, Sebastián Ramos
 Descripción: Objeto de transferencia de datos (DTO) que representa una canción dentro del sistema InkHarmony.
 */
 
