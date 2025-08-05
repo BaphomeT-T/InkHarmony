@@ -5,6 +5,6 @@ import javafx.application.Application;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        Application.launch(PruebaPlaylist.class, args);
+        Application.launch(Login.class, args);
     }
 }
