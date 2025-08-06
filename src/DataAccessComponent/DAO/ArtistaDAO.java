@@ -10,6 +10,13 @@ import java.util.List;
 
 public class ArtistaDAO extends SQLiteDataHelper implements IDAO<ArtistaDTO> {
 
+    /**
+     *Registra un nuevo artista en la base de datos, incluyendo sus géneros musicales.
+     *
+     * @param artista Objeto ArtistaDTO a registrar
+     * @return true si el registro fue exitoso
+     * @throws Exception si ocurre un error al registrar el artista
+     */
     @Override
     public boolean registrar(ArtistaDTO artista) throws Exception {
         String sqlInsert = "INSERT INTO Artista(nombre, biografia, imagen) VALUES (?, ?, ?)";
@@ -43,6 +50,12 @@ public class ArtistaDAO extends SQLiteDataHelper implements IDAO<ArtistaDTO> {
         }
     }
 
+    /**
+     * Obtiene todos los artistas registrados en la base de datos junto con sus géneros musicales.
+     *
+     * @return Lista de artistas encontrados
+     * @throws Exception si ocurre un error al obtener los artistas
+     */
     @Override
     public List<ArtistaDTO> buscarTodo() throws Exception {
         List<ArtistaDTO> lista = new ArrayList<>();
@@ -69,6 +82,13 @@ public class ArtistaDAO extends SQLiteDataHelper implements IDAO<ArtistaDTO> {
         return lista;
     }
 
+    /**
+     * Busca un artista por su ID.
+     *
+     * @param id ID del artista a buscar
+     * @return Objeto ArtistaDTO correspondiente al ID especificado
+     * @throws Exception si ocurre un error durante la búsqueda
+     */
     @Override
     public ArtistaDTO buscarPorId(Integer id) throws Exception {
         ArtistaDTO artista = new ArtistaDTO();
@@ -93,6 +113,13 @@ public class ArtistaDAO extends SQLiteDataHelper implements IDAO<ArtistaDTO> {
         return artista;
     }
 
+    /**
+     * Actualiza la información de un artista existente, incluyendo sus géneros asociados.
+     *
+     * @param artista Objeto ArtistaDTO con los datos actualizados
+     * @return true si la actualización fue exitosa
+     * @throws Exception si ocurre un error al actualizar
+     */
     @Override
     public boolean actualizar(ArtistaDTO artista) throws Exception {
         String sqlUpdate = "UPDATE Artista SET nombre = ?, biografia = ?, imagen = ? WHERE id_artista = ?";
@@ -156,8 +183,13 @@ public class ArtistaDAO extends SQLiteDataHelper implements IDAO<ArtistaDTO> {
         }
     }
 
-
-
+    /**
+     * Obtiene los géneros musicales asociados a un artista específico.
+     *
+     * @param idArtista ID del artista a obtener
+     * @return Lista de géneros asociados
+     * @throws Exception si ocurre un error al obtener los géneros
+     */
     private List<Genero> getGenerosPorArtista(int idArtista) throws Exception {
         List<Genero> generos = new ArrayList<>();
         String sql = "SELECT id_genero FROM Artista_Genero WHERE id_artista = ?";
