@@ -9,7 +9,7 @@
 <?import javafx.scene.text.*?>
 
 <?import java.lang.String?>
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280" style="-fx-border-radius: 15px; -fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.ReproduccionVariasCancionesController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280" style="-fx-border-radius: 15px; -fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.ReproductorMusical.ReproduccionVariasCancionesController">
     <children>
         <TextField fx:id="txtBuscarCancion" alignment="TOP_LEFT" layoutX="264.0" layoutY="15.0" prefHeight="14.0" prefWidth="743.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;" text="  ¿Qué quieres reproducir?">
             <font>
@@ -34,7 +34,7 @@
             <graphic>
                 <ImageView fitHeight="26.0" fitWidth="29.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../Resources/img/play.png" />
+                        <Image url="@../../Resources/ReproductorMusical/img/play.png" />
                     </image>
                     <effect>
                         <ColorAdjust brightness="1.0" contrast="0.49" hue="0.47" saturation="0.21" />
@@ -50,7 +50,7 @@
             <graphic>
                 <ImageView fitHeight="21.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../Resources/img/siguiente-pista.png" />
+                        <Image url="@../../Resources/ReproductorMusical/img/siguiente-pista.png" />
                     </image>
                     <effect>
                         <ColorAdjust brightness="1.0" />
@@ -63,7 +63,7 @@
             <graphic>
                 <ImageView fitHeight="21.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../Resources/img/pista-anterior.png" />
+                        <Image url="@../../Resources/ReproductorMusical/img/pista-anterior.png" />
                     </image>
                     <effect>
                         <ColorAdjust brightness="1.0" />
@@ -76,7 +76,7 @@
             <graphic>
                 <ImageView fitHeight="36.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../Resources/img/lupa.png" />
+                        <Image url="@../../Resources/ReproductorMusical/img/lupa.png" />
                     </image>
                 </ImageView>
             </graphic></Button>
@@ -84,7 +84,7 @@
             <graphic>
                 <ImageView>
                     <image>
-                        <Image url="@../Resources/img/regresar-pagina.png" />
+                        <Image url="@../../Resources/ReproductorMusical/img/regresar-pagina.png" />
                     </image>
                 </ImageView>
             </graphic></Button>
@@ -93,7 +93,7 @@
             <graphic>
                 <ImageView fitHeight="40.0" fitWidth="42.0">
                     <image>
-                        <Image url="@../Resources/img/simbolo-aplicacion.png" />
+                        <Image url="@../../Resources/ReproductorMusical/img/simbolo-aplicacion.png" />
                     </image>
                 </ImageView>
             </graphic></Button>
@@ -113,7 +113,7 @@
                     <graphic>
                         <ImageView fitHeight="46.0" fitWidth="68.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../Resources/img/lupa.png" />
+                                <Image url="@../../Resources/ReproductorMusical/img/lupa.png" />
                             </image>
                             <effect>
                                 <ColorAdjust brightness="1.0" />

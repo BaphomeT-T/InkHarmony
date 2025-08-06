@@ -10,7 +10,7 @@ package DataAccessComponent.DAO;
 
 import DataAccessComponent.DTO.PlaylistDTO;
 import DataAccessComponent.DTO.CancionDTO;
-import DataAccessComponent.SQLiteDataHelper;
+import DataAccessComponent.ReproductorMusical.SQLiteDataHelper;
 import BusinessLogic.ServicioValidacionPlaylist;
 
 import java.sql.*;

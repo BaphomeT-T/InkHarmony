@@ -8,7 +8,7 @@
 <?import javafx.scene.text.*?>
 
 <?import java.lang.String?>
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="582.4" prefWidth="896" style="-fx-background: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.ReproduccionCancionController">
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="582.4" prefWidth="896" style="-fx-background: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.ReproductorMusical.ReproduccionCancionController">
    <content>
       <Pane prefHeight="820.0" prefWidth="1280.0" style="-fx-border-radius: 15px; -fx-background-color: #070F2B;">
          <children>
@@ -17,7 +17,7 @@
                <graphic>
                   <ImageView fitHeight="40.0" fitWidth="42.0">
                      <image>
-                        <Image url="@../Resources/img/simbolo-aplicacion.png" />
+                        <Image url="@../../Resources/ReproductorMusical/img/simbolo-aplicacion.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -33,7 +33,7 @@
                <graphic>
                   <ImageView fitHeight="36.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../Resources/img/lupa.png" />
+                        <Image url="@../../Resources/ReproductorMusical/img/lupa.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -43,7 +43,7 @@
                <graphic>
                   <ImageView>
                      <image>
-                        <Image url="@../Resources/img/regresar-pagina.png" />
+                        <Image url="@../../Resources/ReproductorMusical/img/regresar-pagina.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -95,7 +95,7 @@
                <graphic>
                   <ImageView fitHeight="21.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../Resources/img/pista-anterior.png" />
+                        <Image url="@../../Resources/ReproductorMusical/img/pista-anterior.png" />
                      </image>
                      <effect>
                         <ColorAdjust brightness="1.0" />
@@ -108,7 +108,7 @@
                <graphic>
                   <ImageView fx:id="imgPlayPause" fitHeight="26.0" fitWidth="29.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../Resources/img/boton-de-play.png" />
+                        <Image url="@../../Resources/ReproductorMusical/img/boton-de-play.png" />
                      </image>
                      <effect>
                         <ColorAdjust brightness="1.0" />
@@ -121,7 +121,7 @@
                <graphic>
                   <ImageView fitHeight="21.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../Resources/img/siguiente-pista.png" />
+                        <Image url="@../../Resources/ReproductorMusical/img/siguiente-pista.png" />
                      </image>
                      <effect>
                         <ColorAdjust brightness="1.0" />

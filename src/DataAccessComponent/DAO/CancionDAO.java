@@ -12,7 +12,7 @@ package DataAccessComponent.DAO;
 import DataAccessComponent.DTO.CancionDTO;
 import DataAccessComponent.DTO.ArtistaDTO;
 import BusinessLogic.Genero;
-import DataAccessComponent.SQLiteDataHelper;
+import DataAccessComponent.ReproductorMusical.SQLiteDataHelper;
 
 import java.sql.*;
 import java.time.LocalDateTime;

@@ -8,12 +8,12 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/reproduccionCancion.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/ReproductorMusical/reproduccionCancion.fxml"));
             Parent root = loader.load();
 
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
-                    getClass().getResource("/UserInterface/Resources/css/slider.css").toExternalForm()
+                    getClass().getResource("/UserInterface/Resources/ReproductorMusical/css/slider.css").toExternalForm()
             );
 
             primaryStage.setScene(scene);

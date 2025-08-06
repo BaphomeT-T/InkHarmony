@@ -1,4 +1,4 @@
-package BusinessLogic;
+package BusinessLogic.ReproductorMusical;
 
 import BusinessLogic.utilities.AdvancedPlayerAcc;
 import javazoom.jl.player.advanced.PlaybackEvent;
@@ -6,12 +6,6 @@ import javazoom.jl.player.advanced.PlaybackListener;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.function.Consumer;
 
 
 /**
