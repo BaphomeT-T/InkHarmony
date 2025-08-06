@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.skin.TableHeaderRow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -18,7 +19,6 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.ByteArrayInputStream;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,6 +64,8 @@ public class RecomendacionesController {
     @FXML
     private StackPane contentPane;
 
+    private TableHeaderRow headerRow;
+
     // ---------- init ----------
     @FXML
     private void initialize() {
@@ -72,6 +74,15 @@ public class RecomendacionesController {
         tablaCanciones.setItems(datos);
         tablaCanciones.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         configurarAnchuraDinamica();
+
+        // ─── localizar la fila de encabezado ───
+        Platform.runLater(() -> {
+            headerRow = (TableHeaderRow) tablaCanciones.lookup("TableHeaderRow");
+            if (headerRow != null) { // al inicio la tabla está vacía
+                headerRow.setVisible(false);
+                headerRow.setManaged(false);
+            }
+        });
 
         // arranque: UI limpia
         filtrosBox.setVisible(false);
@@ -121,6 +132,7 @@ public class RecomendacionesController {
     // ---------- lógica de toggles ----------
     private void toggleFiltroGenero() {
         filtroGenero = !filtroGenero;
+        if (!filtroGenero) txtBuscarGenero.clear();
         actualizarEstilosBotones();
         actualizarVisibilidadCampos();
         refrescarTabla();
@@ -128,6 +140,7 @@ public class RecomendacionesController {
 
     private void toggleFiltroArtista() {
         filtroArtista = !filtroArtista;
+        if (!filtroArtista) txtBuscarArtista.clear();
         actualizarEstilosBotones();
         actualizarVisibilidadCampos();
         refrescarTabla();
@@ -189,40 +202,42 @@ public class RecomendacionesController {
     /** Llena la tabla según los filtros activos y el texto escrito. */
     private void refrescarTabla() {
 
+        /* ---------- A. Sin filtros ---------- */
         if (!mostrarFiltrosActivos()) {
             datos.clear();
+            actualizarHeader(); // ← NUEVO
             mensajeBienvenida.setVisible(true);
-            mensajeBienvenida.setText("¡Bienvenido!");
             mensajeSelecciona.setVisible(true);
             mensajeSelecciona.setText("Selecciona uno o más filtros");
             return;
         }
-        /* ---------- 0-bis. Falta criterio ---------- */
+
+        /* ---------- B. Falta texto ---------- */
         String textoGenero = filtroGenero ? txtBuscarGenero.getText().trim() : "";
         String textoArtista = filtroArtista ? txtBuscarArtista.getText().trim() : "";
 
-        boolean generoPendiente = filtroGenero && textoGenero.isBlank();
-        boolean artistaPendiente = filtroArtista && textoArtista.isBlank();
-
-        boolean faltaTextoEnTodos = (generoPendiente || artistaPendiente)
-                && !(filtroGenero && !generoPendiente)
-                && !(filtroArtista && !artistaPendiente)
+        boolean generoPend = filtroGenero && textoGenero.isBlank();
+        boolean artistaPend = filtroArtista && textoArtista.isBlank();
+        boolean faltaTextoEnTodos = (generoPend || artistaPend)
+                && !(filtroGenero && !generoPend)
+                && !(filtroArtista && !artistaPend)
                 && !(filtroPrefer || filtroEstrenos);
 
         if (faltaTextoEnTodos) {
             datos.clear();
+            actualizarHeader(); // ← NUEVO
             mensajeBienvenida.setVisible(false);
             mensajeSelecciona.setVisible(true);
             mensajeSelecciona.setText(
-                    generoPendiente && artistaPendiente ? "Ingresa un género o artista"
-                            : generoPendiente ? "Ingresa un género"
+                    generoPend && artistaPend ? "Ingresa un género o artista"
+                            : generoPend ? "Ingresa un género"
                                     : "Ingresa un artista");
             return;
         }
 
+        /* ---------- C. Consulta al servicio ---------- */
         List<CancionDTO> base = servicio.recomendar(
-                filtroPrefer,
-                null,
+                filtroPrefer, null,
                 filtroArtista ? textoArtista : null,
                 filtroEstrenos);
 
@@ -232,11 +247,13 @@ public class RecomendacionesController {
             resultado = base.stream()
                     .filter(c -> c.getGeneros() != null &&
                             c.getGeneros().stream()
-                                    .anyMatch(g -> g.name().toLowerCase().contains(patron)))
+                                    .anyMatch(g -> g.name().toLowerCase()
+                                            .contains(patron)))
                     .toList();
         }
 
         datos.setAll(resultado);
+        actualizarHeader();
 
         if (resultado.isEmpty()) {
             mensajeBienvenida.setVisible(false);
@@ -245,6 +262,14 @@ public class RecomendacionesController {
         } else {
             mensajeBienvenida.setVisible(false);
             mensajeSelecciona.setVisible(false);
+        }
+    }
+
+    private void actualizarHeader() {
+        if (headerRow != null) {
+            boolean hayDatos = !datos.isEmpty();
+            headerRow.setVisible(hayDatos);
+            headerRow.setManaged(hayDatos);
         }
     }
 
@@ -315,7 +340,7 @@ public class RecomendacionesController {
 
             {
                 Image img = new Image(getClass().getResourceAsStream(
-                        "/UserInterface/Resources/img/play.png"), 18, 18, true, true);
+                        "/UserInterface/Resources/img/play.png"), 11, 11, true, true);
                 btnPlay.setGraphic(new ImageView(img));
                 btnPlay.setStyle("""
                             -fx-background-color: #9190C2;
@@ -334,5 +359,4 @@ public class RecomendacionesController {
             }
         });
     }
-
 }
