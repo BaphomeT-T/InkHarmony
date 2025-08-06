@@ -1,214 +1,323 @@
 package UserInterface.CustomerControl.Recomendaciones;
 
+import BusinessLogic.*;
+import DataAccessComponent.DTO.CancionDTO;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
+import java.io.ByteArrayInputStream;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
+/**
+ * Controla la única pantalla de Recomendaciones.
+ * - Cada botón actúa como “toggle” → aplica o quita su filtro.
+ * - Los <TextField> de artista / género filtran en vivo al escribir.
+ */
 public class RecomendacionesController {
 
-    private boolean isPressedGenero = false;
-    private boolean isPressedArtista = false;
-    private boolean isPressedPersonalizadas = false;
-    private boolean isPressedEstreno = false;
+    // ---------- estilos ----------
+    private static final String BASE_STYLE = "-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-background-radius: 40; -fx-padding: 20 40;";
+    private static final String PRESSED_STYLE = "-fx-background-color: #48486A; -fx-text-fill: white; -fx-background-radius: 40; -fx-padding: 20 40;";
 
-    private final String baseStyle = "-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-background-radius: 40; -fx-padding: 20 40;";
-    private final String pressedStyle = "-fx-background-color: #48486A; -fx-text-fill: white; -fx-background-radius: 40; -fx-padding: 20 40;";
+    // ---------- estado de filtros ----------
+    private boolean filtroGenero = false;
+    private boolean filtroArtista = false;
+    private boolean filtroPrefer = false;
+    private boolean filtroEstrenos = false;
 
+    // ---------- servicios y datos ----------
+    private final ServicioRecomendaciones servicio = new ServicioRecomendaciones();
+    private final ObservableList<CancionDTO> datos = FXCollections.observableArrayList();
+
+    // ---------- FXML ----------
     @FXML
-    private Button btnEstrenos;
-
+    private Button btnLimpiarFiltros, btnGenero, btnArtista, btnPersonalizadas,
+            btnEstrenos, cerrarButton;
     @FXML
-    private Button btnGenero;
-
+    private TextField txtBuscarGenero, txtBuscarArtista;
     @FXML
-    private Button btnPersonalizadas;
-
+    private HBox filtrosBox;
     @FXML
-    private Button btnArtista;
-
+    private Label mensajeBienvenida, mensajeSelecciona;
     @FXML
-    private Button cerrarButton;
-
+    private TableView<CancionDTO> tablaCanciones;
     @FXML
-    private Button btnLimpiarFiltros;
-
+    private TableColumn<CancionDTO, CancionDTO> colTituloConImagen;
     @FXML
-    private TableColumn<?, ?> colAnio;
-
+    private TableColumn<CancionDTO, String> colArtista, colGenero, colAnio, colDuracion;
     @FXML
-    private TableColumn<?, ?> colArtista;
-
-    @FXML
-    private TableColumn<?, ?> colDuracion;
-
-    @FXML
-    private TableColumn<?, ?> colImagen;
-
-    @FXML
-    private TableColumn<?, ?> colTitulo;
-
-    @FXML
-    private ComboBox<?> comboArtista;
-
-    @FXML
-    private ComboBox<?> comboGenero;
-
+    private TableColumn<CancionDTO, Void> colPlay;
     @FXML
     private StackPane contentPane;
 
-    @FXML
-    private HBox filtrosBox;
-
-    @FXML
-    private TableView<?> tablaCanciones;
-
-    @FXML
-    private Label mensajeBienvenida;
-
-    @FXML
-    private Label mensajeSelecciona;
-
-    @FXML
-    private TextField txtBuscarArtista;
-
-    @FXML
-    private TextField txtBuscarGenero;
-
-
-    @FXML
-    void cerrarVentana(ActionEvent event) {
-
-    }
-
-    // Función para alternar estilo
-    private void toggleButtonStyle(Button btn, boolean isPressed) {
-        if (isPressed) {
-            btn.setStyle(pressedStyle);
-        } else {
-            btn.setStyle(baseStyle);
-        }
-    }
-
+    // ---------- init ----------
     @FXML
     private void initialize() {
-        // Ocultamos todo al inicio
+        configurarColumnas();
+        configurarBusquedasEnVivo();
+        tablaCanciones.setItems(datos);
+        tablaCanciones.setColumnResizePolicy(
+                TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        configurarAnchuraDinamica();
+
+        // arranque: UI limpia
         filtrosBox.setVisible(false);
         filtrosBox.setManaged(false);
-
         txtBuscarGenero.setVisible(false);
         txtBuscarGenero.setManaged(false);
-
         txtBuscarArtista.setVisible(false);
         txtBuscarArtista.setManaged(false);
+    }
+
+    // ---------- handlers de botones ----------
+    @FXML
+    private void handlePorGenero() {
+        toggleFiltroGenero();
     }
 
     @FXML
     private void handlePorArtista() {
-        if (!isPressedArtista){
-            isPressedArtista = true;
-            toggleButtonStyle(btnArtista, true);  // Cambia el estilo
-
-            filtrosBox.setVisible(true);
-            filtrosBox.setManaged(true);
-
-            txtBuscarArtista.setVisible(true);
-            txtBuscarArtista.setManaged(true);
-
-            mensajeBienvenida.setVisible(false);
-            mensajeBienvenida.setManaged(false);
-
-            mensajeSelecciona.setVisible(false);
-            mensajeSelecciona.setManaged(false);
-        }
+        toggleFiltroArtista();
     }
 
     @FXML
-    private void handlePorGenero() {
-        if (!isPressedGenero) {
-            isPressedGenero = true;
-            toggleButtonStyle(btnGenero, true);
-
-            filtrosBox.setVisible(true);
-            filtrosBox.setManaged(true);
-
-            txtBuscarGenero.setVisible(true);
-            txtBuscarGenero.setManaged(true);
-
-            mensajeBienvenida.setVisible(false);
-            mensajeBienvenida.setManaged(false);
-
-            mensajeSelecciona.setVisible(false);
-            mensajeSelecciona.setManaged(false);
-        }
+    private void handlePersonalizadas() {
+        toggleFiltroPreferencias();
     }
 
     @FXML
-    private void handlePersonalizadas(ActionEvent event) {
-        if (!isPressedPersonalizadas) {
-            isPressedPersonalizadas = true;
-            toggleButtonStyle(btnPersonalizadas, true);
-            filtrosBox.setVisible(true);
-            filtrosBox.setManaged(true);
-
-            mensajeBienvenida.setVisible(false);
-            mensajeBienvenida.setManaged(false);
-
-            mensajeSelecciona.setVisible(false);
-            mensajeSelecciona.setManaged(false);
-        }
-    }
-
-    @FXML
-    private void handleEstrenos(ActionEvent event) {
-        if (!isPressedEstreno) {
-            isPressedEstreno = true;
-            toggleButtonStyle(btnEstrenos, true);
-            filtrosBox.setVisible(true);
-            filtrosBox.setManaged(true);
-
-            mensajeBienvenida.setVisible(false);
-            mensajeBienvenida.setManaged(false);
-
-            mensajeSelecciona.setVisible(false);
-            mensajeSelecciona.setManaged(false);
-        }
+    private void handleEstrenos() {
+        toggleFiltroEstrenos();
     }
 
     @FXML
     private void handleLimpiarFiltros() {
-        isPressedGenero = false;
-        toggleButtonStyle(btnGenero, isPressedGenero);
-
-        isPressedArtista = false;
-        toggleButtonStyle(btnArtista, isPressedArtista);
-
-        isPressedPersonalizadas = false;
-        toggleButtonStyle(btnPersonalizadas, isPressedPersonalizadas);
-
-        isPressedEstreno = false;
-        toggleButtonStyle(btnEstrenos, isPressedEstreno);
-
-        // Ocultar combos
-        txtBuscarGenero.setVisible(false);
-        txtBuscarGenero.setManaged(false);
-
-        txtBuscarArtista.setVisible(false);
-        txtBuscarArtista.setManaged(false);
-
-        // Si no hay filtros activos, ocultar el contenedor completo
-        filtrosBox.setVisible(false);
-        filtrosBox.setManaged(false);
-
-        mensajeBienvenida.setVisible(true);
-        mensajeBienvenida.setManaged(true);
-
-        mensajeSelecciona.setVisible(true);
-        mensajeSelecciona.setManaged(true);
-
+        filtroGenero = filtroArtista = filtroPrefer = filtroEstrenos = false;
+        txtBuscarGenero.clear();
+        txtBuscarArtista.clear();
+        actualizarEstilosBotones();
+        actualizarVisibilidadCampos();
+        refrescarTabla();
     }
 
+    @FXML
+    private void cerrarVentana(ActionEvent e) {
+        ((Button) e.getSource()).getScene().getWindow().hide();
+    }
+
+    // ---------- lógica de toggles ----------
+    private void toggleFiltroGenero() {
+        filtroGenero = !filtroGenero;
+        actualizarEstilosBotones();
+        actualizarVisibilidadCampos();
+        refrescarTabla();
+    }
+
+    private void toggleFiltroArtista() {
+        filtroArtista = !filtroArtista;
+        actualizarEstilosBotones();
+        actualizarVisibilidadCampos();
+        refrescarTabla();
+    }
+
+    private void toggleFiltroPreferencias() {
+        filtroPrefer = !filtroPrefer;
+        actualizarEstilosBotones();
+        actualizarVisibilidadCampos();
+        refrescarTabla();
+    }
+
+    private void toggleFiltroEstrenos() {
+        filtroEstrenos = !filtroEstrenos;
+        actualizarEstilosBotones();
+        actualizarVisibilidadCampos();
+        refrescarTabla();
+    }
+
+    private void actualizarEstilosBotones() {
+        btnGenero.setStyle(filtroGenero ? PRESSED_STYLE : BASE_STYLE);
+        btnArtista.setStyle(filtroArtista ? PRESSED_STYLE : BASE_STYLE);
+        btnPersonalizadas.setStyle(filtroPrefer ? PRESSED_STYLE : BASE_STYLE);
+        btnEstrenos.setStyle(filtroEstrenos ? PRESSED_STYLE : BASE_STYLE);
+    }
+
+    private void actualizarVisibilidadCampos() {
+        boolean mostrarBox = filtroGenero || filtroArtista || filtroPrefer || filtroEstrenos;
+        filtrosBox.setVisible(mostrarBox);
+        filtrosBox.setManaged(mostrarBox);
+
+        txtBuscarGenero.setVisible(filtroGenero);
+        txtBuscarGenero.setManaged(filtroGenero);
+        txtBuscarArtista.setVisible(filtroArtista);
+        txtBuscarArtista.setManaged(filtroArtista);
+    }
+
+    // ---------- busca / refresca ----------
+    private void configurarBusquedasEnVivo() {
+        txtBuscarGenero.textProperty().addListener((obs, oldVal, newVal) -> refrescarTabla());
+        txtBuscarArtista.textProperty().addListener((obs, oldVal, newVal) -> refrescarTabla());
+    }
+
+    private void configurarAnchuraDinamica() {
+        // Esperamos a que el Scene y el Stage existan
+        Platform.runLater(() -> {
+            Stage stage = (Stage) contentPane.getScene().getWindow();
+
+            // 1ª vez: parte en 900 px
+            contentPane.setPrefWidth(975);
+
+            // Cada vez que el usuario maximice / restaure
+            stage.maximizedProperty().addListener((obs, wasMax, isMax) -> {
+                contentPane.setPrefWidth(isMax ? 1242 : 975);
+            });
+        });
+    }
+
+    private void refrescarTabla() {
+
+        String textoGenero = filtroGenero ? txtBuscarGenero.getText().trim() : "";
+
+        Genero generoExacto = null;
+        if (!textoGenero.isBlank()) {
+            String mayus = textoGenero.toUpperCase();
+            try {
+                generoExacto = Genero.valueOf(mayus);
+            } catch (IllegalArgumentException ignored) {
+                /* no exact match aún */ }
+        }
+
+        String artista = filtroArtista ? txtBuscarArtista.getText() : null;
+
+        List<CancionDTO> base = servicio.recomendar(
+                filtroPrefer, // usa preferencias
+                generoExacto, // null si no exacto
+                artista, // null o texto artista
+                filtroEstrenos); // estrenos?
+
+        List<CancionDTO> resultado = base;
+        if (filtroGenero && (generoExacto == null) && !textoGenero.isBlank()) {
+            String patron = textoGenero.toLowerCase();
+            resultado = base.stream()
+                    .filter(c -> c.getGeneros() != null &&
+                            c.getGeneros().stream()
+                                    .anyMatch(g -> g.name().toLowerCase().contains(patron)))
+                    .toList();
+        }
+
+        datos.setAll(resultado); // refresca la tabla
+
+        boolean hayDatos = !resultado.isEmpty();
+        boolean filtrosActivos = mostrarFiltrosActivos();
+
+        if (hayDatos) {
+            mensajeBienvenida.setVisible(false);
+            mensajeSelecciona.setVisible(false);
+        } else {
+            if (filtrosActivos) {
+                mensajeBienvenida.setVisible(false);
+                mensajeSelecciona.setVisible(true);
+                mensajeSelecciona.setText("No hay coincidencias");
+            } else {
+                mensajeBienvenida.setVisible(true);
+                mensajeBienvenida.setText("¡Bienvenido!");
+                mensajeSelecciona.setVisible(true);
+                mensajeSelecciona.setText("Selecciona uno o más filtros");
+            }
+        }
+    }
+
+    /** Devuelve true si al menos un filtro está ON. */
+    private boolean mostrarFiltrosActivos() {
+        return filtroGenero || filtroArtista || filtroPrefer || filtroEstrenos;
+    }
+
+    // ---------- columnas ----------
+    private void configurarColumnas() {
+
+        // ── columna TÍTULO + PORTADA ──
+        colTituloConImagen.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue()));
+        colTituloConImagen.setCellFactory(col -> new TableCell<>() {
+
+            private final ImageView portada = new ImageView();
+            private final Label lblTitulo = new Label();
+            private final HBox box = new HBox(10, portada, lblTitulo);
+
+            {
+                portada.setFitHeight(40);
+                portada.setFitWidth(40);
+            }
+
+            @Override
+            protected void updateItem(CancionDTO c, boolean empty) {
+                super.updateItem(c, empty);
+                if (empty || c == null) {
+                    setGraphic(null);
+                } else {
+                    if (c.getPortada() != null)
+                        portada.setImage(new Image(new ByteArrayInputStream(c.getPortada())));
+                    lblTitulo.setText(c.getTitulo());
+                    setGraphic(box);
+                }
+            }
+        });
+
+        // ── ARTISTA ──
+        colArtista.setCellValueFactory(cd -> Bindings.createStringBinding(() -> cd.getValue().getArtistas().isEmpty()
+                ? ""
+                : cd.getValue().getArtistas().get(0).getNombre()));
+
+        // ── GÉNERO(S) ──
+        colGenero.setCellValueFactory(cd -> Bindings.createStringBinding(() -> cd.getValue().getGeneros().stream()
+                .map(Enum::name)
+                .collect(Collectors.joining(", "))));
+
+        // ── AÑO ──
+        colAnio.setCellValueFactory(cd -> Bindings.createStringBinding(() -> cd.getValue().getFechaRegistro() == null
+                ? ""
+                : cd.getValue().getFechaRegistro().format(DateTimeFormatter.ofPattern("yyyy"))));
+
+        // ── DURACIÓN ──
+        colDuracion.setCellValueFactory(cd -> Bindings.createStringBinding(
+                () -> cd.getValue().getDuracion() + " s"));
+
+        // ── PLAY ──
+        colPlay.setCellFactory(col -> new TableCell<>() {
+
+            private final Button btnPlay = new Button();
+
+            {
+                Image img = new Image(getClass().getResourceAsStream(
+                        "/UserInterface/Resources/img/play.png"), 18, 18, true, true);
+                btnPlay.setGraphic(new ImageView(img));
+                btnPlay.setStyle("""
+                            -fx-background-color: #9190C2;
+                            -fx-background-radius: 20;
+                            -fx-cursor: hand;
+                        """);
+                btnPlay.setOnAction(e -> {
+                });
+            }
+
+            @Override
+            protected void updateItem(Void v, boolean empty) {
+                super.updateItem(v, empty);
+                setGraphic(empty ? null : btnPlay);
+                setStyle("-fx-alignment:center;");
+            }
+        });
+    }
 
 }
