@@ -1,7 +1,14 @@
 package BusinessLogic;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
+import java.util.function.Consumer;
 import BusinessLogic.utilities.AdvancedPlayerAcc;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.application.Platform;
+import javafx.util.Duration;
 
 /**
  * Clase principal que representa el controlador de reproducción de audio MP3.
@@ -11,17 +18,16 @@ import BusinessLogic.utilities.AdvancedPlayerAcc;
  * según su estado actual (detenido, reproduciendo o pausado).</p>
  *
  * <p>Gestiona la reproducción de una lista de canciones representadas como arreglos de bytes,
- * usando un motor de reproducción basado en {@link AdvancedPlayerAcc}, ejecutado en un hilo independiente.</p>
+ * usando JavaFX MediaPlayer para la reproducción de audio.</p>
  *
  * @author Grupo B
- * @version 1.1
+ * @version 2.0
  * @since 25-07-2025
  *
  * @see EstadoReproductor
  * @see EstadoReproduciendo
  * @see EstadoPausado
  * @see EstadoDetenido
- * @see MotorReproduccion
  * @see GestorPlaylist
  */
 public class ReproductorMP3 {
@@ -32,11 +38,20 @@ public class ReproductorMP3 {
     /** Gestor de la lista de reproducción. */
     private GestorPlaylist playlist;
 
-    /** Motor que controla la reproducción de audio. */
+    /** Motor que controla la reproducción de audio (mantenido para compatibilidad). */
     private MotorReproduccion motor;
 
     /** Estado actual del reproductor (patrón State). */
     private EstadoReproductor estadoActual;
+
+    /** MediaPlayer de JavaFX para reproducción de audio */
+    private MediaPlayer mediaPlayer;
+
+    /** Archivo temporal actual para reproducción */
+    private File archivoTemporal;
+
+    /** Callback para cuando termina una canción */
+    private Runnable onCancionTerminada;
 
     /**
      * Constructor privado. Se invoca solo una vez mediante {@link #getInstancia(List)}.
@@ -45,7 +60,7 @@ public class ReproductorMP3 {
      */
     private ReproductorMP3(List<byte[]> canciones) {
         this.playlist = new GestorPlaylist(canciones);
-        this.motor = new MotorReproduccion();
+        this.motor = new MotorReproduccion(); // Mantenido para compatibilidad
         this.estadoActual = new EstadoDetenido(this);
     }
 
@@ -110,25 +125,109 @@ public class ReproductorMP3 {
     }
 
     // --------------------------
-    // Métodos internos
+    // Métodos internos actualizados con JavaFX Media
     // --------------------------
 
     /**
-     * Inicia la reproducción desde un frame específico de la canción actual.
+     * Inicia la reproducción de la canción actual usando JavaFX MediaPlayer.
      * Si la canción termina, automáticamente avanza a la siguiente.
      *
-     * @param frameInicial Frame desde el cual comenzar la reproducción
+     * @param frameInicial Frame desde el cual comenzar (convertido a tiempo)
      */
     public void iniciarReproduccionDesde(int frameInicial) {
-        List<byte[]> lista = playlist.getCanciones();
-        if (lista != null) {
+        try {
             byte[] cancion = playlist.obtenerCancionActual();
-            motor.reproducir(cancion, frameInicial, () -> {
-                playlist.siguiente();
-                iniciarReproduccionDesde(0);
+            if (cancion == null) {
+                System.out.println("No se encontró la canción.");
+                return;
+            }
+
+            // Detener reproducción anterior si existe
+            detenerMediaPlayer();
+
+            // Crear archivo temporal
+            archivoTemporal = File.createTempFile("cancion_temp", ".mp3");
+            archivoTemporal.deleteOnExit();
+
+            try (FileOutputStream fos = new FileOutputStream(archivoTemporal)) {
+                fos.write(cancion);
+            }
+
+            // Crear Media y MediaPlayer
+            Media media = new Media(archivoTemporal.toURI().toString());
+            mediaPlayer = new MediaPlayer(media);
+
+            // Configurar eventos
+            mediaPlayer.setOnReady(() -> {
+                // Cambiar el estado a Reproduciendo
+                setEstado(new EstadoReproduciendo(this));
+
+                // Si hay un frame inicial específico, posicionarse ahí
+                if (frameInicial > 0) {
+                    double segundos = frameInicial / 26.0; // Conversión aproximada frame->segundos
+                    mediaPlayer.seek(Duration.seconds(segundos));
+                }
+
+                // Iniciar reproducción
+                mediaPlayer.play();
+                System.out.println("Reproducción iniciada");
             });
-        } else {
-            System.out.println("No se encontró la canción.");
+
+            mediaPlayer.setOnEndOfMedia(() -> {
+                System.out.println("Canción terminada, avanzando a la siguiente");
+                playlist.siguiente();
+                // Callback para avanzar automáticamente
+                Platform.runLater(() -> {
+                    iniciarReproduccionDesde(0);
+                });
+            });
+
+            mediaPlayer.setOnError(() -> {
+                System.err.println("Error en MediaPlayer: " + mediaPlayer.getError());
+                setEstado(new EstadoDetenido(this));
+            });
+
+        } catch (Exception e) {
+            System.err.println("Error al iniciar reproducción: " + e.getMessage());
+            e.printStackTrace();
+            setEstado(new EstadoDetenido(this));
+        }
+    }
+
+    /**
+     * Pausa el MediaPlayer actual
+     */
+    public void pausarMediaPlayer() {
+        if (mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+            mediaPlayer.pause();
+            System.out.println("Reproducción pausada");
+        }
+    }
+
+    /**
+     * Reanuda el MediaPlayer pausado
+     */
+    public void reanudarMediaPlayer() {
+        if (mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PAUSED) {
+            mediaPlayer.play();
+            System.out.println("Reproducción reanudada");
+        }
+    }
+
+    /**
+     * Detiene y limpia el MediaPlayer actual
+     */
+    public void detenerMediaPlayer() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
+            mediaPlayer = null;
+        }
+
+        // Limpiar archivo temporal
+        if (archivoTemporal != null && archivoTemporal.exists()) {
+            archivoTemporal.delete();
+            archivoTemporal = null;
         }
     }
 
@@ -136,26 +235,49 @@ public class ReproductorMP3 {
      * Cierra la reproducción actual pero mantiene la playlist.
      */
     public void cerrarReproduccion() {
-        motor.cerrar();
+        detenerMediaPlayer();
+        motor.cerrar(); // Mantener para compatibilidad
     }
 
     /**
      * Cierra la reproducción actual y limpia completamente la lista de canciones.
      */
     public void cerrarReproduccionTotal() {
+        detenerMediaPlayer();
         motor.cerrar();
         playlist.setCanciones(null);
     }
 
     /**
-     * Mueve la reproducción a un frame específico de la canción actual.
+     * Mueve la reproducción a un tiempo específico de la canción actual.
      *
-     * @param nuevoFrame Frame objetivo
+     * @param nuevoFrame Frame objetivo (convertido a segundos)
      */
     public void moverAFrame(int nuevoFrame) {
-        cerrarReproduccion();
-        motor.setFrameActual(nuevoFrame);
-        iniciarReproduccionDesde(nuevoFrame);
+        if (mediaPlayer != null) {
+            double segundos = nuevoFrame / 26.0; // Conversión aproximada
+            mediaPlayer.seek(Duration.seconds(segundos));
+            motor.setFrameActual(nuevoFrame); // Mantener sincronizado
+        }
+    }
+
+    /**
+     * Establece el tiempo de reproducción en segundos
+     */
+    public void setTiempo(double segundos) {
+        if (mediaPlayer != null) {
+            mediaPlayer.seek(Duration.seconds(segundos));
+        }
+    }
+
+    /**
+     * Obtiene el tiempo actual de reproducción en segundos
+     */
+    public double getTiempoActual() {
+        if (mediaPlayer != null && mediaPlayer.getCurrentTime() != null) {
+            return mediaPlayer.getCurrentTime().toSeconds();
+        }
+        return 0.0;
     }
 
     /**
@@ -170,8 +292,87 @@ public class ReproductorMP3 {
         estadoActual = new EstadoDetenido(this);
     }
 
+    /**
+     * Obtiene la duración total de la canción actual usando JavaFX Media.
+     *
+     * @param callback Callback que recibe la duración en segundos
+     */
+    public void obtenerDuracionCancionActual(Consumer<Double> callback) {
+        try {
+            if (mediaPlayer != null && mediaPlayer.getTotalDuration() != null
+                    && !mediaPlayer.getTotalDuration().equals(Duration.UNKNOWN)) {
+                // Si ya tenemos la duración disponible
+                callback.accept(mediaPlayer.getTotalDuration().toSeconds());
+                return;
+            }
+
+            // Si no tenemos MediaPlayer o la duración no está lista, crear uno temporal
+            byte[] cancion = playlist.obtenerCancionActual();
+            if (cancion == null) {
+                callback.accept(0.0);
+                return;
+            }
+
+            File tempFile = File.createTempFile("duracion", ".mp3");
+            tempFile.deleteOnExit();
+
+            try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+                fos.write(cancion);
+            }
+
+            Media media = new Media(tempFile.toURI().toString());
+            MediaPlayer tempPlayer = new MediaPlayer(media);
+
+            tempPlayer.setOnReady(() -> {
+                double duracion = media.getDuration().toSeconds();
+                callback.accept(duracion);
+                tempPlayer.dispose();
+                tempFile.delete();
+            });
+
+            tempPlayer.setOnError(() -> {
+                System.err.println("Error al obtener duración: " + tempPlayer.getError());
+                callback.accept(0.0);
+                tempPlayer.dispose();
+                tempFile.delete();
+            });
+
+        } catch (Exception e) {
+            System.err.println("Error al obtener duración: " + e.getMessage());
+            callback.accept(0.0);
+        }
+    }
+
     // --------------------------
-    // Getters y Setters
+    // Métodos de compatibilidad y utilidad
+    // --------------------------
+
+    /**
+     * Verifica si está reproduciendo actualmente
+     */
+    public boolean estaReproduciendo() {
+        return estadoActual instanceof EstadoReproduciendo &&
+                mediaPlayer != null &&
+                mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING;
+    }
+
+    /**
+     * Verifica si está pausado
+     */
+    public boolean estaPausado() {
+        return estadoActual instanceof EstadoPausado ||
+                (mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PAUSED);
+    }
+
+    /**
+     * Obtiene el MediaPlayer actual (para acceso directo si es necesario)
+     */
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
+    }
+
+    // --------------------------
+    // Getters y Setters existentes
     // --------------------------
 
     /**

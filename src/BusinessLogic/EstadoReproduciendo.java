@@ -10,80 +10,49 @@ package BusinessLogic;
  *
  * Forma parte del patrón de diseño **State**.
  */
+/**
+ * Estado que representa cuando el reproductor está reproduciendo una canción.
+ * Actualizado para usar JavaFX MediaPlayer.
+ */
 public class EstadoReproduciendo implements EstadoReproductor {
 
-    /** Referencia al controlador del reproductor MP3. */
-    private final ReproductorMP3 reproductor;
+    private ReproductorMP3 reproductor;
 
-    /**
-     * Constructor que establece el reproductor asociado a este estado.
-     *
-     * @param reproductor Reproductor MP3 que se encuentra reproduciendo
-     */
     public EstadoReproduciendo(ReproductorMP3 reproductor) {
         this.reproductor = reproductor;
     }
 
-    /**
-     * Acción no válida en este estado. Muestra un mensaje indicando que ya está reproduciendo.
-     */
     @Override
     public void reproducir() {
-        System.out.println("Ya está reproduciendo.");
+        System.out.println("Ya se está reproduciendo");
     }
 
-    /**
-     * Pausa la reproducción en el frame actual, cierra el reproductor
-     * y cambia el estado a {@link EstadoPausado}.
-     */
     @Override
     public void pausar() {
-        int frameActual = reproductor.getMotor().getPlayer().getLastPosition();
-        reproductor.cerrarReproduccion();
-        reproductor.getMotor().setFrameActual(frameActual);
+        reproductor.pausarMediaPlayer();
         reproductor.setEstado(new EstadoPausado(reproductor));
-        System.out.println("Pausado en frame: " + frameActual);
     }
 
-    /**
-     * Acción no válida en este estado. Muestra un mensaje indicando que ya está reproduciendo.
-     */
     @Override
     public void reanudar() {
-        System.out.println("Ya está reproduciendo.");
+        System.out.println("Ya se está reproduciendo");
     }
 
-    /**
-     * Detiene la reproducción, cierra el motor y cambia al estado {@link EstadoDetenido}.
-     */
     @Override
     public void detener() {
-        reproductor.cerrarReproduccion();
+        reproductor.detenerMediaPlayer();
         reproductor.setEstado(new EstadoDetenido(reproductor));
     }
 
-    /**
-     * Cambia a la siguiente canción en la lista y la reproduce desde el inicio.
-     * Detiene la reproducción actual antes de cambiar de canción.
-     */
     @Override
     public void siguiente() {
-        detener();
         reproductor.getPlaylist().siguiente();
         reproductor.iniciarReproduccionDesde(0);
-        reproductor.setEstado(new EstadoReproduciendo(reproductor));
-        System.out.println("Siguiente canción en reproducción.");
     }
 
-    /**
-     * Retrocede a la canción anterior en la lista y la reproduce desde el inicio.
-     * Detiene la reproducción actual antes de cambiar de canción.
-     */
     @Override
     public void anterior() {
-        detener();
         reproductor.getPlaylist().anterior();
         reproductor.iniciarReproduccionDesde(0);
-        reproductor.setEstado(new EstadoReproduciendo(reproductor));
     }
 }

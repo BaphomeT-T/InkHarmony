@@ -31,9 +31,6 @@ public class SubirArtistasController {
     @FXML
     private Button cerrarButton;
 
-    //@FXML
-    //private ComboBox<Genero> generoComboBox;
-
     @FXML
     private MenuButton generoMenuButton;
 
