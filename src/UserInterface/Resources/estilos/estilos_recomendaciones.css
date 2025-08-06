@@ -35,3 +35,15 @@
 .table-view .table-row-cell:selected {
     -fx-background-color: #383b8d;
 }
+
+.table-view .scroll-bar {
+    -fx-background-color: transparent;
+}
+.table-view .scroll-bar .track {
+    -fx-background-color: #1B1A55;      /* mismo tono del fondo de fila */
+    -fx-background-radius: 10;
+}
+.table-view .scroll-bar .thumb {
+    -fx-background-color: #9190C2;      /* color acorde a la paleta */
+    -fx-background-radius: 10;
+}

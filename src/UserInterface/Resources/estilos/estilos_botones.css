@@ -1,0 +1,55 @@
+.filtro-button {
+    -fx-background-color: #5A5A80;
+    -fx-text-fill: white;
+    -fx-background-radius: 30;
+    -fx-font-size: 16px;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, #00000033, 4, 0.1, 0, 1);
+}
+
+.filtro-button:hover {
+    -fx-background-color: #6b6ba0;
+}
+
+.filtro-button:pressed {
+    -fx-background-color: #4a4a70;
+}
+
+.combo-box {
+    -fx-background-color: #1D1F4E;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-border-color: #383b8d;
+    -fx-border-width: 1px;
+    -fx-padding: 4 8;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.combo-box .arrow {
+    -fx-background-color: white;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #1D1F4E;
+    -fx-control-inner-background: #1D1F4E;
+    -fx-text-fill: white;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: #1D1F4E;
+}
+
+.combo-box .list-cell:hover {
+    -fx-background-color: #2a2c6a;
+}
+
+.combo-box .list-cell:selected {
+    -fx-background-color: #383b8d;
+}
