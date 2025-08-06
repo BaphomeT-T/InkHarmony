@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 
@@ -25,6 +26,7 @@ public class ReproduccionVariasCancionesController {
     private Timer timerActualizacion;
     private boolean actualizandoProgress = false;
     private double duracionRealCancion = 0;
+
     
     /** Panel que contiene la interfaz de la biblioteca musical */
     @FXML
@@ -36,7 +38,7 @@ public class ReproduccionVariasCancionesController {
 
     /** Barra de progreso que indica el avance de reproducción de la canción */
     @FXML
-    private ProgressBar pgbProgresoCancion;
+    private Slider pgbProgresoCancion;
 
     /** Panel con scroll que contiene la lista de reproducción de canciones */
     @FXML

@@ -103,6 +103,9 @@ public class CancionDTO {
         this.generos = generos;
     }
 
+    public CancionDTO() {
+    }
+
     // ==================== MÉTODOS GETTER Y SETTER ====================
 
     /**

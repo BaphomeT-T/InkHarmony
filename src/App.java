@@ -4,7 +4,6 @@ import javafx.scene.Scene;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 
-
 public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
@@ -13,6 +12,10 @@ public class App extends Application {
             Parent root = loader.load();
 
             Scene scene = new Scene(root);
+            scene.getStylesheets().add(
+                    getClass().getResource("/UserInterface/Resources/css/slider.css").toExternalForm()
+            );
+
             primaryStage.setScene(scene);
             primaryStage.setTitle("Reproduccion de Canciones - InkHarmony");
             primaryStage.setMaximized(true);

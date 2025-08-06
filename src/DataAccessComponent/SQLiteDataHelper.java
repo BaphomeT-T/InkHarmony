@@ -40,7 +40,7 @@ public abstract class SQLiteDataHelper {
     /** Ruta de conexión a la base de datos SQLite */
     //private static String DBPathConnection = "jdbc:sqlite:database\\InkHarmony.sqlite";
 
-    private static String DBPathConnection = "jdbc:sqlite:C:/Users/User/Desktop/InkHarmony-ReproductorMusical/InkHarmony-ReproductorMusical/database/InkHarmony.sqlite";
+    private static String DBPathConnection = "jdbc:sqlite:C:/Users/Gabriel Del Valle/Documents/Diseño de Software/InkHarmony-ReproductorMusical/InkHarmony-ReproductorMusical/database/InkHarmony.sqlite";
 
 
     /** Instancia única de la conexión a la base de datos */
@@ -102,4 +102,5 @@ public abstract class SQLiteDataHelper {
             throw e;
         }
     }
+
 }

@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
+<?import java.lang.String?>
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280" style="-fx-border-radius: 15px; -fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.ReproduccionVariasCancionesController">
     <children>
         <TextField fx:id="txtBuscarCancion" alignment="TOP_LEFT" layoutX="264.0" layoutY="15.0" prefHeight="14.0" prefWidth="743.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;" text="  ¿Qué quieres reproducir?">
@@ -16,23 +17,14 @@
             </font>
         </TextField>
         <Button layoutX="821.0" layoutY="24.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="51.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2;" />
-        <ProgressBar cache="true" depthTest="DISABLE" layoutX="-5.0" layoutY="702.0" prefHeight="14.0" prefWidth="1288.0" progress="0.25" style="-fx-accent: #FF0000;">
-            <cursor>
-                <Cursor fx:constant="DEFAULT" />
-            </cursor>
-            <effect>
-                <Lighting>
-                    <light>
-                        <Light.Distant />
-                    </light>
-                    <bumpInput>
-                        <Glow />
-                    </bumpInput>
-                </Lighting>
-            </effect>
-            <opaqueInsets>
-                <Insets />
-            </opaqueInsets></ProgressBar>
+        <Slider fx:id="pgbProgresoCancion"
+                layoutX="50.0" layoutY="702.0"
+                prefWidth="1171.0" min="0.0" max="1.0" value="0.0"
+                style="-fx-accent: #FF0000;">
+            <styleClass>
+                <String fx:value="custom-slider"/>
+            </styleClass>
+        </Slider>
         <Pane fx:id="panImageAlbum1" layoutX="22.0" layoutY="734.0" prefHeight="70.0" prefWidth="76.0" style="-fx-background-color: #ffffff;" />
         <Label layoutX="105.0" layoutY="738.0" prefHeight="35.0" prefWidth="250.0" text="Nombre cancion" textFill="WHITE" wrapText="true">
             <font>
