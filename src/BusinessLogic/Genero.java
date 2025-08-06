@@ -18,5 +18,8 @@ public enum Genero {
     TRAP,
     K_POP,
     BOLERO,
-    PASILLO
+    PASILLO,
+    METAL_SINFONICO,
+    J_POP,
+    POWER_METAL;
 }

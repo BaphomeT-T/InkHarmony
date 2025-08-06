@@ -1,12 +1,12 @@
 -- database: ../database/InkHarmony.sqlite
 -- Borrar tablas en orden seguro
 DROP TABLE IF EXISTS Reproduccion;
-DROP TABLE IF EXISTS playlists;
+DROP TABLE IF EXISTS Playlist;
+DROP TABLE IF EXISTS Playlist_Cancion;
 DROP TABLE IF EXISTS playlist_elementos;
 DROP TABLE IF EXISTS Cancion_Genero;
 DROP TABLE IF EXISTS Cancion_Artista;
 DROP TABLE IF EXISTS Artista_Genero;
-DROP TABLE IF EXISTS Playlist;
 DROP TABLE IF EXISTS Cancion;
 DROP TABLE IF EXISTS Artista;
  DROP TABLE IF EXISTS Genero;
