@@ -15,80 +15,51 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="800.0" prefWidth="1200.0"
-    style="-fx-background-color: #0A0E27;"
-    xmlns="http://javafx.com/javafx/23.0.1"
-    xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="UserInterface.CustomerControl.Recomendaciones.RecomendacionesController">
+<BorderPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #0A0E27;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.Recomendaciones.RecomendacionesController">
 
     <!-- ─────────── TOP ─────────── -->
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="25.0"
-            style="-fx-background-color: #0A0E27;"
-            BorderPane.alignment="TOP_LEFT">
+        <HBox alignment="CENTER_LEFT" spacing="25.0" style="-fx-background-color: #0A0E27;" BorderPane.alignment="TOP_LEFT">
 
-            <Label text="RECOMENDACIONES"
-                style="-fx-text-fill: white; -fx-background-color: #0A0E27; -fx-padding: 20;"
-                translateX="25.0" translateY="10.0">
+            <Label style="-fx-text-fill: white; -fx-background-color: #0A0E27; -fx-padding: 20;" text="RECOMENDACIONES" translateX="25.0" translateY="35.0">
                 <font>
                     <Font size="72.0" />
                 </font>
             </Label>
 
-            <ImageView fitHeight="57.0" fitWidth="71.0" preserveRatio="true"
-                translateX="300.0" translateY="10.0">
+            <ImageView fitHeight="57.0" fitWidth="71.0" preserveRatio="true" scaleX="1.1" scaleY="1.1" scaleZ="1.1" translateX="-700.0" translateY="-25.0">
                 <image>
                     <Image url="@../../Resources/img/botonRegresar.PNG" />
                 </image>
             </ImageView>
 
-            <Button fx:id="cerrarButton" onAction="#cerrarVentana"
-                opacity="0.0" prefHeight="42.0" prefWidth="69.0"
-                translateX="205.0" translateY="10.0" />
+            <Button fx:id="cerrarButton" onAction="#cerrarVentana" opacity="0.0" prefHeight="42.0" prefWidth="69.0" translateY="10.0" />
         </HBox>
     </top>
 
     <!-- ─────────── LEFT ─────────── -->
     <left>
-        <VBox prefHeight="600.0" maxHeight="600.0" prefWidth="250.0"
-            style="-fx-background-color: #201D4E;"
-            translateX="40.0"
-            BorderPane.alignment="CENTER"
-            alignment="CENTER"
-            spacing="50">
+        <VBox alignment="CENTER" maxHeight="600.0" prefHeight="600.0" prefWidth="250.0" spacing="50" style="-fx-background-color: #201D4E;" translateX="40.0" BorderPane.alignment="CENTER">
 
-            <Button fx:id="btnArtista" text="Por Artista"
-                onAction="#handlePorArtista"
-                style="-fx-background-color: #5A5A80; -fx-text-fill: white;
-                           -fx-background-radius: 40; -fx-padding: 20 40;">
+            <Button fx:id="btnArtista" onAction="#handlePorArtista" style="-fx-background-color: #5A5A80; -fx-text-fill: white;                            -fx-background-radius: 40; -fx-padding: 20 40;" text="Por Artista">
                 <font>
                     <Font size="24.0" />
                 </font>
             </Button>
 
-            <Button fx:id="btnGenero" text="Por Género"
-                onAction="#handlePorGenero"
-                style="-fx-background-color: #5A5A80; -fx-text-fill: white;
-                           -fx-background-radius: 40; -fx-padding: 20 40;"
-                stylesheets="@../../Resources/estilos/estilos_botonesPresionados.css">
+            <Button fx:id="btnGenero" onAction="#handlePorGenero" style="-fx-background-color: #5A5A80; -fx-text-fill: white;                            -fx-background-radius: 40; -fx-padding: 20 40;" stylesheets="@../../Resources/estilos/estilos_botonesPresionados.css" text="Por Género">
                 <font>
                     <Font size="24.0" />
                 </font>
             </Button>
 
-            <Button fx:id="btnPersonalizadas" text="Preferencias"
-                onAction="#handlePersonalizadas"
-                style="-fx-background-color: #5A5A80; -fx-text-fill: white;
-                           -fx-background-radius: 40; -fx-padding: 20 40;">
+            <Button fx:id="btnPersonalizadas" onAction="#handlePersonalizadas" style="-fx-background-color: #5A5A80; -fx-text-fill: white;                            -fx-background-radius: 40; -fx-padding: 20 40;" text="Preferencias">
                 <font>
                     <Font size="24.0" />
                 </font>
             </Button>
 
-            <Button fx:id="btnEstrenos" text="Estrenos"
-                onAction="#handleEstrenos"
-                style="-fx-background-color: #5A5A80; -fx-text-fill: white;
-                           -fx-background-radius: 40; -fx-padding: 20 40;">
+            <Button fx:id="btnEstrenos" onAction="#handleEstrenos" style="-fx-background-color: #5A5A80; -fx-text-fill: white;                            -fx-background-radius: 40; -fx-padding: 20 40;" text="Estrenos">
                 <font>
                     <Font size="24.0" />
                 </font>
@@ -98,13 +69,9 @@
 
     <!-- ─────────── CENTER ─────────── -->
     <center>
-        <Pane prefHeight="694.0" prefWidth="619.0" scaleX="0.9" scaleY="0.92"
-            style="-fx-background-color: #201D4E;" translateX="-3.6"
-            BorderPane.alignment="CENTER">
+        <Pane prefHeight="694.0" prefWidth="619.0" scaleX="0.9" scaleY="0.92" style="-fx-background-color: #201D4E;" translateX="-3.6" BorderPane.alignment="CENTER">
 
-            <StackPane fx:id="contentPane" layoutX="20.0" layoutY="14.0"
-                prefHeight="619.0" prefWidth="975.0" maxWidth="1242.0"
-                style="-fx-background-color: #0A0E27;">
+            <StackPane fx:id="contentPane" layoutX="20.0" layoutY="14.0" maxWidth="1242.0" prefHeight="619.0" prefWidth="975.0" style="-fx-background-color: #0A0E27;">
 
                 <VBox alignment="TOP_LEFT" spacing="10.0">
                     <padding>
@@ -112,19 +79,13 @@
                     </padding>
 
                     <!-- tabla -->
-                    <TableView fx:id="tablaCanciones" prefHeight="520.0" maxHeight="520.0"
-                        scaleX="0.97"
-                        stylesheets="@../../Resources/estilos/estilos_recomendaciones.css">
+                    <TableView fx:id="tablaCanciones" maxHeight="520.0" prefHeight="520.0" scaleX="0.97" stylesheets="@../../Resources/estilos/estilos_recomendaciones.css">
 
                         <!-- ── placeholder ── -->
                         <placeholder>
                             <VBox alignment="CENTER" spacing="8">
-                                <Label fx:id="mensajeBienvenida"
-                                    style="-fx-text-fill: white; -fx-font-size: 30px;"
-                                    text="¡Bienvenido!" />
-                                <Label fx:id="mensajeSelecciona"
-                                    style="-fx-text-fill: white; -fx-font-size: 20px;"
-                                    text="Selecciona uno o más filtros" />
+                                <Label fx:id="mensajeBienvenida" style="-fx-text-fill: white; -fx-font-size: 30px;" text="¡Bienvenido!" />
+                                <Label fx:id="mensajeSelecciona" style="-fx-text-fill: white; -fx-font-size: 20px;" text="Selecciona uno o más filtros" />
                             </VBox>
                         </placeholder>
 
@@ -135,20 +96,16 @@
                             <TableColumn fx:id="colTituloConImagen" prefWidth="355.0" text="Título" />
 
                             <!-- ARTISTA -->
-                            <TableColumn fx:id="colArtista" prefWidth="180.0" text="Artista(s)"
-                                style="-fx-alignment:center;" />
+                            <TableColumn fx:id="colArtista" prefWidth="180.0" style="-fx-alignment:center;" text="Artista(s)" />
 
                             <!-- GÉNERO(S) -->
-                            <TableColumn fx:id="colGenero" prefWidth="180.0" text="Género(s)"
-                                style="-fx-alignment:center;" />
+                            <TableColumn fx:id="colGenero" prefWidth="180.0" style="-fx-alignment:center;" text="Género(s)" />
 
                             <!-- AÑO -->
-                            <TableColumn fx:id="colAnio" prefWidth="115.0" text="Año de la canción"
-                                style="-fx-alignment:center;" />
+                            <TableColumn fx:id="colAnio" prefWidth="115.0" style="-fx-alignment:center;" text="Año de la canción" />
 
                             <!-- DURACIÓN -->
-                            <TableColumn fx:id="colDuracion" prefWidth="85.0" text="Duración"
-                                style="-fx-alignment:center;" />
+                            <TableColumn fx:id="colDuracion" prefWidth="85.0" style="-fx-alignment:center;" text="Duración" />
 
                             <!-- PLAY -->
                             <TableColumn fx:id="colPlay" prefWidth="35.0" />
@@ -159,22 +116,14 @@
                     <!-- filtros -->
                     <HBox fx:id="filtrosBox" alignment="CENTER" spacing="15" visible="false">
 
-                        <Button fx:id="btnLimpiarFiltros" text="LimpiarFiltros"
-                            onAction="#handleLimpiarFiltros"
-                            styleClass="filtro-button"
-                            stylesheets="@../../Resources/estilos/estilos_botones.css" />
+                        <Button fx:id="btnLimpiarFiltros" onAction="#handleLimpiarFiltros" styleClass="filtro-button" stylesheets="@../../Resources/estilos/estilos_botones.css" text="LimpiarFiltros" />
 
                         <!-- ——  GÉNERO  —— -->
                         <StackPane>
                             <!-- campo -->
-                            <TextField fx:id="txtBuscarGenero"
-                                promptText="Busca una canción por género"
-                                minHeight="35" prefWidth="250"
-                                style="-fx-background-radius:20; -fx-background-color:#9190C2;"
-                                visible="false" />
+                            <TextField fx:id="txtBuscarGenero" minHeight="35" prefWidth="250" promptText="Busca una canción por género" style="-fx-background-radius:20; -fx-background-color:#9190C2;" visible="false" />
                             <!-- lupa -->
-                            <ImageView fitHeight="34.0" fitWidth="33.0" preserveRatio="true"
-                                StackPane.alignment="CENTER_RIGHT" translateX="-8"> <!-- pequeño
+                            <ImageView fitHeight="34.0" fitWidth="33.0" preserveRatio="true" translateX="-8" StackPane.alignment="CENTER_RIGHT"> <!-- pequeño
                                 margen interior -->
                                 <image>
                                     <Image url="@../../Resources/img/CatalogoCanciones/Lupa.png" />
@@ -184,14 +133,8 @@
 
                         <!-- ——  ARTISTA  —— -->
                         <StackPane>
-                            <TextField fx:id="txtBuscarArtista"
-                                promptText="Busca una canción por artista"
-                                minHeight="35" prefWidth="250"
-                                style="-fx-background-radius:20; -fx-background-color:#9190C2;"
-                                visible="false" />
-                            <ImageView fitHeight="34.0" fitWidth="33.0" preserveRatio="true"
-                                StackPane.alignment="CENTER_RIGHT"
-                                translateX="-8">
+                            <TextField fx:id="txtBuscarArtista" minHeight="35" prefWidth="250" promptText="Busca una canción por artista" style="-fx-background-radius:20; -fx-background-color:#9190C2;" visible="false" />
+                            <ImageView fitHeight="34.0" fitWidth="33.0" preserveRatio="true" translateX="-8" StackPane.alignment="CENTER_RIGHT">
                                 <image>
                                     <Image url="@../../Resources/img/CatalogoCanciones/Lupa.png" />
                                 </image>
