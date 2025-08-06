@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * Clase de servicio para validaciones de artistas.
- * Valída nombre único, campos requeridos y asociaciones con canciones o playlists.
+ * Valida nombre único, campos requeridos y asociaciones con canciones o playlists.
  *
  * No accede directamente a la base de datos, sino a través del DAO.
  */
