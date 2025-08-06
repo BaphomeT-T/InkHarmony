@@ -6,6 +6,13 @@ import javazoom.jl.player.advanced.PlaybackListener;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.function.Consumer;
+
 
 /**
  * Clase que actúa como motor de reproducción de canciones MP3.

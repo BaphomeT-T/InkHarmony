@@ -1,10 +1,14 @@
 package UserInterface.CustomerControl;
 
+import BusinessLogic.ReproductorMP3;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+
+import java.util.Timer;
 
 /**
  * Controlador para la interfaz de reproducción de múltiples canciones.
@@ -16,6 +20,11 @@ import javafx.scene.layout.Pane;
  * @since 2025
  */
 public class ReproduccionVariasCancionesController {
+
+    private ReproductorMP3 reproductor;
+    private Timer timerActualizacion;
+    private boolean actualizandoProgress = false;
+    private double duracionRealCancion = 0;
     
     /** Panel que contiene la interfaz de la biblioteca musical */
     @FXML
@@ -24,7 +33,11 @@ public class ReproduccionVariasCancionesController {
     /** Panel que muestra la imagen del álbum de la canción o lista actual */
     @FXML
     private Pane panImageAlbum1;
-    
+
+    /** Barra de progreso que indica el avance de reproducción de la canción */
+    @FXML
+    private ProgressBar pgbProgresoCancion;
+
     /** Panel con scroll que contiene la lista de reproducción de canciones */
     @FXML
     private ScrollPane panListaReproduccion;
