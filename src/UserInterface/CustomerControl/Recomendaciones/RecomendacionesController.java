@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -30,7 +31,7 @@ public class RecomendacionesController {
 
     // ---------- estilos ----------
     private static final String BASE_STYLE = "-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-background-radius: 40; -fx-padding: 20 40;";
-    private static final String PRESSED_STYLE = "-fx-background-color: #48486A; -fx-text-fill: white; -fx-background-radius: 40; -fx-padding: 20 40;";
+    private static final String PRESSED_STYLE = "-fx-background-color: #9190C2; -fx-text-fill: white; -fx-background-radius: 40; -fx-padding: 20 40;";
 
     // ---------- estado de filtros ----------
     private boolean filtroGenero = false;
@@ -69,8 +70,7 @@ public class RecomendacionesController {
         configurarColumnas();
         configurarBusquedasEnVivo();
         tablaCanciones.setItems(datos);
-        tablaCanciones.setColumnResizePolicy(
-                TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        tablaCanciones.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         configurarAnchuraDinamica();
 
         // arranque: UI limpia
@@ -186,29 +186,48 @@ public class RecomendacionesController {
         });
     }
 
+    /** Llena la tabla según los filtros activos y el texto escrito. */
     private void refrescarTabla() {
 
+        if (!mostrarFiltrosActivos()) {
+            datos.clear();
+            mensajeBienvenida.setVisible(true);
+            mensajeBienvenida.setText("¡Bienvenido!");
+            mensajeSelecciona.setVisible(true);
+            mensajeSelecciona.setText("Selecciona uno o más filtros");
+            return;
+        }
+        /* ---------- 0-bis. Falta criterio ---------- */
         String textoGenero = filtroGenero ? txtBuscarGenero.getText().trim() : "";
+        String textoArtista = filtroArtista ? txtBuscarArtista.getText().trim() : "";
 
-        Genero generoExacto = null;
-        if (!textoGenero.isBlank()) {
-            String mayus = textoGenero.toUpperCase();
-            try {
-                generoExacto = Genero.valueOf(mayus);
-            } catch (IllegalArgumentException ignored) {
-                /* no exact match aún */ }
+        boolean generoPendiente = filtroGenero && textoGenero.isBlank();
+        boolean artistaPendiente = filtroArtista && textoArtista.isBlank();
+
+        boolean faltaTextoEnTodos = (generoPendiente || artistaPendiente)
+                && !(filtroGenero && !generoPendiente)
+                && !(filtroArtista && !artistaPendiente)
+                && !(filtroPrefer || filtroEstrenos);
+
+        if (faltaTextoEnTodos) {
+            datos.clear();
+            mensajeBienvenida.setVisible(false);
+            mensajeSelecciona.setVisible(true);
+            mensajeSelecciona.setText(
+                    generoPendiente && artistaPendiente ? "Ingresa un género o artista"
+                            : generoPendiente ? "Ingresa un género"
+                                    : "Ingresa un artista");
+            return;
         }
 
-        String artista = filtroArtista ? txtBuscarArtista.getText() : null;
-
         List<CancionDTO> base = servicio.recomendar(
-                filtroPrefer, // usa preferencias
-                generoExacto, // null si no exacto
-                artista, // null o texto artista
-                filtroEstrenos); // estrenos?
+                filtroPrefer,
+                null,
+                filtroArtista ? textoArtista : null,
+                filtroEstrenos);
 
         List<CancionDTO> resultado = base;
-        if (filtroGenero && (generoExacto == null) && !textoGenero.isBlank()) {
+        if (filtroGenero && !textoGenero.isBlank()) {
             String patron = textoGenero.toLowerCase();
             resultado = base.stream()
                     .filter(c -> c.getGeneros() != null &&
@@ -217,25 +236,15 @@ public class RecomendacionesController {
                     .toList();
         }
 
-        datos.setAll(resultado); // refresca la tabla
+        datos.setAll(resultado);
 
-        boolean hayDatos = !resultado.isEmpty();
-        boolean filtrosActivos = mostrarFiltrosActivos();
-
-        if (hayDatos) {
+        if (resultado.isEmpty()) {
+            mensajeBienvenida.setVisible(false);
+            mensajeSelecciona.setVisible(true);
+            mensajeSelecciona.setText("No hay coincidencias");
+        } else {
             mensajeBienvenida.setVisible(false);
             mensajeSelecciona.setVisible(false);
-        } else {
-            if (filtrosActivos) {
-                mensajeBienvenida.setVisible(false);
-                mensajeSelecciona.setVisible(true);
-                mensajeSelecciona.setText("No hay coincidencias");
-            } else {
-                mensajeBienvenida.setVisible(true);
-                mensajeBienvenida.setText("¡Bienvenido!");
-                mensajeSelecciona.setVisible(true);
-                mensajeSelecciona.setText("Selecciona uno o más filtros");
-            }
         }
     }
 
@@ -248,16 +257,23 @@ public class RecomendacionesController {
     private void configurarColumnas() {
 
         // ── columna TÍTULO + PORTADA ──
-        colTituloConImagen.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue()));
-        colTituloConImagen.setCellFactory(col -> new TableCell<>() {
+        colTituloConImagen.setCellValueFactory(cd -> new SimpleObjectProperty<>(cd.getValue()));
+
+        colTituloConImagen.setCellFactory(tc -> new TableCell<>() {
 
             private final ImageView portada = new ImageView();
-            private final Label lblTitulo = new Label();
-            private final HBox box = new HBox(10, portada, lblTitulo);
+            private final Label titulo = new Label();
+            private final HBox box = new HBox(10, portada, titulo);
 
             {
-                portada.setFitHeight(40);
                 portada.setFitWidth(40);
+                portada.setFitHeight(40);
+                titulo.setStyle("-fx-font-weight: bold;");
+
+                box.setAlignment(Pos.CENTER_LEFT);
+
+                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                setAlignment(Pos.CENTER_LEFT);
             }
 
             @Override
@@ -268,16 +284,16 @@ public class RecomendacionesController {
                 } else {
                     if (c.getPortada() != null)
                         portada.setImage(new Image(new ByteArrayInputStream(c.getPortada())));
-                    lblTitulo.setText(c.getTitulo());
+                    titulo.setText(c.getTitulo());
                     setGraphic(box);
                 }
             }
         });
 
-        // ── ARTISTA ──
-        colArtista.setCellValueFactory(cd -> Bindings.createStringBinding(() -> cd.getValue().getArtistas().isEmpty()
-                ? ""
-                : cd.getValue().getArtistas().get(0).getNombre()));
+        // ── ARTISTA(S) ──
+        colArtista.setCellValueFactory(cd -> Bindings.createStringBinding(() -> cd.getValue().getArtistas().stream()
+                .map(a -> a.getNombre())
+                .collect(Collectors.joining(", "))));
 
         // ── GÉNERO(S) ──
         colGenero.setCellValueFactory(cd -> Bindings.createStringBinding(() -> cd.getValue().getGeneros().stream()
@@ -285,9 +301,8 @@ public class RecomendacionesController {
                 .collect(Collectors.joining(", "))));
 
         // ── AÑO ──
-        colAnio.setCellValueFactory(cd -> Bindings.createStringBinding(() -> cd.getValue().getFechaRegistro() == null
-                ? ""
-                : cd.getValue().getFechaRegistro().format(DateTimeFormatter.ofPattern("yyyy"))));
+        colAnio.setCellValueFactory(cd -> Bindings.createStringBinding(
+                () -> String.valueOf(cd.getValue().getAnio())));
 
         // ── DURACIÓN ──
         colDuracion.setCellValueFactory(cd -> Bindings.createStringBinding(

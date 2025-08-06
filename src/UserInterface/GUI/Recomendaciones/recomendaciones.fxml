@@ -106,7 +106,7 @@
                 prefHeight="619.0" prefWidth="975.0" maxWidth="1242.0"
                 style="-fx-background-color: #0A0E27;">
 
-                <VBox alignment="TOP_CENTER" spacing="10.0">
+                <VBox alignment="TOP_LEFT" spacing="10.0">
                     <padding>
                         <Insets top="20.0" />
                     </padding>
@@ -132,26 +132,26 @@
                         <columns>
 
                             <!-- TÍTULO + PORTADA (una sola celda) -->
-                            <TableColumn fx:id="colTituloConImagen" prefWidth="324.0" text="Título" />
+                            <TableColumn fx:id="colTituloConImagen" prefWidth="355.0" text="Título" />
 
                             <!-- ARTISTA -->
-                            <TableColumn fx:id="colArtista" prefWidth="175.0" text="Artista"
+                            <TableColumn fx:id="colArtista" prefWidth="180.0" text="Artista(s)"
                                 style="-fx-alignment:center;" />
 
                             <!-- GÉNERO(S) -->
-                            <TableColumn fx:id="colGenero" prefWidth="175.0" text="Género(s)"
+                            <TableColumn fx:id="colGenero" prefWidth="180.0" text="Género(s)"
                                 style="-fx-alignment:center;" />
 
                             <!-- AÑO -->
-                            <TableColumn fx:id="colAnio" prefWidth="90.0" text="Año"
+                            <TableColumn fx:id="colAnio" prefWidth="115.0" text="Año de la canción"
                                 style="-fx-alignment:center;" />
 
                             <!-- DURACIÓN -->
-                            <TableColumn fx:id="colDuracion" prefWidth="100.0" text="Duración"
+                            <TableColumn fx:id="colDuracion" prefWidth="85.0" text="Duración"
                                 style="-fx-alignment:center;" />
 
                             <!-- PLAY -->
-                            <TableColumn fx:id="colPlay" prefWidth="70.0" />
+                            <TableColumn fx:id="colPlay" prefWidth="35.0" />
                         </columns>
 
                     </TableView>
