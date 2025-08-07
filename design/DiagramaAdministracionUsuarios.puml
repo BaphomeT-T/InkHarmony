@@ -11,38 +11,40 @@ package "Administración de usuarios" {
   }
 
   class Usuario {
-    - preferenciasMusicales: List<Genero>
-    + actualizarPerfil(nombre, apellido, foto): void
-    + agregarPreferenciasMusicales(generos: List<Genero>): void
+    - preferenciasMusicales: List<GeneroDTO>
+    + actualizarPerfil(PerfilDTO perfil, boolean borrarPreferencias, List<GeneroDTO> nuevosGeneros): boolean
+    + {static} preferenciasToJSON(List<GeneroDTO> preferenciasMusicales): String
+    + {static}  preferenciasFromJSON(String json): List<GeneroDTO>
   }
 
   class Administrador {
-    + consultarUsuarios(): List<Perfil>
-    + activarCuenta(usuario: Perfil): void
-    + desactivarCuenta(usuario: Perfil): void
-    + cambiarTipoUsuario(usuario: Perfil, tipoUsuario: TipoUsuario): void
-    + eliminarCuenta(usuario: Perfil): void
+    + consultarUsuarios(): List<PerfilDTO>
+    + activarCuenta(usuario: PerfilDTO): void
+    + desactivarCuenta(usuario: PerfilDTO): void
+    + cambiarTipoUsuario(usuario: PerfilDTO, tipoUsuario: TipoUsuario): void
+    + eliminarCuenta(usuario: PerfilDTO): void
   }
 
   class ServicioPerfil {
-    - perfilDTO: PerfilDTO
-    - {static} encoder: PasswordEncoder
-    + registrarUsuario(nombre, apellido, correo, contrasenia, foto): void
-    + autenticar(email, password): Perfil
+    - perfilDAO: PerfilDAO
+    - {static} encoder: BCryptPasswordEncoder
+    + registrarUsuario(String nombre, String apellido, String correo, String contrasenia, String foto): void
+    + autenticar(String correo, String contraseniaIngresada): PerfilDTO
   }
-  Enum Genero
   Enum TipoUsuario {
   ADMINISTRADOR
   USUARIO
   }
   class Sesion {
-    - usuarioActual: Perfil
+    - usuarioActual: PerfilDTO
     - {static} sesion: Sesion
     + {static} getSesion(): Sesion
-    + iniciarSesio(usarioLogueado: Perfil): void
+    + iniciarSesion(usarioLogueado: PerfilDTO): void
     + cerrarSesion(): void
-    + obtenerUsuarioActual(): Perfil
+    + obtenerUsuarioActual(): PerfilDTO
   }
+
+  Enum Genero
 
   ServicioPerfil .> Perfil
   Usuario --|> Perfil
