@@ -1078,7 +1078,7 @@ public class CatalogoPlaylistController implements Initializable {
     /**
      * Actualiza la información de la canción en el reproductor
      */
-    private void actualizarInformacionCancionReproductor() {
+    public void actualizarInformacionCancionReproductor() {
         if (reproductor == null || cancionesReproduciendose == null || cancionesReproduciendose.isEmpty()) return;
 
         int indiceActual = reproductor.getPlaylist().getIndiceActual();
@@ -1185,7 +1185,7 @@ public class CatalogoPlaylistController implements Initializable {
     /**
      * Muestra el panel del reproductor
      */
-    private void mostrarReproductor() {
+    public void mostrarReproductor() {
         if (anchorBarraReproduccion != null) {
             anchorBarraReproduccion.setVisible(true);
             anchorBarraReproduccion.setManaged(true);
@@ -1247,6 +1247,10 @@ public class CatalogoPlaylistController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/ReproductorMusical/reproduccionCancion.fxml"));
 
             Parent root = loader.load();
+            // Obtener el controlador y pasarle la lista y el índice actual
+            UserInterface.CustomerControl.ReproductorMusical.ReproduccionCancionController controller = loader.getController();
+            int indiceActual = reproductor.getPlaylist().getIndiceActual();
+            controller.setDatosReproduccion(cancionesReproduciendose, indiceActual);
             Stage stage = new Stage();
             stage.setTitle("Reproductor Musical");
             stage.setScene(new Scene(root, 1200, 800));
@@ -1259,6 +1263,11 @@ public class CatalogoPlaylistController implements Initializable {
                 cargarPlaylists();
             });
             stage.show();
+
+            // Cerrar la ventana actual
+            Stage currentStage = (Stage) btnExpandir.getScene().getWindow();
+            currentStage.close();
+
         } catch (Exception e) {
             mostrarAlerta("Error", "Error al abrir el reproductor: " + e.getMessage(), Alert.AlertType.ERROR);
             e.printStackTrace();
@@ -1541,5 +1550,13 @@ public class CatalogoPlaylistController implements Initializable {
         if (reproductor != null) {
             reproductor.detener();
         }
+    }
+
+    public void setReproduccionActual(java.util.List<DataAccessComponent.DTO.CancionDTO> canciones, int indiceActual) {
+        this.cancionesReproduciendose = canciones;
+        if (reproductor != null && reproductor.getPlaylist() != null) {
+            reproductor.getPlaylist().setIndiceActual(indiceActual);
+        }
+        actualizarInformacionCancionReproductor();
     }
 }

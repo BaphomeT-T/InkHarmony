@@ -5,14 +5,20 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.OverrunStyle?>
 <?import javafx.scene.effect.ColorAdjust?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="832.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.ReproductorMusical.ReproduccionCancionController">
+<BorderPane prefHeight="832.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.ReproductorMusical.ReproduccionCancionController">
 
    <!-- TOP BAR -->
    <top>
@@ -35,7 +41,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="66.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;">
+            <Button fx:id="btnVolver" mnemonicParsing="false" onAction="#volverAPlaylist" prefHeight="40.0" prefWidth="66.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" preserveRatio="true">
                      <image><Image url="@../../Resources//img/regresar-pagina.png" /></image>
@@ -55,7 +61,7 @@
          <top>
             <Label fx:id="lblNombreCancion" alignment="CENTER" maxWidth="Infinity" text="Song Title" textFill="WHITE" wrapText="true" BorderPane.alignment="CENTER">
                <font><Font size="28.0" /></font>
-               <padding><Insets top="40.0" left="20.0" right="20.0" /></padding>
+               <padding><Insets left="20.0" right="20.0" top="40.0" /></padding>
             </Label>
          </top>
          <center>
@@ -99,7 +105,7 @@
                   </Pane>
                   <VBox prefWidth="140.0">
                      <children>
-                        <Label fx:id="lblNombreCancion1" text="Song Title" textFill="WHITE" wrapText="true" textOverrun="ELLIPSIS">
+                        <Label fx:id="lblNombreCancion1" text="Song Title" textFill="WHITE" textOverrun="ELLIPSIS" wrapText="true">
                            <font><Font size="16.0" /></font>
                         </Label>
                         <Label fx:id="lblArtista1" text="Artist" textFill="WHITE" wrapText="true">

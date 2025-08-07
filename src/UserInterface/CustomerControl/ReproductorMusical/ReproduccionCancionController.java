@@ -4,16 +4,21 @@ import BusinessLogic.ReproductorMP3;
 import BusinessLogic.EstadoPausado;
 import DataAccessComponent.DAO.CancionDAO;
 import DataAccessComponent.DTO.CancionDTO;
+import UserInterface.CustomerControl.Playlist.CatalogoPlaylistController;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.ByteArrayInputStream;
@@ -37,6 +42,14 @@ public class ReproduccionCancionController implements Initializable {
     private List<CancionDTO> cancionesDTO;
     private List<byte[]> cancionesByteArray;
     private boolean usuarioArrastrando = false;
+    private CancionDTO cancionActual;
+    private boolean datosExternos = false;
+
+    public void setCancionActual(DataAccessComponent.DTO.CancionDTO cancion) {
+        this.cancionActual = cancion;
+        datosExternos = true;
+        mostrarInformacionCancion(cancion);
+    }
 
     @FXML private Slider pgbProgresoCancion;
     @FXML private Label lblArtista;
@@ -49,6 +62,24 @@ public class ReproduccionCancionController implements Initializable {
     @FXML private ImageView imgAlbumArtCentral;
     @FXML private ImageView imgAlbumActualAbajo;
     @FXML private Pane panImageAlbum1;
+    @FXML private Button btnVolver;
+    public void setDatosReproduccion(java.util.List<DataAccessComponent.DTO.CancionDTO> canciones, int indiceActual) {
+        this.cancionesDTO = canciones;
+        datosExternos = true;
+        if (reproductor != null && reproductor.getPlaylist() != null) {
+            reproductor.getPlaylist().setIndiceActual(indiceActual);
+        }
+        mostrarCancionActual();
+    }
+
+    private void mostrarCancionActual() {
+        if (reproductor != null && cancionesDTO != null) {
+            int idx = reproductor.getPlaylist().getIndiceActual();
+            if (idx >= 0 && idx < cancionesDTO.size()) {
+                mostrarInformacionCancion(cancionesDTO.get(idx));
+            }
+        }
+    }
 
     /**
      * Se ejecuta al inicializar el controlador.
@@ -58,7 +89,9 @@ public class ReproduccionCancionController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        cargarCanciones();
+        if (!datosExternos) {
+            cargarCanciones();
+        }
         inicializarTimeline();
 
         pgbProgresoCancion.setOnMousePressed(e -> usuarioArrastrando = true);
@@ -70,8 +103,8 @@ public class ReproduccionCancionController implements Initializable {
 
         if (reproductor != null) {
             reproductor.setOnSongChange(() -> {
-                Platform.runLater(() -> {
-                    actualizarInformacionCancionActual();
+                javafx.application.Platform.runLater(() -> {
+                    mostrarCancionActual();
                     reiniciarProgresoYTiempo();
                     cambiarAImagenPause();
                     timeline.play();
@@ -111,7 +144,7 @@ public class ReproduccionCancionController implements Initializable {
 
             if (!cancionesByteArray.isEmpty()) {
                 reproductor = ReproductorMP3.getInstancia(cancionesByteArray);
-                actualizarInformacionCancionActual();
+                mostrarCancionActual();
             } else {
                 System.out.println("No hay canciones en la base de datos");
             }
@@ -316,5 +349,28 @@ public class ReproduccionCancionController implements Initializable {
     public void cleanup() {
         if (timeline != null) timeline.stop();
         if (reproductor != null) reproductor.detener();
+    }
+    @FXML  void volverAPlaylist(ActionEvent event){
+        //cargar la ventana de catálogo de playlist
+        try{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/Playlist/frameCatalogoPlaylist.fxml"));
+        Parent root = loader.load();
+       CatalogoPlaylistController controller = loader.getController();
+        controller.setReproduccionActual(cancionesDTO, reproductor.getPlaylist().getIndiceActual());
+        controller.mostrarReproductor();
+        controller.actualizarInformacionCancionReproductor();
+        Stage newStage = new Stage();
+        newStage.setTitle("Catálogo de Playlists");
+        newStage.setScene(new Scene(root, 1200, 800));
+        newStage.setResizable(true);
+        newStage.show();
+
+        // Cerrar la ventana actual
+        Stage currentStage = (Stage) btnVolver.getScene().getWindow();
+        currentStage.close();
+    } catch (Exception e) {
+        System.err.println("Error al cargar la ventana de catálogo de playlists: " + e.getMessage());
+        e.printStackTrace();
+    }
     }
 }
