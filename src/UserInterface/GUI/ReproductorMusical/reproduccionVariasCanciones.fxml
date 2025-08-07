@@ -1,147 +1,136 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.control.OverrunStyle?>
+<?import javafx.scene.effect.ColorAdjust?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280" style="-fx-border-radius: 15px; -fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.ReproductorMusical.ReproduccionVariasCancionesController">
-    <children>
-        <TextField fx:id="txtBuscarCancion" alignment="TOP_LEFT" layoutX="264.0" layoutY="15.0" prefHeight="14.0" prefWidth="743.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;" text="  ¿Qué quieres reproducir?">
-            <font>
-                <Font size="22.0" />
-            </font>
-        </TextField>
-        <Button layoutX="821.0" layoutY="24.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="51.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2;" />
-        <Slider fx:id="pgbProgresoCancion" layoutX="50.0" layoutY="702.0" max="1.0" min="0.0" prefWidth="1171.0" style="-fx-accent: #FF0000;" value="0.0">
-            <styleClass>
-                <String fx:value="custom-slider" />
-            </styleClass>
-        </Slider>
-        <Pane fx:id="panImageAlbum1" layoutX="22.0" layoutY="734.0" prefHeight="70.0" prefWidth="76.0" style="-fx-background-color: #ffffff;" />
-        <Label fx:id="lblNombreCancion" layoutX="105.0" layoutY="738.0" prefHeight="35.0" prefWidth="250.0" text="Nombre cancion" textFill="WHITE" wrapText="true">
-            <font>
-                <Font size="18.0" />
-            </font></Label>
-        <Button layoutX="610.0" layoutY="746.0" mnemonicParsing="false" onAction="#clickReproducir" prefHeight="43.0" prefWidth="89.0" style="-fx-background-color: #070F2B; -fx-border-radius: 25px; -fx-background-radius: 25px;">
-            <graphic>
-                <ImageView fx:id="imgPlayPause" fitHeight="26.0" fitWidth="29.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../../Resources/ReproductorMusical/img/boton-de-play.png" />
-                    </image>
-                    <effect>
-                        <ColorAdjust brightness="1.0" contrast="0.49" hue="0.47" saturation="0.21" />
-                    </effect>
-                    <cursor>
-                        <Cursor fx:constant="OPEN_HAND" />
-                    </cursor>
-                </ImageView>
-            </graphic>
-        </Button>
-
-        <Button layoutX="730.0" layoutY="750.0" mnemonicParsing="false" onAction="#clickSiguiente" prefHeight="35.0" prefWidth="57.0" style="-fx-background-color: #070F2B; -fx-border-radius: 25px; -fx-background-radius: 25px;">
-            <graphic>
-                <ImageView fitHeight="21.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../../Resources/ReproductorMusical/img/siguiente-pista.png" />
-                    </image>
-                    <effect>
-                        <ColorAdjust brightness="1.0" />
-                    </effect>
-                </ImageView>
-            </graphic>
-        </Button>
-
-        <Button layoutX="520.0" layoutY="750.0" mnemonicParsing="false" onAction="#clickAnterior" prefHeight="35.0" prefWidth="57.0" style="-fx-background-color: #070F2B; -fx-border-radius: 25px; -fx-background-radius: 25px;">
-            <graphic>
-                <ImageView fitHeight="21.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../../Resources/ReproductorMusical/img/pista-anterior.png" />
-                    </image>
-                    <effect>
-                        <ColorAdjust brightness="1.0" />
-                    </effect>
-                </ImageView>
-            </graphic>
-        </Button>
-
-        <Button layoutX="934.0" layoutY="16.0" mnemonicParsing="false" onAction="#clickBuscarCancion" prefHeight="27.0" prefWidth="51.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2;">
-            <graphic>
-                <ImageView fitHeight="36.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../../Resources/ReproductorMusical/img/lupa.png" />
-                    </image>
-                </ImageView>
-            </graphic></Button>
-        <Button layoutX="1155.0" layoutY="19.0" mnemonicParsing="false" onAction="#clickRegresarPagina" prefHeight="40.0" prefWidth="66.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;">
-            <graphic>
-                <ImageView>
-                    <image>
-                        <Image url="@../../Resources/ReproductorMusical/img/regresar-pagina.png" />
-                    </image>
-                </ImageView>
-            </graphic></Button>
-
-        <Button layoutX="50.0" layoutY="15.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="57.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;">
-            <graphic>
-                <ImageView fitHeight="40.0" fitWidth="42.0">
-                    <image>
-                        <Image url="@../../Resources/ReproductorMusical/img/simbolo-aplicacion.png" />
-                    </image>
-                </ImageView>
-            </graphic></Button>
-        <Pane layoutX="50.0" layoutY="86.0" prefHeight="587.0" prefWidth="339.0" style="-fx-background-color: #1B1A55;">
+<BorderPane prefHeight="832.0" prefWidth="1280.0" style="-fx-background-color: #070F2B;" stylesheets="@../../Resources/ReproductorMusical/css/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.ReproductorMusical.ReproduccionVariasCancionesController">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-padding: 15px 20px;">
             <children>
-                <Label layoutX="14.0" layoutY="14.0" prefHeight="49.0" prefWidth="234.0" text="Tu Biblioteca          " textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="24.0" />
-                    </font>
-                </Label>
-                <Button layoutX="235.0" layoutY="13.0" mnemonicParsing="false" onAction="#clickNuevaBiblioteca" style="-fx-background-color: #1B1A55;" text="+" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="24.0" />
-                    </font>
+                <Button fx:id="btnAtras" onAction="#clickAtras" style="-fx-background-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;" visible="false">
+                    <graphic><ImageView fitHeight="32.0" fitWidth="32.0" preserveRatio="true"><image><Image url="@../../Resources/ReproductorMusical/img/regresar-pagina.png" /></image></ImageView></graphic>
                 </Button>
-                <Button layoutX="14.0" layoutY="51.0" mnemonicParsing="false" onAction="#clickBuscarBiblioteca" prefHeight="36.0" prefWidth="65.0" style="-fx-background-color: #1B1A55;">
-                    <graphic>
-                        <ImageView fitHeight="46.0" fitWidth="68.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../../Resources/ReproductorMusical/img/lupa.png" />
-                            </image>
-                            <effect>
-                                <ColorAdjust brightness="1.0" />
-                            </effect>
-                        </ImageView>
-                    </graphic></Button>
-                <Pane layoutX="25.0" layoutY="105.0" prefHeight="79.0" prefWidth="89.0" style="-fx-background-color: white;" />
-                <Pane fx:id="panBiblioteca" layoutX="114.0" layoutY="105.0" prefHeight="79.0" prefWidth="201.0" style="-fx-background-color: #ffffff;" />
+                <TextField fx:id="txtBuscarCancion" prefHeight="45.0" promptText="¿Qué quieres reproducir?" style="-fx-background-color: #9290C2; -fx-border-radius: 18px; -fx-background-radius: 15px;" HBox.hgrow="ALWAYS" />
+                <Button onAction="#clickBuscarCancion" style="-fx-background-color: #9290C2; -fx-background-radius: 18px;">
+                    <graphic><ImageView fitHeight="32.0" fitWidth="32.0" preserveRatio="true"><image><Image url="@../../Resources/ReproductorMusical/img/lupa.png" /></image></ImageView></graphic>
+                </Button>
+                <Button style="-fx-background-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;">
+                    <graphic><ImageView fitHeight="40.0" fitWidth="42.0" preserveRatio="true"><image><Image url="@../../Resources/ReproductorMusical/img/simbolo-aplicacion.png" /></image></ImageView></graphic>
+                </Button>
             </children>
-        </Pane>
-        <Pane layoutX="420.0" layoutY="88.0" prefHeight="587.0" prefWidth="811.0" style="-fx-background-color: #1B1A55;">
+        </HBox>
+    </top>
+    <left>
+        <VBox fx:id="panelIzquierdo" prefWidth="320.0" spacing="10.0" style="-fx-background-color: #1B1A55; -fx-padding: 15px; -fx-background-radius: 10;">
+            <BorderPane.margin><Insets bottom="10.0" left="20.0" top="0" /></BorderPane.margin>
             <children>
-                <Label layoutX="37.0" layoutY="14.0" prefHeight="57.0" prefWidth="310.0" text="Lista de reproducción" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="24.0" />
-                    </font></Label>
-                <ScrollPane fx:id="panListaReproduccion" layoutX="53.0" layoutY="72.0" prefHeight="475.0" prefWidth="675.0">
-                    <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-                    </content>
+                <Label style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" text="Tu Biblioteca" />
+                <TextField promptText="Busca una playlist por nombre" styleClass="library-search-field" />
+                <ListView fx:id="listViewPlaylists" styleClass="library-list-view" VBox.vgrow="ALWAYS" />
+            </children>
+        </VBox>
+    </left>
+    <center>
+        <StackPane>
+            <VBox fx:id="vistaCuadricula" style="-fx-background-color: #0A0E27; -fx-padding: 20px;">
+                <Label style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" text="Playlists"><VBox.margin><Insets bottom="20.0" /></VBox.margin></Label>
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                    <content><TilePane fx:id="tilePaneContenido" hgap="20.0" prefColumns="4" vgap="20.0" /></content>
                 </ScrollPane>
-            </children></Pane>
-        <Label fx:id="lblArtista" layoutX="105.0" layoutY="778.0" prefHeight="14.0" prefWidth="250.0" text="Artista" textFill="WHITE" wrapText="true">
-            <font>
-                <Font size="18.0" />
-            </font>
-        </Label>
-
-        <Label fx:id="lblTiempoCancion" layoutX="813.0" layoutY="761.0" text="Tiempo Cancion" textFill="WHITE">
-            <font>
-                <Font size="18.0" />
-            </font>
-        </Label>
-    </children>
-</Pane>
+            </VBox>
+            <VBox fx:id="vistaDetalle" style="-fx-background-color: #0A0E27; -fx-padding: 20px;" visible="false">
+                <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-padding: 10px;">
+                    <ImageView fx:id="imgPlaylistHeader" fitHeight="180.0" fitWidth="180.0" preserveRatio="true" />
+                    <VBox alignment="CENTER_LEFT" spacing="10.0">
+                        <Label style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px; -fx-font-weight: bold;" text="PLAYLIST" />
+                        <Label fx:id="lblPlaylistTituloHeader" style="-fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: bold;" text="Nombre Playlist" />
+                        <Label fx:id="lblAutorHeader" style="-fx-text-fill: #AFAFC7; -fx-font-size: 14px;" text="Autor" />
+                    </VBox>
+                </HBox>
+                <TableView fx:id="tablaCanciones" styleClass="song-table-view" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colPortada" prefWidth="70.0" text="Portada" style="-fx-alignment: CENTER;" />
+                        <TableColumn fx:id="colTitulo" prefWidth="300.0" text="Título" style="-fx-alignment: CENTER;" />
+                        <TableColumn fx:id="colArtista" prefWidth="250.0" text="Artista" style="-fx-alignment: CENTER;" />
+                        <TableColumn fx:id="colDuracion" prefWidth="100.0" text="Duración" style="-fx-alignment: CENTER;" />
+                    </columns>
+                </TableView>
+            </VBox>
+        </StackPane>
+    </center>
+    <bottom>
+        <StackPane prefHeight="100.0" style="-fx-background-color: #1B1A55;">
+            <children>
+                <GridPane alignment="CENTER" style="-fx-padding: 0 25px 20px 25px;" vgap="5">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="360.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="360.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Slider fx:id="pgbProgresoCancion" max="1.0" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <HBox alignment="CENTER_LEFT" spacing="15" GridPane.rowIndex="1">
+                            <children>
+                                <ImageView fx:id="imgAlbumActual" fitHeight="70.0" fitWidth="70.0" preserveRatio="true" />
+                                <VBox prefWidth="140.0">
+                                    <children>
+                                        <Label fx:id="lblNombreCancionActual" text="--" textFill="WHITE" wrapText="true" textOverrun="ELLIPSIS">
+                                            <font><Font size="16.0" /></font>
+                                        </Label>
+                                        <Label fx:id="lblArtistaActual" text="--" textFill="#AFAFC7" wrapText="true">
+                                            <font><Font size="14.0" /></font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="20" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <children>
+                                <Button onAction="#clickAnterior" style="-fx-background-color: transparent;">
+                                    <graphic>
+                                        <ImageView fitHeight="21.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                            <image><Image url="@../../Resources/ReproductorMusical/img/pista-anterior.png" /></image>
+                                            <effect><ColorAdjust brightness="1.0" /></effect>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button onAction="#clickReproducir" style="-fx-background-color: transparent;">
+                                    <graphic>
+                                        <ImageView fx:id="imgPlayPause" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                            <image><Image url="@../../Resources/ReproductorMusical/img/boton-de-play.png" /></image>
+                                            <effect><ColorAdjust brightness="1.0" /></effect>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button onAction="#clickSiguiente" style="-fx-background-color: transparent;">
+                                    <graphic>
+                                        <ImageView fitHeight="21.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                            <image><Image url="@../../Resources/ReproductorMusical/img/siguiente-pista.png" /></image>
+                                            <effect><ColorAdjust brightness="1.0" /></effect>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Label fx:id="lblTiempo" text="0:00 / 0:00" textFill="WHITE">
+                                    <font><Font size="16.0" /></font>
+                                    <HBox.margin>
+                                        <Insets left="15.0" />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                        </HBox>
+                    </children>
+                </GridPane>
+            </children>
+        </StackPane>
+    </bottom>
+</BorderPane>
