@@ -10,23 +10,20 @@ public class FiltroPreferencias extends FiltroRecomendador {
     private final Set<Genero> preferidos;
 
     public FiltroPreferencias(Recomendador siguiente) {
-        this(siguiente, Sesion.getSesion().obtenerUsuarioActual());
-    }
+        super(Objects.requireNonNull(siguiente, "El filtro siguiente no puede ser null"));
 
-    public FiltroPreferencias(Recomendador siguiente, PerfilDTO perfil) {
-        super(siguiente);
-
+        PerfilDTO perfil = Sesion.getSesion().obtenerUsuarioActual();
         if (perfil == null) {
-            this.preferidos = Set.of();
-            return;
+            throw new IllegalStateException(
+                "No hay usuario en sesión: no se pueden cargar preferencias");
         }
 
         List<GeneroDTO> generosDTO;
-
-        if (perfil instanceof UsuarioDTO u && u.getPreferenciasMusicales() != null)
+        if (perfil instanceof UsuarioDTO u && u.getPreferenciasMusicales() != null) {
             generosDTO = u.getPreferenciasMusicales();
-        else
+        } else {
             generosDTO = new UsuarioDAO().obtenerPreferencias(perfil);
+        }
 
         this.preferidos = generosDTO.stream()
                                     .map(GeneroDTO::getNombreGenero)
@@ -36,11 +33,12 @@ public class FiltroPreferencias extends FiltroRecomendador {
 
     @Override
     public List<CancionDTO> recomendar() {
-        if (preferidos.isEmpty())
+        if (preferidos.isEmpty()) {
             return siguiente.recomendar();
+        }
         return siguiente.recomendar().stream()
-                .filter(c -> c.getGeneros() != null &&
-                             c.getGeneros().stream().anyMatch(preferidos::contains))
-                .collect(Collectors.toList());
+                       .filter(c -> c.getGeneros() != null &&
+                                    c.getGeneros().stream().anyMatch(preferidos::contains))
+                       .collect(Collectors.toList());
     }
 }
