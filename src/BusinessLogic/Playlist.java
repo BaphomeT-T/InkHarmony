@@ -188,8 +188,8 @@ public class Playlist implements ComponentePlaylist {
     public void reproducir() throws Exception {
         List<byte[]> cancionesBytes = obtenerCancionesParaReproduccion();
         if (!cancionesBytes.isEmpty()) {
-            // ReproductorMP3 reproductor = ReproductorMP3.getInstancia(cancionesBytes);
-            // reproductor.reproducir();
+            ReproductorMP3 reproductor = ReproductorMP3.getInstancia(cancionesBytes);
+            reproductor.reproducir();
         } else {
             throw new Exception("La playlist está vacía o no tiene archivos de audio");
         }
