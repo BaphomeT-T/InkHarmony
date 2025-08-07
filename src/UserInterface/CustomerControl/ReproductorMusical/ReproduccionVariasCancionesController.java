@@ -1,7 +1,10 @@
 package UserInterface.CustomerControl.ReproductorMusical;
 
 import BusinessLogic.ReproductorMP3;
+import BusinessLogic.Sesion;
+import BusinessLogic.Usuario;
 import DataAccessComponent.DAO.PlaylistDAO;
+import DataAccessComponent.DAO.UsuarioDAO;
 import DataAccessComponent.DTO.CancionDTO;
 import DataAccessComponent.DTO.PlaylistDTO;
 import javafx.animation.KeyFrame;
@@ -66,6 +69,7 @@ public class ReproduccionVariasCancionesController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+       
         InputStream stream = getClass().getResourceAsStream("/UserInterface/Resources/img/portada-generica.jpg");
         portadaGenerica = (stream != null) ? new Image(stream) : null;
 

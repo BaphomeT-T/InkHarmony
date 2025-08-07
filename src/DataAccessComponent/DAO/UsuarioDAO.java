@@ -97,7 +97,34 @@ public class UsuarioDAO extends SQLiteDataHelper {
             return List.of();
         }
     }
-
+    /**
+     * Obtiene el ID de usuario a partir del correo electrónico.
+     * <p>Este método busca el ID del usuario en la base de datos utilizando su correo electrónico.
+     * Si el usuario no existe, retorna -1.</p>
+     * @param correo El correo electrónico del usuario
+     * @return El ID del usuario si se encuentra, o -1 si no existe
+     */
+    public int obtenerIdUsuarioPorCorreo(String correo) {
+        String sql = "SELECT id_usuario FROM Usuario WHERE correo = ?";
+        try {
+            Connection conn = openConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, correo);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("id_usuario");
+            }
+            return -1; // Usuario no encontrado
+        } catch (SQLException e) {
+            System.err.println("Error al obtener ID de usuario: " + e.getMessage());
+            return -1; // Error al obtener el ID
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return -1;
+        
+    }
 
     public boolean actualizarPerfil(PerfilDTO perfil, boolean borrarPreferencias, List<GeneroDTO> nuevosGeneros) {
         StringBuilder sql = new StringBuilder("UPDATE Usuario SET ");
@@ -165,5 +192,5 @@ public class UsuarioDAO extends SQLiteDataHelper {
             return false;
         }
     }
-
+    
 }
