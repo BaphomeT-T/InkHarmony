@@ -87,10 +87,13 @@ public class CatalogoArtistasController {
     private void configurarTabla() {
         colGenero.setCellValueFactory(cellData -> {
             List<Genero> generos = cellData.getValue().getGenero();
-            String texto = generos.stream().map(Enum::name).collect(Collectors.joining(", "));
-            return SimpleStringProperty.stringExpression(
-                    Bindings.createStringBinding(() -> texto));
+            String texto = generos.stream()
+                    .map(this::formatearGenero) // Formatea tipo Rock Alternativo
+                    .sorted(String::compareToIgnoreCase) // Ordena alfabéticamente
+                    .collect(Collectors.joining(", "));
+            return new SimpleStringProperty(texto);
         });
+
 
         colBiografia.setCellValueFactory(new PropertyValueFactory<>("biografia"));
 
@@ -140,6 +143,22 @@ public class CatalogoArtistasController {
             return null;
         }
     }
+
+    private String formatearGenero(Genero genero) {
+        String nombre = genero.name().replace('_', ' ').toLowerCase();
+        String[] palabras = nombre.split(" ");
+        StringBuilder resultado = new StringBuilder();
+
+        for (String palabra : palabras) {
+            if (!palabra.isEmpty()) {
+                resultado.append(Character.toUpperCase(palabra.charAt(0)))
+                        .append(palabra.substring(1)).append(" ");
+            }
+        }
+
+        return resultado.toString().trim();
+    }
+
 
     private void cargarArtistas() throws Exception {
         List<ArtistaDTO> lista = artistaBL.buscarTodo();
