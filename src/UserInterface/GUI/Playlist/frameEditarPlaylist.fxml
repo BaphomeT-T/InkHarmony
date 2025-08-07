@@ -29,7 +29,7 @@
         <VBox alignment="CENTER" layoutX="60.0" layoutY="100.0" prefWidth="1180.0" spacing="25.0">
             <children>
                 <!-- Título principal centrado -->
-                <Label text="EDITAR PLAYLIST" textFill="WHITE">
+                <Label text="ACTUALIZAR PLAYLIST" textFill="WHITE">
                     <font>
                         <Font size="48.0" />
                     </font>

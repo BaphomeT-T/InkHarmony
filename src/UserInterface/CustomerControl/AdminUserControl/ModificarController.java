@@ -92,8 +92,17 @@ public class ModificarController {
 
         // Establecer imagen de perfil si existe
         String foto = perfil.getFoto();
-        if (foto != null && rutasImagenes.contains(foto)) {
-            indiceActual = rutasImagenes.indexOf(foto);
+        if (foto != null) {
+            try {
+                int index = Integer.parseInt(foto.trim());
+                if (index >= 0 && index < rutasImagenes.size()) {
+                    indiceActual = index;
+                } else {
+                    System.out.println("Índice de imagen fuera de rango: " + index);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("La foto no es un índice válido: " + foto);
+            }
         }
         actualizarImagenPerfil();
 
@@ -109,7 +118,6 @@ public class ModificarController {
 
         configurarBusquedaGeneros();
     }
-
 
     @FXML
     void imagenAnterior(MouseEvent event) {

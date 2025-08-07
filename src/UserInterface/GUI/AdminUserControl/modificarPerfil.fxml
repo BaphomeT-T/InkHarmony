@@ -280,7 +280,7 @@
                         <RowConstraints maxHeight="160.00003662109378" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Button fx:id="btnGuardar" mnemonicParsing="false" onAction="#guardarCambios" prefHeight="49.0" prefWidth="164.0" style="-fx-background-color: #9190C2;" text="Guardar" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                        <Button fx:id="btnGuardar" mnemonicParsing="false" onAction="#guardarCambios" prefHeight="49.0" prefWidth="164.0" style="-fx-background-color: #9190C2;" text="Actualizar" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                            <font>
                               <Font size="27.0" />
                            </font>

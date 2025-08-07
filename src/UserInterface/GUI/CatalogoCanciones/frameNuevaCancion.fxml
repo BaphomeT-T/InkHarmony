@@ -75,7 +75,7 @@
                     <font><Font size="12.0" /></font>
                 </Label>
                 <!-- Botón para registrar la canción -->
-                <Button fx:id="registrarButton" layoutX="292.0" layoutY="517.0" mnemonicParsing="false" onAction="#registrarCancion" prefHeight="60.0" prefWidth="345.0" style="-fx-background-color: #9190C2; -fx-background-radius: 10;" text="Publicar">
+                <Button fx:id="registrarButton" layoutX="292.0" layoutY="517.0" mnemonicParsing="false" onAction="#registrarCancion" prefHeight="60.0" prefWidth="345.0" style="-fx-background-color: #9190C2; -fx-background-radius: 10;" text="Subir">
                     <font><Font name="System Bold" size="26.0" /></font>
                 </Button>
                 <!-- Panel para la imagen de la canción con botón -->

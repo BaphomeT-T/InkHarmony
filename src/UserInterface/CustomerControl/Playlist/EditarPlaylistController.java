@@ -95,7 +95,7 @@ public class EditarPlaylistController implements Initializable {
     }
 
     private void configurarBotonParaGuardarCambios() {
-        btnActualizarPlaylist.setText("Guardar Cambios");
+        btnActualizarPlaylist.setText("Actualizar Playlist");
         btnActualizarPlaylist.setStyle(ESTILO_BOTON_GUARDAR_CAMBIOS);
     }
 

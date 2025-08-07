@@ -225,7 +225,7 @@ public class CatalogoPlaylistController implements Initializable {
                     MenuItem editarItem = new MenuItem("Editar");
                     editarItem.setOnAction(e -> CatalogoPlaylistController.this.abrirEditarPlaylist(playlist));
 
-                    MenuItem borrarItem = new MenuItem("Borrar");
+                    MenuItem borrarItem = new MenuItem("Eliminar");
                     // CAMBIO AQUÍ: Ahora llama al método que abre la ventana de eliminar
                     borrarItem.setOnAction(e -> CatalogoPlaylistController.this.abrirEliminarPlaylist(playlist));
 
@@ -743,7 +743,7 @@ public class CatalogoPlaylistController implements Initializable {
             // Cerrar sesión actual
             Sesion sesion = Sesion.getSesion();
             sesion.cerrarSesion(); // Limpia la sesión
-            
+            reproductor.detener();
             // Abrir ventana de login
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/login.fxml"));
             Parent root = loader.load();
@@ -794,7 +794,7 @@ private void handleRecomendaciones() {
         loginStage.show();
 
         // Cerrar ventana actual
-        Stage currentStage = (Stage) btnLogo.getScene().getWindow();
+        Stage currentStage = (Stage) btnAgregarPlaylist.getScene().getWindow();
         currentStage.close();
 
     } catch (Exception e) {
@@ -1436,7 +1436,7 @@ private void handleRecomendaciones() {
             controller.setPlaylist(playlistCompleta);
 
             Stage stage = new Stage();
-            stage.setTitle("Editar Playlist - " + playlistCompleta.getTituloPlaylist());
+            stage.setTitle("Actualizar Playlist - " + playlistCompleta.getTituloPlaylist());
             stage.setScene(new Scene(root, 1200, 800));
             stage.setResizable(true);
             stage.setMinWidth(1000);
