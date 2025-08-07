@@ -1,141 +1,144 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.OverrunStyle?>
+<?import javafx.scene.effect.ColorAdjust?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.text.Font?>
 
-<?import java.lang.String?>
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="582.4" prefWidth="896" style="-fx-background: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.ReproductorMusical.ReproduccionCancionController">
-   <content>
-      <Pane prefHeight="820.0" prefWidth="1280.0" style="-fx-border-radius: 15px; -fx-background-color: #070F2B;">
+<BorderPane prefHeight="820.0" prefWidth="1366.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.ReproductorMusical.ReproduccionCancionController">
+
+   <top>
+      <HBox alignment="CENTER_LEFT" spacing="15.0" style="-fx-padding: 15px 25px;">
          <children>
-            <!-- Header con búsqueda y navegación -->
-            <Button layoutX="50.0" layoutY="15.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="57.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;">
+            <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="57.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;">
                <graphic>
                   <ImageView fitHeight="40.0" fitWidth="42.0">
-                     <image>
-                        <Image url="@../../Resources/ReproductorMusical/img/simbolo-aplicacion.png" />
-                     </image>
+                     <image><Image url="@../../Resources/ReproductorMusical/img/simbolo-aplicacion.png" /></image>
                   </ImageView>
                </graphic>
             </Button>
-
-            <TextField fx:id="txtBuscarCancion" alignment="TOP_LEFT" layoutX="264.0" layoutY="15.0" prefHeight="40.0" prefWidth="743.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;" text="  ¿Qué quieres reproducir?">
-               <font>
-                  <Font size="22.0" />
-               </font>
+            <TextField fx:id="txtBuscarCancion" prefHeight="40.0" promptText="¿Qué quieres reproducir?" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;" HBox.hgrow="ALWAYS">
+               <font><Font size="22.0" /></font>
             </TextField>
-
-            <Button layoutX="1020.0" layoutY="16.0" mnemonicParsing="false" onAction="#clickBuscarCancion" prefHeight="38.0" prefWidth="51.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2;">
+            <Button mnemonicParsing="false" onAction="#clickBuscarCancion" style="-fx-background-color: #9290C2; -fx-background-radius: 15px; -fx-padding: 4px;">
                <graphic>
-                  <ImageView fitHeight="36.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../Resources/ReproductorMusical/img/lupa.png" />
-                     </image>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@../../Resources/ReproductorMusical/img/lupa.png" /></image>
                   </ImageView>
                </graphic>
             </Button>
-
-            <Button layoutX="1155.0" layoutY="19.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="66.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;">
+            <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="66.0" style="-fx-background-color: #9290C2; -fx-border-color: #9290C2; -fx-border-radius: 15px; -fx-background-radius: 15px;">
                <graphic>
                   <ImageView>
-                     <image>
-                        <Image url="@../../Resources/ReproductorMusical/img/regresar-pagina.png" />
-                     </image>
+                     <image><Image url="@../../Resources/ReproductorMusical/img/regresar-pagina.png" /></image>
                   </ImageView>
                </graphic>
             </Button>
+         </children>
+      </HBox>
+   </top>
 
-            <!-- Panel principal de contenido -->
-            <Pane layoutX="50.0" layoutY="75.0" prefHeight="598.0" prefWidth="1171.0" style="-fx-background-color: #1B1A55;">
+   <center>
+      <BorderPane style="-fx-background-color: #1B1A55; -fx-border-radius: 10px;">
+         <BorderPane.margin>
+            <Insets bottom="20.0" left="25.0" right="25.0" />
+         </BorderPane.margin>
+         <top>
+            <Label fx:id="lblNombreCancion" alignment="CENTER" maxWidth="Infinity" text="Song Title" textFill="WHITE" wrapText="true" BorderPane.alignment="CENTER">
+               <font><Font size="28.0" /></font>
+               <padding><Insets top="40.0" left="20.0" right="20.0" /></padding>
+            </Label>
+         </top>
+         <center>
+            <StackPane BorderPane.alignment="CENTER">
                <children>
-                  <Pane fx:id="panImageAlbum" layoutX="450.0" layoutY="56.0" prefHeight="499.0" prefWidth="478.0" style="-fx-background-color: #ffffff;" />
-                  <Label fx:id="lblArtista" layoutX="92.0" layoutY="120.0" prefHeight="35.0" prefWidth="204.0" text="Artista" textFill="WHITE" wrapText="true">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="lblNombreCancion" layoutX="92.0" layoutY="50.0" prefHeight="35.0" prefWidth="204.0" text="Nombre canción" textFill="WHITE" wrapText="true">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
+                  <ImageView fx:id="imgAlbumArtCentral" fitHeight="400.0" fitWidth="400.0" preserveRatio="true" />
+               </children>
+            </StackPane>
+         </center>
+         <bottom>
+            <Label fx:id="lblArtista" alignment="CENTER" maxWidth="Infinity" text="Artist" textFill="WHITE" BorderPane.alignment="CENTER">
+               <font><Font size="24.0" /></font>
+               <padding><Insets bottom="40.0" /></padding>
+            </Label>
+         </bottom>
+      </BorderPane>
+   </center>
+
+   <bottom>
+      <GridPane style="-fx-padding: 0 25px 20px 25px;" vgap="5">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="340.0" />
+            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="340.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Slider fx:id="pgbProgresoCancion" max="1.0" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <HBox alignment="CENTER_LEFT" spacing="15" GridPane.rowIndex="1">
+               <children>
+                  <Pane fx:id="panImageAlbum1" prefHeight="70.0" prefWidth="70.0">
+                     <children>
+                        <ImageView fx:id="imgAlbumActualAbajo" fitHeight="70.0" fitWidth="70.0" preserveRatio="true" />
+                     </children>
+                  </Pane>
+                  <VBox prefWidth="120.0">
+                     <children>
+                        <Label fx:id="lblNombreCancion1" text="Song Title" textFill="WHITE" wrapText="true" textOverrun="ELLIPSIS">
+                           <font><Font size="16.0" /></font>
+                        </Label>
+                        <Label fx:id="lblArtista1" text="Artist" textFill="WHITE" wrapText="true">
+                           <font><Font size="14.0" /></font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" spacing="20" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#clickAnterior" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <ImageView fitHeight="21.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image><Image url="@../../Resources/ReproductorMusical/img/pista-anterior.png" /></image>
+                           <effect><ColorAdjust brightness="1.0" /></effect>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#clickReproducir" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <ImageView fx:id="imgPlayPause" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                           <image><Image url="@../../Resources/ReproductorMusical/img/boton-de-play.png" /></image>
+                           <effect><ColorAdjust brightness="1.0" /></effect>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#clickSiguiente" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <ImageView fitHeight="21.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image><Image url="@../../Resources/ReproductorMusical/img/siguiente-pista.png" /></image>
+                           <effect><ColorAdjust brightness="1.0" /></effect>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Label fx:id="lblTiempoCancion" text="00:00 / 00:00" textFill="WHITE">
+                     <font><Font size="16.0" /></font>
+                     <HBox.margin>
+                        <Insets left="15.0" />
+                     </HBox.margin>
                   </Label>
                </children>
-            </Pane>
-
-            <!-- Barra de progreso -->
-            <Slider fx:id="pgbProgresoCancion"
-                    layoutX="50.0" layoutY="702.0"
-                    prefWidth="1171.0" min="0.0" max="1.0" value="0.0">
-               <styleClass>
-                  <String fx:value="custom-slider"/>
-               </styleClass>
-            </Slider>
-
-            <!-- Panel de control de reproducción -->
-            <Pane fx:id="panImageAlbum1" layoutX="72.0" layoutY="734.0" prefHeight="70.0" prefWidth="76.0" style="-fx-background-color: #ffffff;" />
-
-            <Label fx:id="lblNombreCancion1" layoutX="155.0" layoutY="738.0" prefHeight="35.0" prefWidth="250.0" text="Nombre cancion" textFill="WHITE" wrapText="true">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-
-            <Label fx:id="lblArtista1" layoutX="155.0" layoutY="768.0" prefHeight="35.0" prefWidth="250.0" text="Artista" textFill="WHITE" wrapText="true">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-
-            <!-- Controles de reproducción -->
-            <Button layoutX="520.0" layoutY="750.0" mnemonicParsing="false" onAction="#clickAnterior" prefHeight="35.0" prefWidth="57.0" style="-fx-background-color: #070F2B; -fx-border-radius: 25px; -fx-background-radius: 25px;">
-               <graphic>
-                  <ImageView fitHeight="21.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../Resources/ReproductorMusical/img/pista-anterior.png" />
-                     </image>
-                     <effect>
-                        <ColorAdjust brightness="1.0" />
-                     </effect>
-                  </ImageView>
-               </graphic>
-            </Button>
-
-            <Button layoutX="610.0" layoutY="746.0" mnemonicParsing="false" onAction="#clickReproducir" prefHeight="43.0" prefWidth="89.0" style="-fx-background-color: #070F2B; -fx-border-radius: 25px; -fx-background-radius: 25px;">
-               <graphic>
-                  <ImageView fx:id="imgPlayPause" fitHeight="26.0" fitWidth="29.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../Resources/ReproductorMusical/img/boton-de-play.png" />
-                     </image>
-                     <effect>
-                        <ColorAdjust brightness="1.0" />
-                     </effect>
-                  </ImageView>
-               </graphic>
-            </Button>
-
-            <Button layoutX="730.0" layoutY="750.0" mnemonicParsing="false" onAction="#clickSiguiente" prefHeight="35.0" prefWidth="57.0" style="-fx-background-color: #070F2B; -fx-border-radius: 25px; -fx-background-radius: 25px;">
-               <graphic>
-                  <ImageView fitHeight="21.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../Resources/ReproductorMusical/img/siguiente-pista.png" />
-                     </image>
-                     <effect>
-                        <ColorAdjust brightness="1.0" />
-                     </effect>
-                  </ImageView>
-               </graphic>
-            </Button>
-
-            <Label fx:id="lblTiempoCancion" layoutX="813.0" layoutY="761.0" text="Tiempo Cancion" textFill="WHITE">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
+            </HBox>
          </children>
-      </Pane>
-   </content>
-</ScrollPane>
+      </GridPane>
+   </bottom>
+</BorderPane>
