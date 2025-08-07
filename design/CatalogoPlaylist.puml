@@ -1,76 +1,69 @@
-@startuml
 package "CatalogoPlaylist" {
 
     interface "ComponentePlaylist" {
         +mostrarInformacion(): void
         +obtenerDuracion(): double
-        +agregar(componente: ComponentePlaylist): void
-        +eliminar(componente: ComponentePlaylist): void
-        +getComponentes(): List<ComponentePlaylist>
+        +getTitulo(): String
     }
 
     class "Playlist" implements "ComponentePlaylist" {
-        -idPlaylist: int
-        -tituloPlaylist: String
-        -descripcion: String
-        -fechaCreacion: Date
-        -fechaModificacion: Date
-        -propietario: Perfil
-        -imagenPortada: BufferedImage
+        -playlistDTO: PlaylistDTO
+        -playlistDAO: PlaylistDAO
+        -cancionDAO: CancionDAO
         -componentes: List<ComponentePlaylist>
+        -validador: ServicioValidacionPlaylist
 
-        +Playlist(titulo: String, descripcion: String, propietario: Perfil)
+ +Playlist()
+        +Playlist(titulo: String, descripcion: String, idPropietario: int)
         +getTitulo(): String
-        +getDescripcion(): String
-        +getPropietario(): Perfil
         +calcularCantidadCanciones(): int
 
+        +registrar(titulo: String, descripcion: String, idPropietario: int, imagenPortada: byte[], cancionesIds: List<Integer>): boolean
+        +buscarTodo(): List<PlaylistDTO>
+        +buscarPorId(id: int): PlaylistDTO
+        +buscarPorNombre(nombre: String): List<PlaylistDTO>
+        +obtenerPlaylistPorUsuario(idUsuario: int): List<PlaylistDTO>
+        +actualizar(playlist: PlaylistDTO): boolean
+        +eliminar(idPlaylist: int): boolean
+        +agregarCancion(idCancion: int): boolean
+        +eliminarCancion(idCancion: int): boolean
+        +obtenerCancionesParaReproduccion(): List<byte[]>
+        +reproducir(): void
+
         +mostrarInformacion(): void
         +obtenerDuracion(): double
         +agregar(componente: ComponentePlaylist): void
         +eliminar(componente: ComponentePlaylist): void
         +getComponentes(): List<ComponentePlaylist>
-    }
-
-    class "ElementoCancion" implements "ComponentePlaylist" {
-        -cancion: Cancion
-        -fechaAgregado: Date
-        -orden: int
-
-        +ElementoCancion(cancion: Cancion)
-        +ElementoCancion(cancion: Cancion, orden: int)
-        +getCancion(): Cancion
-        +getFechaAgregado(): Date
-        +getOrden(): int
-        +setOrden(orden: int): void
-
-        ' Implementación de ComponentePlaylist (interfaz común)
-        +mostrarInformacion(): void
-        +obtenerDuracion(): double
-        +agregar(componente: ComponentePlaylist): void
-        +eliminar(componente: ComponentePlaylist): void
-        +getComponentes(): List<ComponentePlaylist>
+        +getPlaylistDTO(): PlaylistDTO
+        +setPlaylistDTO(playlistDTO: PlaylistDTO): void
     }
 
     class "PlaylistDAO" {
-        +registrarPlaylist(playlist: Playlist): void
-        +actualizarPlaylist(playlist: Playlist): void
-        +eliminarPlaylist(playlist: Playlist): void
-        +buscarPlaylist(): List<Playlist>
-        +buscarPlaylistPorId(id: int): Playlist
-        +buscarPlaylistPorNombre(nombre: String): List<Playlist>
-        +obtenerPlaylistPorUsuario(usuario: Perfil): List<Playlist>
+        -validador: ServicioValidacionPlaylist
+
+        +registrar(playlist: PlaylistDTO): boolean
+        +actualizar(playlist: PlaylistDTO): boolean
+        +eliminar(id: Integer): boolean
+        +buscarTodo(): List<PlaylistDTO>
+        +buscarPorId(id: Integer): PlaylistDTO
+        +buscarPorNombre(nombre: String): List<PlaylistDTO>
+        +obtenerPlaylistPorUsuario(idUsuario: int): List<PlaylistDTO>
     }
 
     class "ServicioValidacionPlaylist" {
-        +validarDatosCompletos(playlist: Playlist): boolean
-        +tieneDuplicados(playlist: Playlist): boolean
+        +validarDatosCompletos(playlist: PlaylistDTO): boolean
+        +tieneDuplicados(playlist: PlaylistDTO): boolean
         +validarDescripcion(descripcion: String): boolean
         +validarTitulo(titulo: String): boolean
     }
 
     PlaylistDAO --> ServicioValidacionPlaylist : usa
-    PlaylistDAO --> Playlist : gestiona
+    PlaylistDAO --> PlaylistDTO : gestiona
+    Playlist --> PlaylistDTO : usa
+    Playlist --> PlaylistDAO : usa
+    Playlist --> CancionDAO : usa
+    Playlist --> ServicioValidacionPlaylist : usa
     Playlist *-- ComponentePlaylist : contiene
 }
 
@@ -84,9 +77,13 @@ package "CatalogoCanciones" {
         -anioCancion: int
         -portadaCancion: BufferedImage
         -archivoMP3: BLOB
+        -fechaAgregado: Date
+        -orden: int
 
+        +getFechaAgregado(): Date
+        +getOrden(): int
+        +setOrden(orden: int): void
     }
-    ElementoCancion --> Cancion : encapsula
 }
 
 package "AdministracionUsuarios" {
@@ -100,11 +97,12 @@ package "AdministracionUsuarios" {
         -foto: String
         -preferenciasMusicales: List<Genero>
         -tipoUsuario: TipoUsuario
-
     }
 }
 
-Playlist --> Perfil : propietario
-PlaylistDAO --> Perfil : filtra por usuario
+' Relaciones de implementación
+Cancion ..|> ComponentePlaylist : implements
 
-@enduml
+' Relaciones adicionales
+Playlist --> Perfil : propietario (via PlaylistDTO)
+PlaylistDAO --> Perfil : filtra por usuario
