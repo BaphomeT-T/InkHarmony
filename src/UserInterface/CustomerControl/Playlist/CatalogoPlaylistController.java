@@ -1,5 +1,9 @@
 package UserInterface.CustomerControl.Playlist;
-import UserInterface.CustomerControl.Playlist.EliminarPlaylistController;
+import BusinessLogic.ReproductorMP3;
+import BusinessLogic.EstadoPausado;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.scene.control.ButtonBar;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,13 +18,17 @@ import javafx.scene.layout.*;
 import javafx.geometry.Pos;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.Duration;
 import BusinessLogic.Playlist;
 import DataAccessComponent.DTO.PlaylistDTO;
 import DataAccessComponent.DTO.CancionDTO;
 import DataAccessComponent.DAO.CancionDAO;
+import DataAccessComponent.DAO.PlaylistDAO;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
@@ -88,7 +96,7 @@ public class CatalogoPlaylistController implements Initializable {
     @FXML private Button btnPlayPause;
     @FXML private Button btnSiguiente;
     @FXML private Label lblTiempoActual;
-    @FXML private Slider sliderTiempo;
+    @FXML private Slider pgbProgresoCancion; // Corregido el nombre
     @FXML private Label lblTiempoTotal;
     @FXML private Label lblCancionActual;
     @FXML private Label lblArtistaActual;
@@ -96,10 +104,23 @@ public class CatalogoPlaylistController implements Initializable {
     @FXML private Button btnVolumen;
     @FXML private Slider sliderVolumen;
     @FXML private Button btnExpandir;
+    @FXML private AnchorPane anchorBarraReproduccion; // Panel completo del reproductor (corregido el nombre)
 
     private ObservableList<PlaylistDTO> listPlaylistsData;
     private ObservableList<Object> listCancionesData;
     private PlaylistDTO playlistSeleccionada;
+    
+    // Variables para el reproductor de playlist
+    private ReproductorMP3 reproductor;
+    private Timeline timeline;
+    private PlaylistDTO playlistReproduciendose;
+    private List<CancionDTO> cancionesReproduciendose;
+    private boolean usuarioArrastrando = false;
+    private double duracionRealCancion = 0;
+    private double tiempoActualSegundos = 0;
+    private Image imagenPlay;
+    private Image imagenPause;
+    private Image imagenPortadaGenerica;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -109,6 +130,9 @@ public class CatalogoPlaylistController implements Initializable {
 
         listPlaylists.setItems(listPlaylistsData);
         tableCanciones.setItems(listCancionesData);
+
+        // Inicializar reproductor y sus componentes
+        inicializarReproductor();
 
         // Configurar columnas de la tabla de canciones
         configurarTablaCancion();
@@ -125,6 +149,14 @@ public class CatalogoPlaylistController implements Initializable {
 
         tableCanciones.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> seleccionarCancion(newValue));
+
+        // Configurar doble clic en tabla para reproducir canción específica
+        tableCanciones.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && !tableCanciones.getSelectionModel().isEmpty()) {
+                Object cancionSeleccionada = tableCanciones.getSelectionModel().getSelectedItem();
+                reproducirCancionSeleccionada(cancionSeleccionada);
+            }
+        });
 
         // Configurar búsqueda de playlists
         txtBuscarPlaylist.textProperty().addListener((observable, oldValue, newValue) ->
@@ -739,10 +771,82 @@ public class CatalogoPlaylistController implements Initializable {
         }
     }
 
+    /**
+     * Reproduce una canción específica seleccionada de la tabla
+     */
+    private void reproducirCancionSeleccionada(Object cancionSeleccionada) {
+        if (cancionSeleccionada instanceof CancionDTO && playlistSeleccionada != null) {
+            try {
+                CancionDTO cancion = (CancionDTO) cancionSeleccionada;
+                
+                // Cargar todas las canciones de la playlist
+                PlaylistDAO playlistDAO = new PlaylistDAO();
+                List<CancionDTO> todasLasCanciones = playlistDAO.obtenerCancionesCompletasDePlaylist(playlistSeleccionada.getIdPlaylist());
+                
+                if (todasLasCanciones != null && !todasLasCanciones.isEmpty()) {
+                    // Encontrar el índice de la canción seleccionada
+                    int indiceCancion = -1;
+                    for (int i = 0; i < todasLasCanciones.size(); i++) {
+                        if (todasLasCanciones.get(i).getIdCancion() == cancion.getIdCancion()) {
+                            indiceCancion = i;
+                            break;
+                        }
+                    }
+                    
+                    if (indiceCancion >= 0) {
+                        iniciarReproduccionDesdeCancion(playlistSeleccionada, todasLasCanciones, indiceCancion);
+                    } else {
+                        mostrarAlerta("Error", "No se encontró la canción en la playlist", Alert.AlertType.ERROR);
+                    }
+                } else {
+                    mostrarAlerta("Error", "No se pudieron cargar las canciones de la playlist", Alert.AlertType.ERROR);
+                }
+            } catch (Exception e) {
+                System.err.println("Error al reproducir canción específica: " + e.getMessage());
+                mostrarAlerta("Error", "Error al reproducir la canción: " + e.getMessage(), Alert.AlertType.ERROR);
+            }
+        }
+    }
+
+    /**
+     * Formatea tiempo en segundos a formato mm:ss
+     */
+    private String formatearTiempo(double segundos) {
+        if (Double.isNaN(segundos)) return "00:00";
+        int minutos = (int) (segundos / 60);
+        int segundosRestantes = (int) (segundos % 60);
+        return String.format("%02d:%02d", minutos, segundosRestantes);
+    }
+
     @FXML
     private void handlePlayAll() {
+        System.out.println("=== DEBUG handlePlayAll ===");
+        System.out.println("playlistSeleccionada: " + playlistSeleccionada);
+        
         if (playlistSeleccionada != null) {
-            System.out.println("Reproduciendo playlist: " + playlistSeleccionada.getTituloPlaylist());
+            System.out.println("Playlist seleccionada: " + playlistSeleccionada.getTituloPlaylist());
+            System.out.println("ID de playlist: " + playlistSeleccionada.getIdPlaylist());
+            
+            try {
+                // Cargar las canciones de la playlist desde la base de datos
+                PlaylistDAO playlistDAO = new PlaylistDAO();
+                List<CancionDTO> canciones = playlistDAO.obtenerCancionesCompletasDePlaylist(playlistSeleccionada.getIdPlaylist());
+                
+                System.out.println("Canciones cargadas: " + (canciones != null ? canciones.size() : "null"));
+                
+                if (canciones != null && !canciones.isEmpty()) {
+                    iniciarReproduccionPlaylist(playlistSeleccionada, canciones);
+                } else {
+                    mostrarAlerta("Información", "La playlist no tiene canciones para reproducir", Alert.AlertType.INFORMATION);
+                }
+            } catch (Exception e) {
+                System.err.println("Error al reproducir playlist: " + e.getMessage());
+                e.printStackTrace();
+                mostrarAlerta("Error", "Error al iniciar la reproducción: " + e.getMessage(), Alert.AlertType.ERROR);
+            }
+        } else {
+            System.out.println("playlistSeleccionada es NULL");
+            mostrarAlerta("Advertencia", "Por favor, selecciona una playlist para reproducir", Alert.AlertType.WARNING);
         }
     }
 
@@ -800,19 +904,308 @@ public class CatalogoPlaylistController implements Initializable {
 
     // =============== MÉTODOS DEL REPRODUCTOR ===============
 
+    /**
+     * Inicializa el reproductor de playlist
+     */
+    private void inicializarReproductor() {
+        try {
+            // Cargar imágenes
+            imagenPlay = new Image(getClass().getResourceAsStream("/UserInterface/Resources/img/boton-de-play.png"));
+            imagenPause = new Image(getClass().getResourceAsStream("/UserInterface/Resources/img/boton-de-pausa.png"));
+            imagenPortadaGenerica = new Image(getClass().getResourceAsStream("/UserInterface/Resources/img/portada-generica.jpg"));
+        } catch (Exception e) {
+            System.err.println("Error cargando imágenes del reproductor: " + e.getMessage());
+        }
+
+        // Inicializar reproductor como singleton
+        reproductor = ReproductorMP3.getInstancia(new ArrayList<>());
+
+        // Configurar Timeline para actualización de progreso
+        timeline = new Timeline(new KeyFrame(Duration.millis(100), e -> actualizarProgressBarPlaylist()));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+
+        // Configurar slider de tiempo (progreso)
+        if (pgbProgresoCancion != null) {
+            pgbProgresoCancion.setOnMousePressed(e -> usuarioArrastrando = true);
+            pgbProgresoCancion.setOnMouseReleased(e -> {
+                usuarioArrastrando = false;
+                saltarAProgreso(pgbProgresoCancion.getValue());
+            });
+        }
+
+        // Configurar slider de volumen
+        if (sliderVolumen != null) {
+            sliderVolumen.setValue(0.5);
+            sliderVolumen.valueProperty().addListener((obs, oldVal, newVal) -> {
+                if (reproductor != null && reproductor.getMediaPlayer() != null) {
+                    reproductor.getMediaPlayer().setVolume(newVal.doubleValue());
+                }
+            });
+        }
+
+        // Configurar callback para cambio de canción
+        if (reproductor != null) {
+            reproductor.setOnSongChange(() -> {
+                Platform.runLater(() -> {
+                    actualizarInformacionCancionReproductor();
+                    reiniciarProgresoYTiempo();
+                    cambiarIconoPlayPause(false);
+                    timeline.play();
+                });
+            });
+        }
+
+        // Ocultar el panel reproductor inicialmente
+        ocultarReproductor();
+    }
+
+    /**
+     * Inicia la reproducción de una playlist completa
+     */
+    private void iniciarReproduccionPlaylist(PlaylistDTO playlist, List<CancionDTO> canciones) {
+        if (playlist == null || canciones == null || canciones.isEmpty()) {
+            System.out.println("No se puede reproducir: playlist o canciones nulas/vacías");
+            return;
+        }
+
+        this.playlistReproduciendose = playlist;
+        this.cancionesReproduciendose = new ArrayList<>(canciones);
+
+        // Convertir canciones a byte arrays
+        List<byte[]> archivosMp3 = canciones.stream()
+                .map(CancionDTO::getArchivoMP3)
+                .filter(archivo -> archivo != null)
+                .collect(Collectors.toList());
+
+        if (archivosMp3.isEmpty()) {
+            mostrarAlerta("Error", "No hay archivos MP3 válidos en la playlist", Alert.AlertType.ERROR);
+            return;
+        }
+
+        // Cambiar playlist en el reproductor
+        reproductor.cambiarPlaylist(archivosMp3);
+        reproductor.reproducir();
+
+        // Mostrar reproductor y actualizar información
+        mostrarReproductor();
+        actualizarInformacionCancionReproductor();
+        timeline.play();
+        cambiarIconoPlayPause(false);
+
+        System.out.println("Iniciando reproducción de playlist: " + playlist.getTituloPlaylist());
+    }
+
+    /**
+     * Inicia reproducción desde una canción específica
+     */
+    private void iniciarReproduccionDesdeCancion(PlaylistDTO playlist, List<CancionDTO> canciones, int indiceCancion) {
+        iniciarReproduccionPlaylist(playlist, canciones);
+        
+        if (indiceCancion >= 0 && indiceCancion < canciones.size()) {
+            reproductor.getPlaylist().setIndiceActual(indiceCancion);
+            reproductor.reproducir();
+            actualizarInformacionCancionReproductor();
+        }
+    }
+
+    /**
+     * Actualiza la barra de progreso del reproductor
+     */
+    private void actualizarProgressBarPlaylist() {
+        if (reproductor != null && reproductor.estaReproduciendo()) {
+            tiempoActualSegundos = reproductor.getTiempoActual();
+            if (duracionRealCancion > 0 && !usuarioArrastrando && pgbProgresoCancion != null) {
+                double progreso = Math.max(0.0, Math.min(1.0, tiempoActualSegundos / duracionRealCancion));
+                pgbProgresoCancion.setValue(progreso);
+            }
+            actualizarLabelsTime(tiempoActualSegundos, duracionRealCancion);
+        } else if (reproductor != null && reproductor.estaPausado()) {
+            actualizarLabelsTime(tiempoActualSegundos, duracionRealCancion);
+        }
+    }
+
+    /**
+     * Salta a un punto específico de la canción
+     */
+    private void saltarAProgreso(double progreso) {
+        if (duracionRealCancion > 0 && reproductor != null && reproductor.getMediaPlayer() != null) {
+            double segundos = progreso * duracionRealCancion;
+            reproductor.getMediaPlayer().seek(Duration.seconds(segundos));
+            tiempoActualSegundos = segundos;
+            actualizarLabelsTime(tiempoActualSegundos, duracionRealCancion);
+        }
+    }
+
+    /**
+     * Actualiza los labels de tiempo
+     */
+    private void actualizarLabelsTime(double segundosActuales, double segundosTotales) {
+        if (lblTiempoActual != null) {
+            lblTiempoActual.setText(formatearTiempo(segundosActuales));
+        }
+        if (lblTiempoTotal != null) {
+            lblTiempoTotal.setText(formatearTiempo(segundosTotales > 0 ? segundosTotales : 0));
+        }
+    }
+
+    /**
+     * Actualiza la información de la canción en el reproductor
+     */
+    private void actualizarInformacionCancionReproductor() {
+        if (reproductor == null || cancionesReproduciendose == null || cancionesReproduciendose.isEmpty()) return;
+
+        int indiceActual = reproductor.getPlaylist().getIndiceActual();
+        if (indiceActual >= 0 && indiceActual < cancionesReproduciendose.size()) {
+            CancionDTO cancionActual = cancionesReproduciendose.get(indiceActual);
+            mostrarInformacionCancionReproductor(cancionActual);
+        }
+    }
+
+    /**
+     * Muestra información de la canción en el reproductor
+     */
+    private void mostrarInformacionCancionReproductor(CancionDTO cancion) {
+        if (cancion == null) return;
+
+        // Actualizar nombre de canción
+        if (lblCancionActual != null) {
+            lblCancionActual.setText(cancion.getTitulo());
+        }
+
+        // Actualizar artista
+        if (lblArtistaActual != null) {
+            if (cancion.getArtistas() != null && !cancion.getArtistas().isEmpty()) {
+                String artista = cancion.getArtistas().stream()
+                        .map(a -> a.getNombre())
+                        .collect(Collectors.joining(", "));
+                lblArtistaActual.setText(artista);
+            } else {
+                lblArtistaActual.setText("Artista Desconocido");
+            }
+        }
+
+        // Actualizar imagen
+        if (imgCancionActual != null) {
+            try {
+                Image portada;
+                if (cancion.getPortada() != null && cancion.getPortada().length > 0) {
+                    portada = new Image(new ByteArrayInputStream(cancion.getPortada()));
+                } else {
+                    portada = imagenPortadaGenerica;
+                }
+                imgCancionActual.setImage(portada);
+            } catch (Exception e) {
+                imgCancionActual.setImage(imagenPortadaGenerica);
+            }
+        }
+
+        // Actualizar duración
+        duracionRealCancion = cancion.getDuracion();
+        actualizarLabelsTime(0, duracionRealCancion);
+    }
+
+    /**
+     * Reinicia progreso cuando cambia la canción
+     */
+    private void reiniciarProgresoYTiempo() {
+        timeline.stop();
+        if (pgbProgresoCancion != null) {
+            pgbProgresoCancion.setValue(0.0);
+        }
+        tiempoActualSegundos = 0.0;
+        duracionRealCancion = 0.0;
+        actualizarLabelsTime(0, 0);
+        
+        // Delay para obtener duración real
+        javafx.animation.PauseTransition delay = new javafx.animation.PauseTransition(Duration.millis(500));
+        delay.setOnFinished(e -> actualizarDuracionActual());
+        delay.play();
+    }
+
+    /**
+     * Obtiene duración real de la canción actual
+     */
+    private void actualizarDuracionActual() {
+        if (reproductor == null) return;
+        
+        reproductor.obtenerDuracionCancionActual(duracion -> {
+            Platform.runLater(() -> {
+                this.duracionRealCancion = duracion;
+                actualizarLabelsTime(tiempoActualSegundos, duracionRealCancion);
+            });
+        });
+    }
+
+    /**
+     * Cambia el icono del botón play/pause
+     */
+    private void cambiarIconoPlayPause(boolean aPlay) {
+        if (btnPlayPause == null) return;
+        
+        if (aPlay && imagenPlay != null) {
+            ImageView iconView = new ImageView(imagenPlay);
+            iconView.setFitHeight(24);
+            iconView.setFitWidth(24);
+            btnPlayPause.setGraphic(iconView);
+        } else if (!aPlay && imagenPause != null) {
+            ImageView iconView = new ImageView(imagenPause);
+            iconView.setFitHeight(24);
+            iconView.setFitWidth(24);
+            btnPlayPause.setGraphic(iconView);
+        }
+    }
+
+    /**
+     * Muestra el panel del reproductor
+     */
+    private void mostrarReproductor() {
+        if (anchorBarraReproduccion != null) {
+            anchorBarraReproduccion.setVisible(true);
+            anchorBarraReproduccion.setManaged(true);
+        }
+    }
+
+    /**
+     * Oculta el panel del reproductor
+     */
+    private void ocultarReproductor() {
+        if (anchorBarraReproduccion != null) {
+            anchorBarraReproduccion.setVisible(false);
+            anchorBarraReproduccion.setManaged(false);
+        }
+    }
+
     @FXML
     private void handleAnterior() {
-        System.out.println("Canción anterior");
+        if (reproductor != null) {
+            reproductor.anterior();
+        }
     }
 
     @FXML
     private void handlePlayPause() {
-        System.out.println("Play/Pause");
+        if (reproductor == null) return;
+
+        if (reproductor.estaReproduciendo()) {
+            reproductor.pausar();
+            timeline.stop();
+            cambiarIconoPlayPause(true);
+        } else {
+            reproductor.reproducir();
+            if (reproductor.getEstado() instanceof EstadoPausado) {
+                reproductor.reanudar();
+            }
+            actualizarDuracionActual();
+            timeline.play();
+            cambiarIconoPlayPause(false);
+        }
     }
 
     @FXML
     private void handleSiguiente() {
-        System.out.println("Siguiente canción");
+        if (reproductor != null) {
+            reproductor.siguiente();
+        }
     }
 
     @FXML
@@ -1048,5 +1441,17 @@ public class CatalogoPlaylistController implements Initializable {
         alerta.setHeaderText(null);
         alerta.setContentText(mensaje);
         alerta.showAndWait();
+    }
+
+    /**
+     * Método de limpieza al cerrar la ventana
+     */
+    public void cleanup() {
+        if (timeline != null) {
+            timeline.stop();
+        }
+        if (reproductor != null) {
+            reproductor.detener();
+        }
     }
 }

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox fx:id="barraReproduccion" prefHeight="80.0" style="-fx-background-color: #1a1625; -fx-border-color: #2a2340; -fx-border-width: 1 0 0 0;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.Playlist.BarraReproduccionPlaylistController">
+   <children>
+      <!-- Información de la canción actual -->
+      <HBox alignment="CENTER_LEFT" prefWidth="300.0" spacing="15.0">
+         <children>
+            <ImageView fx:id="imgCancionActual" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 5;">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </ImageView>
+            <VBox alignment="CENTER_LEFT" spacing="3.0">
+               <children>
+                  <Label fx:id="lblNombreCancion" maxWidth="200.0" style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;" text="Nombre de la canción" />
+                  <Label fx:id="lblNombreArtista" maxWidth="200.0" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px;" text="Nombre del artista" />
+               </children>
+            </VBox>
+         </children>
+         <padding>
+            <Insets left="15.0" />
+         </padding>
+      </HBox>
+      
+      <!-- Región flexible -->
+      <Region HBox.hgrow="ALWAYS" />
+      
+      <!-- Controles de reproducción centrales -->
+      <VBox alignment="CENTER" spacing="8.0">
+         <children>
+            <!-- Botones de control -->
+            <HBox alignment="CENTER" spacing="15.0">
+               <children>
+                  <Button fx:id="btnAnterior" onAction="#clickAnterior" style="-fx-background-color: transparent; -fx-text-fill: #AFAFC7; -fx-font-size: 18px; -fx-cursor: hand;" text="⏮">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="btnPlayPause" onAction="#clickPlayPause" style="-fx-background-color: white; -fx-background-radius: 25px; -fx-cursor: hand;" text="▶">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="btnSiguiente" onAction="#clickSiguiente" style="-fx-background-color: transparent; -fx-text-fill: #AFAFC7; -fx-font-size: 18px; -fx-cursor: hand;" text="⏭">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            
+            <!-- Barra de progreso con tiempo -->
+            <HBox alignment="CENTER" spacing="10.0">
+               <children>
+                  <Label fx:id="lblTiempoActual" style="-fx-text-fill: #AFAFC7; -fx-font-size: 11px;" text="0:00" />
+                  <Slider fx:id="pgbProgresoCancion" prefWidth="400.0" style="-fx-pref-height: 5px;" />
+                  <Label fx:id="lblTiempoTotal" style="-fx-text-fill: #AFAFC7; -fx-font-size: 11px;" text="3:45" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      
+      <!-- Región flexible -->
+      <Region HBox.hgrow="ALWAYS" />
+      
+      <!-- Controles de volumen -->
+      <HBox alignment="CENTER_RIGHT" prefWidth="200.0" spacing="10.0">
+         <children>
+            <Button fx:id="btnVolumen" onAction="#clickVolumen" style="-fx-background-color: transparent; -fx-text-fill: #AFAFC7; -fx-font-size: 16px; -fx-cursor: hand;" text="🔊" />
+            <Slider fx:id="sliderVolumen" prefWidth="80.0" style="-fx-pref-height: 5px;" />
+         </children>
+         <padding>
+            <Insets right="15.0" />
+         </padding>
+      </HBox>
+   </children>
+</HBox>
