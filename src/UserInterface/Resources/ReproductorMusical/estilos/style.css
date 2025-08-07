@@ -1,0 +1,33 @@
+/* --- Paleta de Colores y Fuente Base --- */
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-dark-blue: #070F2B;    /* Fondo principal más oscuro */
+    -fx-medium-blue: #1B1A55;  /* Color de los paneles principales */
+    -fx-light-blue: #201D4E;   /* Biblioteca y reproductor */
+    -fx-purple-gray: #5A5A80;  /* Elementos interactivos secundarios */
+    -fx-lavender: #9290C2;     /* Acentos y barras de búsqueda */
+    -fx-white-text: #FFFFFF;
+    -fx-gray-text: #AFAFC7;
+}
+
+.library-search-field { -fx-background-color: -fx-purple-gray; -fx-background-radius: 15; -fx-prompt-text-fill: -fx-lavender; -fx-text-fill: -fx-white-text; }
+
+.library-list-view { -fx-background-color: transparent; -fx-control-inner-background: transparent; }
+.library-list-view .list-cell { -fx-background-color: transparent; -fx-padding: 5px; }
+.library-list-view .list-cell:hover { -fx-background-color: rgba(255, 255, 255, 0.1); -fx-background-radius: 5; }
+.library-list-view .list-cell:selected { -fx-background-color: -fx-purple-gray; -fx-background-radius: 5; }
+
+/* --- TableView de Canciones --- */
+.song-table-view { -fx-background-color: transparent; }
+.song-table-view .column-header-background { -fx-background-color: transparent; }
+.song-table-view .table-cell { -fx-border-color: transparent; -fx-padding: 10px; -fx-text-fill: -fx-gray-text; }
+.song-table-view .table-row-cell { -fx-background-color: transparent; }
+.song-table-view .table-row-cell:hover { -fx-background-color: rgba(255, 255, 255, 0.1); -fx-background-radius: 5; }
+.song-table-view .table-row-cell:selected { -fx-background-color: -fx-purple-gray; }
+.song-table-view .table-row-cell:selected .table-cell { -fx-text-fill: -fx-white-text; }
+.song-table-view .placeholder .label { -fx-text-fill: -fx-gray-text; }
+
+/* --- ScrollPane --- */
+.scroll-pane { -fx-background-color: transparent; -fx-background: transparent; }
+.scroll-pane .scroll-bar:vertical, .scroll-pane .scroll-bar:horizontal { -fx-background-color: transparent; }
+.scroll-pane .scroll-bar .thumb { -fx-background-color: -fx-purple-gray; -fx-background-radius: 5px; }

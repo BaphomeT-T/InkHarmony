@@ -13,7 +13,7 @@ public class App extends Application {
 
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
-                    getClass().getResource("/UserInterface/Resources/ReproductorMusical/css/slider.css").toExternalForm()
+                    getClass().getResource("/UserInterface/Resources/ReproductorMusical/estilos/slider.css").toExternalForm()
             );
 
             primaryStage.setScene(scene);

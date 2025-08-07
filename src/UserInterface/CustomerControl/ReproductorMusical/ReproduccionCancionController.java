@@ -26,6 +26,7 @@ import java.util.ResourceBundle;
  * Controlador para la vista de reproducción de una sola canción o una playlist continua.
  * Gestiona la carga de canciones, la actualización de la interfaz de usuario (UI),
  * el control de la reproducción (play, pause, etc.), la barra de progreso y el cambio de canciones.
+ * @author Grupo B
  */
 public class ReproduccionCancionController implements Initializable {
 

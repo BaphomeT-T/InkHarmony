@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
  * Controlador para la interfaz de reproducción de múltiples canciones y playlists.
  * Gestiona la navegación entre la vista de playlists y la de canciones,
  * controla la reproducción y sincroniza la UI con el reproductor de música global.
+ * @author Grupo B
  */
 public class ReproduccionVariasCancionesController implements Initializable {
 
