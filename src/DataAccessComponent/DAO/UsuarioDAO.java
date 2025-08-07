@@ -6,9 +6,7 @@ import DataAccessComponent.SQLiteDataHelper;
 // imports
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Clase DAO (Data Access Object) para la gestión de preferencias musicales de usuarios.
@@ -107,17 +105,9 @@ public class UsuarioDAO extends SQLiteDataHelper {
     }
 
 
-    public boolean actualizarPerfil(PerfilDTO perfil, boolean borrarPreferencias, List<GeneroDTO> nuevosGeneros) {
+    public boolean actualizarPerfil(PerfilDTO perfil, String correoOriginal, boolean borrarPreferencias, List<GeneroDTO> nuevosGeneros) {
         StringBuilder sql = new StringBuilder("UPDATE Usuario SET ");
         List<Object> parametros = new ArrayList<>();
-
-        List<GeneroDTO> preferenciasActuales = obtenerPreferencias(perfil);
-
-        if (preferenciasActuales != null && nuevosGeneros != null) {
-            Set<GeneroDTO> combinado = new LinkedHashSet<>(preferenciasActuales);
-            combinado.addAll(nuevosGeneros);
-            nuevosGeneros = new ArrayList<>(combinado);
-        }
 
         if (perfil.getNombre() != null) {
             sql.append("nombre_usuario = ?, ");
@@ -170,7 +160,7 @@ public class UsuarioDAO extends SQLiteDataHelper {
         // Quitar la última coma y espacio
         sql.setLength(sql.length() - 2);
         sql.append(" WHERE correo = ?");
-        parametros.add(perfil.getCorreo());  // Ojo: si quieres permitir cambiar el correo, ajusta este parámetro
+        parametros.add(correoOriginal); // Aquí usamos el correo original para buscar la fila
 
         try {
             Connection conn = openConnection();
