@@ -22,7 +22,6 @@
     -fx-background-color: #1D1F4E;
 }
 
-/* Color del texto de las celdas */
 .table-view .table-cell {
     -fx-text-fill: white;
     -fx-border-color: transparent;

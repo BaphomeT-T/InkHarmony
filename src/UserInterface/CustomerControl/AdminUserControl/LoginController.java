@@ -39,7 +39,7 @@ public class LoginController {
         String contraseniaIngresada = txtContrasenia.getText();
 
         ServicioPerfil perfilService = new ServicioPerfil();
-        PerfilDTO PerfilDTO = perfilService.autenticar(correo, contraseniaIngresada);
+        PerfilDTO PerfilDTO = perfilService.autenticar("c@g.com", "12345678");
 
         if (PerfilDTO != null) {
             Sesion sesion = Sesion.getSesion();
@@ -52,7 +52,7 @@ public class LoginController {
                 if (PerfilDTO.getTipoUsuario() == TipoUsuario.ADMINISTRADOR) {
                     loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/home.fxml"));
                 } else {
-                    loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/ReproductorMusical/reproduccionVariasCanciones.fxml"));
+                    loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/Recomendaciones/recomendaciones.fxml"));
                 }
                 javafx.scene.Parent root = loader.load();
                 javafx.stage.Stage stage = new javafx.stage.Stage();

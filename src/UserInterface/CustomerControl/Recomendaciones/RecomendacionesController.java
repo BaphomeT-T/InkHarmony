@@ -9,7 +9,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.skin.TableHeaderRow;
 import javafx.scene.image.Image;
@@ -64,6 +66,10 @@ public class RecomendacionesController {
     @FXML
     private StackPane contentPane;
 
+    @FXML
+    private StackPane rootPane; // ← se inyecta desde el nuevo FXML
+    private BarraReproduccionController barraCtrl;
+
     private TableHeaderRow headerRow;
 
     // ---------- init ----------
@@ -73,6 +79,8 @@ public class RecomendacionesController {
         configurarBusquedasEnVivo();
         tablaCanciones.setItems(datos);
         tablaCanciones.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        tablaCanciones.prefWidthProperty().bind(contentPane.widthProperty().subtract(40));
+        tablaCanciones.prefHeightProperty().bind(contentPane.heightProperty().subtract(80));
         configurarAnchuraDinamica();
 
         // ─── localizar la fila de encabezado ───
@@ -91,6 +99,7 @@ public class RecomendacionesController {
         txtBuscarGenero.setManaged(false);
         txtBuscarArtista.setVisible(false);
         txtBuscarArtista.setManaged(false);
+        cargarBarraReproduccion();
     }
 
     // ---------- handlers de botones ----------
@@ -132,7 +141,8 @@ public class RecomendacionesController {
     // ---------- lógica de toggles ----------
     private void toggleFiltroGenero() {
         filtroGenero = !filtroGenero;
-        if (!filtroGenero) txtBuscarGenero.clear();
+        if (!filtroGenero)
+            txtBuscarGenero.clear();
         actualizarEstilosBotones();
         actualizarVisibilidadCampos();
         refrescarTabla();
@@ -140,7 +150,8 @@ public class RecomendacionesController {
 
     private void toggleFiltroArtista() {
         filtroArtista = !filtroArtista;
-        if (!filtroArtista) txtBuscarArtista.clear();
+        if (!filtroArtista)
+            txtBuscarArtista.clear();
         actualizarEstilosBotones();
         actualizarVisibilidadCampos();
         refrescarTabla();
@@ -348,6 +359,8 @@ public class RecomendacionesController {
                             -fx-cursor: hand;
                         """);
                 btnPlay.setOnAction(e -> {
+                    int idx = getIndex(); // índice de la fila
+                    barraCtrl.reproducir(List.copyOf(datos), idx);
                 });
             }
 
@@ -358,5 +371,22 @@ public class RecomendacionesController {
                 setStyle("-fx-alignment:center;");
             }
         });
+    }
+
+    private void cargarBarraReproduccion() {
+        try {
+            var url = getClass().getResource(
+                    "/UserInterface/GUI/Recomendaciones/barraReproduccion.fxml");
+            FXMLLoader loader = new FXMLLoader(url);
+            Node barra = loader.load();
+            barraCtrl = loader.getController();
+
+            StackPane.setAlignment(barra, Pos.BOTTOM_CENTER);
+            rootPane.getChildren().add(barra);
+
+            barraCtrl.mostrarSiActiva(datos); // por si ya sonaba algo
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
