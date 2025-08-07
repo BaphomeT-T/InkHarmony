@@ -4,7 +4,6 @@ import BusinessLogic.EstadoPausado;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.scene.control.ButtonBar;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXMLLoader;
@@ -1225,6 +1224,28 @@ public class CatalogoPlaylistController implements Initializable {
 
     @FXML
     private void handleExpandir() {
+        //abrir el reproductor para la cancion actual
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/ReproductorMusical/reproduccionCancion.fxml"));
+
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Reproductor Musical");
+            stage.setScene(new Scene(root, 1200, 800));
+            stage.setResizable(true);
+            stage.setMinWidth(1000);
+            stage.setMinHeight(700);
+            stage.centerOnScreen();
+            stage.setOnHidden(e -> {
+                System.out.println("Reproductor cerrado, recargando playlists...");
+                cargarPlaylists();
+            });
+            stage.show();
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Error al abrir el reproductor: " + e.getMessage(), Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
+
         System.out.println("Expandir reproductor");
     }
 

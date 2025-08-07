@@ -53,6 +53,7 @@ public class LoginController {
                     loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/home.fxml"));
                 } else {
                     loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/Playlist/frameCatalogoPlaylist.fxml"));
+                   // loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/ReproductorMusical/reproduccionCancion.fxml"));
                 }
                 javafx.scene.Parent root = loader.load();
                 javafx.stage.Stage stage = new javafx.stage.Stage();
