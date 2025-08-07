@@ -1,19 +1,43 @@
-@startuml
-package AdministracionUsuarios {
-    class Administrador {
-        - id: int
-        - usuario: String
-        - contraseña: String
-        + iniciarSesion(): boolean
-        + activarCuenta(usuario: Perfil): void
-        + desactivarCuenta(usuario: Perfil): void
-        + cambiarTipoUsuario(usuario: Perfil, tipo: String): void
-        + eliminarCuenta(usuario: Perfil): void
-        + consultarUsuarios(): List<Perfil>
+
+package "CatalogoArtistas" {
+    class ArtistaDAO {
+        +registrar(artista: ArtistaDTO): boolean
+        +actualizar(artista: ArtistaDTO): boolean
+        +eliminar(id: int): boolean
+        +buscarTodo(): List<ArtistaDTO>
+        +buscarPorId(id: int): ArtistaDTO
+        +tieneCancionesAsociadas(idArtista: int): boolean
     }
+    class "ServicioValidacionArtista"{
+        +validarCamposNombre(nombre: String):String
+        +esNombreUnico(nombre: String): boolean
+        +tieneElementoAsociados(artista: ArtistaDTO):boolean
+    }
+    class "Artista"{
+        -id:int
+        -nombre:String
+        -generos:List<Genero>
+        -fechaNacimiento: Date
+        -biografia: String
+        -imagen: BufferedImage
+    }
+
+    interface UnicoNombreValidable{
+       +esNombreUnico(nombre: String): boolean
+    }
+    interface AsociacionValidable{
+       +tieneElementosAsociados(artista: ArtistaDTO):boolean
+    }
+ArtistaDAO --> Artista
+ArtistaDAO --> ServicioValidacionArtista
+ServicioValidacionArtista--> Artista
+ServicioValidacionArtista..|> UnicoNombreValidable
+ServicioValidacionArtista..|> AsociacionValidable
 }
-package CatalogoCanciones {
-enum Genero {
+
+
+package "CatalogoCanciones"{
+    enum Genero {
         GAME_OST
         ROCK
         ROCK_ALTERNATIVO
@@ -32,47 +56,7 @@ enum Genero {
         K_POP
         BOLERO
         PASILLO
-}
-}
-package CatalogoArtistas {
-    class ArtistaDAO {
-
-        + registrarArtista(artista: Artista): boolean
-        + actualizarArtista(artista: Artista): boolean
-        + eliminarArtista(id_artista: int): void
-        + buscarArtista(): List<Artista>
-        + buscarArtistaID(id_artista: int): Artista
     }
-
-    class ServicioValidacionArtista {
-        + validarCampoNombre(nombre: string): String
-        + esNombreUnico(nombre: string): boolean
-        + tieneElementoAsociado(artista: Artista): boolean
-    }
-
-    class Artista {
-        - id: int
-        - nombre: String
-        - generos: List<Genero>
-        - biografia: String
-        - imagen: BufferedImage
-    }
-
-
-    interface UnicoNombreValidable {
-        + esNombreUnico(nombre: string): boolean
-    }
-
-    interface AsociacionValidable {
-        + tieneElementosAsociados(artista : Artista): boolean
-    }
-}
-
-Administrador --> ArtistaDAO
-ArtistaDAO --> Artista
-ServicioValidacionArtista --> Artista
-ServicioValidacionArtista ..|> UnicoNombreValidable
-ServicioValidacionArtista ..|> AsociacionValidable
-ArtistaDAO --> ServicioValidacionArtista
 Artista --> Genero
-@enduml
+
+}
