@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1300.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.Playlist.EditarPlaylistController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1300.0" style="-fx-background-color: #070F2B;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.Playlist.EditarPlaylistController">
     <children>
         <!-- Header con botones -->
         <HBox alignment="CENTER_LEFT" layoutY="0.0" prefHeight="80.0" prefWidth="1300.0" style="-fx-padding: 20;">
@@ -85,16 +85,11 @@
                                 <AnchorPane onMouseClicked="#handleSeleccionarPortada" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #9190C2; -fx-background-radius: 15; -fx-cursor: hand;">
                                     <children>
                                         <!-- ImageView centrado -->
-                                        <!-- Contenedor para centrar ícono por defecto -->
-                                        <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                            <children>
-                                                <ImageView fx:id="imgPortada" fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
-                                                    <image>
-                                                        <Image url="@../../Resources/img/CatalogoPlaylist/camara.png" />
-                                                    </image>
-                                                </ImageView>
-                                            </children>
-                                        </VBox>
+                                        <ImageView fx:id="imgPortada" fitHeight="180.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                            <image>
+                                                <Image url="@../../Resources/img/CatalogoPlaylist/camara.png" />
+                                            </image>
+                                        </ImageView>
                                     </children>
                                 </AnchorPane>
 
