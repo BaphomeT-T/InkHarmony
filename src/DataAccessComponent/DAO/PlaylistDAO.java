@@ -98,9 +98,18 @@ public class PlaylistDAO extends SQLiteDataHelper implements IDAO<PlaylistDTO> {
     }
 
     /**
-     * Recupera todas las playlist registradas en la base de datos.
+     * Recupera todas las playlists registradas en la base de datos.
      *
-     * @return Lista de playlists.
+     * <p>Este método consulta la tabla Playlist y para cada playlist encontrada:</p>
+     * <ul>
+     *   <li>Mapea los datos de la base de datos a objetos PlaylistDTO</li>
+     *   <li>Obtiene las canciones asociadas a cada playlist</li>
+     *   <li>Construye objetos completos con toda la información</li>
+     * </ul>
+     *
+     * @return Lista de todas las playlists registradas en el sistema
+     * @throws Exception si hay errores en la consulta a la base de datos
+     * @see #obtenerCancionesDePlaylist(int)
      */
     @Override
     public List<PlaylistDTO> buscarTodo() throws Exception {
@@ -132,8 +141,17 @@ public class PlaylistDAO extends SQLiteDataHelper implements IDAO<PlaylistDTO> {
     /**
      * Recupera una playlist específica según su ID.
      *
-     * @param id ID de la playlist.
-     * @return Objeto PlaylistDTO completo.
+     * <p>Este método busca una playlist por su identificador único y:</p>
+     * <ul>
+     *   <li>Mapea los datos de la base de datos a un objeto PlaylistDTO</li>
+     *   <li>Obtiene las canciones asociadas a la playlist</li>
+     *   <li>Retorna un objeto completo con toda la información</li>
+     * </ul>
+     *
+     * @param id ID único de la playlist a buscar
+     * @return Objeto PlaylistDTO completo o null si no se encuentra
+     * @throws Exception si hay errores en la consulta a la base de datos
+     * @see #obtenerCancionesDePlaylist(int)
      */
     @Override
     public PlaylistDTO buscarPorId(Integer id) throws Exception {
@@ -161,7 +179,23 @@ public class PlaylistDAO extends SQLiteDataHelper implements IDAO<PlaylistDTO> {
 
         return null;
     }
-
+    /**
+     * Actualiza los datos de una playlist existente en la base de datos.
+     * 
+     * <p>Este método realiza las siguientes operaciones en una transacción:</p>
+     * <ol>
+     *   <li>Valida los datos de la playlist usando ServicioValidacionPlaylist</li>
+     *   <li>Actualiza los datos básicos de la playlist</li>
+     *   <li>Elimina todas las relaciones playlist-canciones existentes</li>
+     *   <li>Inserta las nuevas relaciones playlist-canciones</li>
+     *   <li>Maneja transacciones para garantizar consistencia</li>
+     * </ol>
+     * 
+     * @param playlist DTO con los datos actualizados de la playlist
+     * @return true si la actualización fue exitosa, false en caso contrario
+     * @throws Exception si los datos son inválidos o hay errores en la actualización
+     * @see ServicioValidacionPlaylist#validarDatosCompletos(PlaylistDTO)
+     */
     @Override
     public boolean actualizar(PlaylistDTO playlist) throws Exception {
         if (!validador.validarDatosCompletos(playlist)) {
@@ -220,9 +254,15 @@ public class PlaylistDAO extends SQLiteDataHelper implements IDAO<PlaylistDTO> {
 
     /**
      * Elimina una playlist de la base de datos según su ID.
-     *
-     * @param id ID de la playlist a eliminar.
-     * @return true si se eliminó correctamente.
+     * 
+     * <p>Este método elimina completamente una playlist del sistema,
+     * incluyendo todas sus relaciones con canciones.</p>
+     * 
+     * <p><strong>Nota:</strong> La eliminación en cascada de las relaciones
+     * Playlist_Cancione se maneja automáticamente por la base de datos     * 
+     * @param id ID de la playlist a eliminar
+     * @return true si se eliminó correctamente
+     * @throws Exception si hay errores en la eliminación
      */
     @Override
     public boolean eliminar(Integer id) throws Exception {
@@ -236,8 +276,20 @@ public class PlaylistDAO extends SQLiteDataHelper implements IDAO<PlaylistDTO> {
         return true;
     }
 
+    // ====================================================================
+    // MÉTODOS DE BÚSQUEDA ESPECIALIZADOS
+    // ====================================================================
+    
     /**
-     * Busca playlists por nombre.
+     * Busca playlists por nombre usando búsqueda parcial (LIKE).
+     * 
+     * <p>Este método permite encontrar playlists cuyo título contenga
+     * el texto especificado, sin importar la posición en el título.</p>
+     * 
+     * @param nombre el nombre o parte del nombre de las playlists a buscar
+     * @return Lista de playlists que coinciden con el criterio de búsqueda
+     * @throws Exception si hay errores en la consulta a la base de datos
+     * @see #obtenerCancionesDePlaylist(int)
      */
     public List<PlaylistDTO> buscarPorNombre(String nombre) throws Exception {
         List<PlaylistDTO> playlists = new ArrayList<>();
@@ -266,7 +318,16 @@ public class PlaylistDAO extends SQLiteDataHelper implements IDAO<PlaylistDTO> {
     }
 
     /**
-     * Obtiene playlists por creador
+     * Obtiene todas las playlists creadas por un usuario específico.
+     * 
+     * <p>Este método filtra las playlists por el propietario (usuario)
+     * que las creó, permitiendo mostrar solo las playlists del usuario
+     * autenticado.</p>
+     * 
+     * @param idUsuario el ID del usuario propietario de las playlists
+     * @return Lista de playlists pertenecientes al usuario especificado
+     * @throws Exception si hay errores en la consulta a la base de datos
+     * @see #obtenerCancionesDePlaylist(int)
      */
     public List<PlaylistDTO> obtenerPlaylistPorUsuario(int idUsuario) throws Exception {
         List<PlaylistDTO> playlists = new ArrayList<>();
@@ -294,8 +355,20 @@ public class PlaylistDAO extends SQLiteDataHelper implements IDAO<PlaylistDTO> {
         return playlists;
     }
 
+    // ====================================================================
+    // MÉTODOS PRIVADOS DE APOYO
+    // ====================================================================
+    
     /**
-     * Obtiene los IDs de las canciones de una playlist en orden.
+     * Obtiene los IDs de las canciones de una playlist en el orden especificado.
+     * 
+     * <p>Este método consulta la tabla de relación Playlist_Cancion para
+     * obtener las canciones asociadas a una playlist específica, respetando
+     * el orden establecido al crear la playlist.</p>
+     * 
+     * @param idPlaylist el ID de la playlist
+     * @return Lista de IDs de canciones en el orden correcto
+     * @throws Exception si hay errores en la consulta a la base de datos
      */
     private List<Integer> obtenerCancionesDePlaylist(int idPlaylist) throws Exception {
         List<Integer> cancionesIds = new ArrayList<>();
@@ -315,6 +388,18 @@ public class PlaylistDAO extends SQLiteDataHelper implements IDAO<PlaylistDTO> {
 
     /**
      * Obtiene los datos completos de las canciones de una playlist.
+     * 
+     * <p>Este método consulta la tabla de relación Playlist_Cancion junto
+     * con la tabla Cancion para obtener los datos completos de todas las
+     * canciones que pertenecen a una playlist específica.</p>
+     * 
+     * <p>Utiliza CancionDAO para obtener los datos completos de cada canción,
+     * incluyendo artistas, géneros y otros metadatos.</p>
+     * 
+     * @param idPlaylist el ID de la playlist
+     * @return Lista de objetos CancionDTO con datos completos
+     * @throws Exception si hay errores en la consulta a la base de datos
+     * @see CancionDAO#buscarPorId(Integer)
      */
     public List<CancionDTO> obtenerCancionesCompletasDePlaylist(int idPlaylist) throws Exception {
         List<CancionDTO> canciones = new ArrayList<>();
@@ -344,4 +429,5 @@ public class PlaylistDAO extends SQLiteDataHelper implements IDAO<PlaylistDTO> {
 
         return canciones;
     }
+
 }
