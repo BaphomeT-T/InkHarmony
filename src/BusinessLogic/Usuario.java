@@ -84,6 +84,6 @@ public class Usuario {
             String contraseniaEncriptada = encoder.encode(perfil.getContrasenia());
             perfil.setContrasenia(contraseniaEncriptada);
         }
-        return usuarioDAO.actualizarPerfil(perfil, borrarPreferencias, nuevosGeneros);
+        return usuarioDAO.actualizarPerfil(perfil, perfil.getCorreo(), borrarPreferencias, nuevosGeneros);
     }
 } 

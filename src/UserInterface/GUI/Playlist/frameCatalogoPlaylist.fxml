@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.Cursor?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.ColorAdjust?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserInterface.CustomerControl.Playlist.CatalogoPlaylistController">
 
@@ -32,9 +47,15 @@
                   <Button fx:id="btnBuscar" onAction="#handleBuscar" style="-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-background-radius: 20px; -fx-min-width: 35px; -fx-min-height: 35px;" text="🔍" />
                   <!-- Espaciador para empujar el logo a la derecha -->
                   <Pane HBox.hgrow="ALWAYS" />
-                  
-                  <!-- Botón de cerrar sesión al extremo derecho -->
-                  <Button fx:id="btnLogo" onAction="#handleLogo" style="-fx-background-color: #FF6B6B; -fx-text-fill: white; -fx-background-radius: 20px; -fx-padding: 8px 15px; -fx-font-size: 14px;" text="Cerrar Sesión" />
+                  <MenuButton fx:id="menuPerfil" style="-fx-background-color: transparent;">
+                     <items>
+                        <MenuItem fx:id="btnEditarPerfil" onAction="#editarPerfil" text="Editar Perfil" />
+                        <MenuItem fx:id="btnCerrarSesion" onAction="#handleLogo" text="Cerrar Sesión" />
+                     </items>
+                     <graphic>
+                        <Circle fx:id="imgPerfil" fill="DODGERBLUE" radius="23.0" stroke="BLACK" strokeType="INSIDE" />
+                     </graphic>
+                  </MenuButton>
                </children>
             </HBox>
          </children>
@@ -244,13 +265,13 @@
                               <!-- Tabla de canciones -->
                               <TableView fx:id="tableCanciones" onMouseClicked="#handleSeleccionarCancion" prefHeight="350.0" style="-fx-background-color: #0A0E27; -fx-control-inner-background: #0A0E27; -fx-selection-bar: #5A5A80; -fx-selection-bar-non-focused: #5A5A80; -fx-table-cell-border-color: transparent; -fx-border-color: transparent; -fx-focus-color: transparent; -fx-faint-focus-color: transparent; -fx-table-column-header-height: 0; -fx-table-header-background: transparent; -fx-cell-focus-inner-border: transparent;" VBox.vgrow="ALWAYS">
                                  <columns>
-                                    <TableColumn fx:id="colNumero" minWidth="40.0" prefWidth="40.0" maxWidth="40.0" style="-fx-alignment: CENTER;" text="" />
-                                    <TableColumn fx:id="colTitulo" minWidth="280.0" prefWidth="280.0" maxWidth="280.0" text="" />
-                                    <TableColumn fx:id="colArtista" minWidth="200.0" prefWidth="200.0" maxWidth="200.0" text="" />
-                                    <TableColumn fx:id="colFechaAgregacion" minWidth="140.0" prefWidth="140.0" maxWidth="140.0" style="-fx-alignment: CENTER;" text="" />
-                                    <TableColumn fx:id="colAnio" minWidth="80.0" prefWidth="80.0" maxWidth="80.0" style="-fx-alignment: CENTER;" text="" />
-                                    <TableColumn fx:id="colDuracion" minWidth="100.0" prefWidth="100.0" maxWidth="100.0" style="-fx-alignment: CENTER;" text="" />
-                                    <TableColumn fx:id="colAcciones" minWidth="100.0" prefWidth="100.0" maxWidth="100.0" style="-fx-alignment: CENTER;" text="" />
+                                    <TableColumn fx:id="colNumero" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" style="-fx-alignment: CENTER;" text="" />
+                                    <TableColumn fx:id="colTitulo" maxWidth="280.0" minWidth="280.0" prefWidth="280.0" text="" />
+                                    <TableColumn fx:id="colArtista" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="" />
+                                    <TableColumn fx:id="colFechaAgregacion" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" style="-fx-alignment: CENTER;" text="" />
+                                    <TableColumn fx:id="colAnio" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" style="-fx-alignment: CENTER;" text="" />
+                                    <TableColumn fx:id="colDuracion" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" style="-fx-alignment: CENTER;" text="" />
+                                    <TableColumn fx:id="colAcciones" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" style="-fx-alignment: CENTER;" text="" />
                                  </columns>
                                  <VBox.margin>
                                     <Insets top="-5.0" />
@@ -268,13 +289,13 @@
 
    <!-- Panel inferior - Reproductor -->
    <bottom>
-      <AnchorPane fx:id="anchorBarraReproduccion" prefHeight="100.0" style="-fx-background-color: #070F2B;" visible="false" managed="false">
+      <AnchorPane fx:id="anchorBarraReproduccion" managed="false" prefHeight="100.0" style="-fx-background-color: #070F2B;" visible="false">
          <children>
             <!-- Barra de progreso -->
-            <Slider fx:id="pgbProgresoCancion" layoutX="20.0" layoutY="3.0" prefHeight="14.0" prefWidth="1240.0" style="-fx-control-inner-background: #5A5A80;" value="0.0" min="0.0" max="1.0" />
+            <Slider fx:id="pgbProgresoCancion" layoutX="20.0" layoutY="3.0" max="1.0" min="0.0" prefHeight="14.0" prefWidth="1240.0" style="-fx-control-inner-background: #5A5A80;" value="0.0" />
             
             <!-- Imagen del álbum -->
-            <ImageView fx:id="imgCancionActual" layoutX="22.0" layoutY="20.0" fitHeight="70.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="imgCancionActual" fitHeight="70.0" fitWidth="76.0" layoutX="22.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true" />
             
             <!-- Nombre de la canción -->
             <Label fx:id="lblCancionActual" layoutX="105.0" layoutY="24.0" prefHeight="35.0" prefWidth="250.0" text="Nombre cancion" textFill="WHITE" wrapText="true">
@@ -334,9 +355,9 @@
             
             <!-- Controles adicionales (tiempo y volumen) -->
             <!-- Tiempo actual y total -->
-            <Label fx:id="lblTiempoActual" layoutX="700.0" layoutY="40.0" prefHeight="14.0" prefWidth="50.0" text="0:00" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px;" />
-            <Label layoutX="750.0" layoutY="40.0" prefHeight="14.0" prefWidth="10.0" text="/" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px;" />
-            <Label fx:id="lblTiempoTotal" layoutX="760.0" layoutY="40.0" prefHeight="14.0" prefWidth="50.0" text="0:00" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px;" />
+            <Label fx:id="lblTiempoActual" layoutX="700.0" layoutY="40.0" prefHeight="14.0" prefWidth="50.0" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px;" text="0:00" />
+            <Label layoutX="750.0" layoutY="40.0" prefHeight="14.0" prefWidth="10.0" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px;" text="/" />
+            <Label fx:id="lblTiempoTotal" layoutX="760.0" layoutY="40.0" prefHeight="14.0" prefWidth="50.0" style="-fx-text-fill: #AFAFC7; -fx-font-size: 12px;" text="0:00" />
             
             <Button fx:id="btnVolumen" layoutX="820.0" layoutY="40.0" mnemonicParsing="false" onAction="#handleVolumen" style="-fx-background-color: transparent; -fx-text-fill: white;" text="🔊" />
             <Slider fx:id="sliderVolumen" layoutX="860.0" layoutY="45.0" max="1.0" prefWidth="80.0" style="-fx-control-inner-background: #5A5A80;" value="0.5" />

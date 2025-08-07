@@ -14,12 +14,16 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import javafx.geometry.Pos;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.util.Duration;
 import BusinessLogic.Playlist;
 import DataAccessComponent.DTO.PlaylistDTO;
+import UserInterface.Utils.RecursosPerfil;
 import DataAccessComponent.DTO.CancionDTO;
 import DataAccessComponent.DAO.CancionDAO;
 import DataAccessComponent.DAO.PlaylistDAO;
@@ -39,7 +43,18 @@ import java.io.InputStream;
  * Gestiona la interfaz de usuario para mostrar, buscar y administrar playlists.
  */
 public class CatalogoPlaylistController implements Initializable {
+    //sesion
+    private List<String> rutasImagenes = RecursosPerfil.obtenerRutasImagenes();
+    private int indiceActual = Integer.parseInt(Sesion.getSesion().obtenerUsuarioActual().getFoto());
 
+    @FXML
+    private MenuButton menuPerfil;
+    @FXML
+    private MenuItem btnCerrarSesion;
+    @FXML
+    private MenuItem btnEditarPerfil;
+    @FXML
+    private Circle imgPerfil;
     // Panel superior - Búsqueda principal
     @FXML private TextField txtBusquedaPrincipal;
     @FXML private Button btnBuscar;
@@ -132,7 +147,7 @@ public class CatalogoPlaylistController implements Initializable {
 
         listPlaylists.setItems(listPlaylistsData);
         tableCanciones.setItems(listCancionesData);
-
+        actualizarImagenPerfil();
         // Inicializar reproductor y sus componentes
         inicializarReproductor();
 
@@ -740,7 +755,7 @@ public class CatalogoPlaylistController implements Initializable {
             loginStage.show();
             
             // Cerrar ventana actual
-            Stage currentStage = (Stage) btnLogo.getScene().getWindow();
+            Stage currentStage = (Stage) btnAgregarPlaylist.getScene().getWindow();
             currentStage.close();
             
         } catch (Exception e) {
@@ -1583,5 +1598,33 @@ private void handleRecomendaciones() {
             reproductor.getPlaylist().setIndiceActual(indiceActual);
         }
         actualizarInformacionCancionReproductor();
+    }
+    private void actualizarImagenPerfil() {
+        try {
+            String ruta = rutasImagenes.get(indiceActual);
+            Image imagen = new Image(getClass().getResourceAsStream(ruta));
+            ImagePattern patron = new ImagePattern(imagen);
+            imgPerfil.setFill(patron);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void editarPerfil(ActionEvent event) {
+try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/modificarPerfil.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Registro de Usuario");
+            stage.setMinWidth(1280);
+            stage.setMinHeight(680);
+
+            stage.show();
+            // Cerrar la ventana de login
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
