@@ -424,7 +424,6 @@ public class EditarPlaylistController implements Initializable {
         }
     }
     // =================== CARGA DE DATOS LEGACY ===================
-
     public void cargarDatosPlaylist(String titulo, String descripcion, String rutaImagen) {
         guardarDatosOriginalesLegacy(titulo, descripcion, rutaImagen);
         cargarDatosEnControlesLegacy(titulo, descripcion);

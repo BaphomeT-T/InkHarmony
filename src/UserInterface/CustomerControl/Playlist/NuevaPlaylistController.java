@@ -9,6 +9,9 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.application.Platform;
 import BusinessLogic.Playlist;
+import BusinessLogic.Sesion;
+import DataAccessComponent.DTO.PerfilDTO;
+import DataAccessComponent.DAO.PerfilDAO;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.ArrayList;
@@ -21,7 +24,6 @@ public class NuevaPlaylistController implements Initializable {
     // Constantes
     private static final String RUTA_IMAGEN_DEFAULT = "/UserInterface/Resources/img/CatalogoPlaylist/camara.png";
     private static final String DESCRIPCION_DEFAULT = "Sin descripción";
-    private static final int PROPIETARIO_ID_DEFAULT = 1;
     private static final String COLOR_BOTON_ACTIVO = "-fx-background-color: #9190C2; -fx-background-radius: 20; -fx-text-fill: black; -fx-font-size: 16px; -fx-font-weight: bold;";
     private static final String COLOR_BOTON_INACTIVO = "-fx-background-color: #6B6B6B; -fx-background-radius: 20; -fx-text-fill: #999999; -fx-font-size: 16px; -fx-font-weight: bold;";
     private static final String[] EXTENSIONES_IMAGEN = {"*.jpg", "*.jpeg", "*.png", "*.gif"};
@@ -116,10 +118,91 @@ public class NuevaPlaylistController implements Initializable {
         }
 
         try {
+            // Validar sesión antes de crear la playlist
+            if (!validarSesionActiva()) {
+                return;
+            }
+
             boolean resultado = crearPlaylist(datos);
             procesarResultadoCreacion(resultado);
         } catch (Exception e) {
             manejarErrorCreacion(e);
+        }
+    }
+
+    /**
+     * Valida que existe una sesión activa y un usuario autenticado
+     * @return true si hay una sesión válida, false en caso contrario
+     */
+    private boolean validarSesionActiva() {
+        try {
+            Sesion sesion = Sesion.getSesion();
+            PerfilDTO usuarioActual = sesion.obtenerUsuarioActual();
+            
+            if (usuarioActual == null) {
+                mostrarAlerta("Error de Sesión", 
+                    "No hay un usuario autenticado. Por favor, inicia sesión e intenta nuevamente.");
+                return false;
+            }
+            
+            return true;
+        } catch (Exception e) {
+            mostrarAlerta("Error de Sesión", 
+                "Error al verificar la sesión del usuario: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Obtiene el ID del usuario actual de la sesión.
+     * Utiliza el correo para buscar el perfil completo si es necesario.
+     * @return ID del usuario actual
+     * @throws Exception si no hay usuario autenticado o error en la sesión
+     */
+    private int obtenerIdUsuarioActual() throws Exception {
+        Sesion sesion = Sesion.getSesion();
+        PerfilDTO usuarioActual = sesion.obtenerUsuarioActual();
+        
+        if (usuarioActual == null) {
+            throw new Exception("No hay usuario autenticado en la sesión");
+        }
+        
+        // Si el PerfilDTO ya tiene el ID disponible, utilizarlo directamente
+        if (usuarioActual.getIdPerfil() > 0) {
+            return usuarioActual.getIdPerfil();
+        }
+        
+        // Si no tiene ID, buscar el perfil completo por correo usando PerfilDAO
+        if (usuarioActual.getCorreo() != null && !usuarioActual.getCorreo().isEmpty()) {
+            return obtenerIdPorCorreoConDAO(usuarioActual.getCorreo());
+        }
+        
+        throw new Exception("No se pudo obtener el ID del usuario actual. Datos de sesión incompletos.");
+    }
+
+    /**
+     * Obtiene el ID del usuario buscando el perfil completo por correo usando PerfilDAO
+     * @param correo El correo del usuario
+     * @return ID del usuario
+     * @throws Exception si no se encuentra el usuario o hay error en la consulta
+     */
+    private int obtenerIdPorCorreoConDAO(String correo) throws Exception {
+        try {
+            PerfilDAO perfilDAO = new PerfilDAO();
+            PerfilDTO perfilCompleto = perfilDAO.buscarPorEmail(correo);
+            
+            if (perfilCompleto == null) {
+                throw new Exception("No se encontró usuario con el correo: " + correo);
+            }
+            
+            // Verificar que el perfil tenga un ID válido
+            if (perfilCompleto.getIdPerfil() <= 0) {
+                throw new Exception("El perfil encontrado no tiene un ID válido");
+            }
+            
+            return perfilCompleto.getIdPerfil();
+        } catch (Exception e) {
+            throw new Exception("Error al buscar usuario por correo: " + e.getMessage());
         }
     }
 
@@ -207,11 +290,14 @@ public class NuevaPlaylistController implements Initializable {
     private boolean crearPlaylist(DatosPlaylist datos) throws Exception {
         Playlist playlistLogic = new Playlist();
         byte[] imagenBytes = convertirImagenABytes(datos.getImagenArchivo());
+        
+        // Obtener el ID del usuario actual de la sesión
+        int idUsuarioActual = obtenerIdUsuarioActual();
 
         return playlistLogic.registrar(
                 datos.getTitulo(),
                 datos.getDescripcionODefault(),
-                PROPIETARIO_ID_DEFAULT,
+                idUsuarioActual, // Usar ID del usuario actual obtenido dinámicamente
                 imagenBytes,
                 new ArrayList<>()
         );
