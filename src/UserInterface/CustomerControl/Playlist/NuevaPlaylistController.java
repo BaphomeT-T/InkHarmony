@@ -9,19 +9,20 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.application.Platform;
 import BusinessLogic.Playlist;
+import BusinessLogic.Sesion;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.ArrayList;
 import javafx.stage.FileChooser;
 import javafx.scene.image.Image;
 import java.io.File;
+import DataAccessComponent.DAO.UsuarioDAO;
 
 public class NuevaPlaylistController implements Initializable {
 
     // Constantes
     private static final String RUTA_IMAGEN_DEFAULT = "/UserInterface/Resources/img/CatalogoPlaylist/camara.png";
     private static final String DESCRIPCION_DEFAULT = "Sin descripción";
-    private static final int PROPIETARIO_ID_DEFAULT = 1;
     private static final String COLOR_BOTON_ACTIVO = "-fx-background-color: #9190C2; -fx-background-radius: 20; -fx-text-fill: black; -fx-font-size: 16px; -fx-font-weight: bold;";
     private static final String COLOR_BOTON_INACTIVO = "-fx-background-color: #6B6B6B; -fx-background-radius: 20; -fx-text-fill: #999999; -fx-font-size: 16px; -fx-font-weight: bold;";
     private static final String[] EXTENSIONES_IMAGEN = {"*.jpg", "*.jpeg", "*.png", "*.gif"};
@@ -157,6 +158,11 @@ public class NuevaPlaylistController implements Initializable {
         try {
             Image nuevaImagen = new Image(archivo.toURI().toString());
             imgPortada.setImage(nuevaImagen);
+            // Hacer que la imagen ocupe todo el contenedor
+            imgPortada.setFitWidth(200.0);  // Tamaño completo del AnchorPane
+            imgPortada.setFitHeight(200.0); // Tamaño completo del AnchorPane
+            imgPortada.setPreserveRatio(false); // Permite deformación para llenar completamente
+
             imagenSeleccionada = archivo;
             System.out.println("Nueva imagen de portada seleccionada: " + archivo.getName());
         } catch (Exception e) {
@@ -173,6 +179,10 @@ public class NuevaPlaylistController implements Initializable {
         try {
             Image iconoCamara = new Image(getClass().getResourceAsStream(RUTA_IMAGEN_DEFAULT));
             imgPortada.setImage(iconoCamara);
+            // Mantener las propiedades originales para el ícono de cámara
+            imgPortada.setFitWidth(120.0);
+            imgPortada.setFitHeight(120.0);
+            imgPortada.setPreserveRatio(true);
         } catch (Exception e) {
             System.out.println("No se pudo cargar el ícono de cámara por defecto");
             imgPortada.setImage(null);
@@ -198,14 +208,42 @@ public class NuevaPlaylistController implements Initializable {
     private boolean crearPlaylist(DatosPlaylist datos) throws Exception {
         Playlist playlistLogic = new Playlist();
         byte[] imagenBytes = convertirImagenABytes(datos.getImagenArchivo());
+        
+        // Obtener el ID del usuario actual de la sesión
+        int idPropietario = obtenerIdUsuarioActual();
+        System.out.println("ID del usuario propietario: " + idPropietario);
 
         return playlistLogic.registrar(
                 datos.getTitulo(),
                 datos.getDescripcionODefault(),
-                PROPIETARIO_ID_DEFAULT,
+                idPropietario,
                 imagenBytes,
                 new ArrayList<>()
         );
+    }
+
+    /**
+     * Obtiene el ID del usuario actualmente logueado
+     * @return ID del usuario actual, o -1 si no se puede obtener
+     */
+    private int obtenerIdUsuarioActual() {
+        try {
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+            String correoUsuario = Sesion.getSesion().obtenerUsuarioActual().getCorreo();
+            int idUsuario = usuarioDAO.obtenerIdUsuarioPorCorreo(correoUsuario);
+            
+            if (idUsuario <= 0) {
+                System.err.println("No se pudo obtener un ID válido para el usuario con correo: " + correoUsuario);
+                mostrarAlerta("Error", "No se pudo identificar al usuario actual. Por favor, inicia sesión nuevamente.");
+            }
+            
+            return idUsuario;
+        } catch (Exception e) {
+            System.err.println("Error al obtener el ID del usuario actual: " + e.getMessage());
+            e.printStackTrace();
+            mostrarAlerta("Error", "Error al obtener la información del usuario. Por favor, inicia sesión nuevamente.");
+            return -1;
+        }
     }
 
     private byte[] convertirImagenABytes(File archivo) {

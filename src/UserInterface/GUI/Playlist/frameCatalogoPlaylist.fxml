@@ -91,6 +91,7 @@
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                            <children>
                               <Button fx:id="btnFiltroMusica" style="-fx-background-color: #AFAFC7; -fx-text-fill: #0A0E27; -fx-background-radius: 15px; -fx-padding: 8px 20px; -fx-font-size: 12px; -fx-font-weight: bold;" text="Música" />
+                              <Button fx:id="btnRecomendaciones" onAction="#handleRecomendaciones" style="-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-background-radius: 15px; -fx-padding: 8px 20px; -fx-font-size: 12px; -fx-font-weight: bold;" text="Recomendaciones" />
                            </children>
                         </HBox>
 

@@ -59,6 +59,7 @@ public class CatalogoPlaylistController implements Initializable {
 
     // Catálogo principal
     @FXML private Button btnFiltroMusica;
+    @FXML private Button btnRecomendaciones;
     @FXML private GridPane gridPlaylistsMomento1;
     @FXML private GridPane gridPlaylistsMomento2;
 
@@ -733,6 +734,13 @@ public class CatalogoPlaylistController implements Initializable {
         } catch (Exception e) {
             System.out.println("Error al regresar: " + e.getMessage());
         }
+    }
+    //Recomendaciones por implementar
+    @FXML
+    private void handleRecomendaciones() {
+        // Por implementar
+        System.out.println("Funcionalidad de recomendaciones por implementar");
+        mostrarAlerta("Información", "Funcionalidad de recomendaciones por implementar", Alert.AlertType.INFORMATION);
     }
 
     @FXML
