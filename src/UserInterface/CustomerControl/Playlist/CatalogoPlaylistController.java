@@ -724,17 +724,35 @@ public class CatalogoPlaylistController implements Initializable {
 
     @FXML
     private void handleLogo() {
-        mostrarCatalogoPrincipal();
+        try {
+            // Cerrar sesión actual
+            Sesion sesion = Sesion.getSesion();
+            sesion.cerrarSesion(); // Limpia la sesión
+            
+            // Abrir ventana de login
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/login.fxml"));
+            Parent root = loader.load();
+            Stage loginStage = new Stage();
+            loginStage.setScene(new Scene(root));
+            loginStage.setTitle("InkHarmony - Login");
+            loginStage.setMinWidth(1280);
+            loginStage.setMinHeight(680);
+            loginStage.show();
+            
+            // Cerrar ventana actual
+            Stage currentStage = (Stage) btnLogo.getScene().getWindow();
+            currentStage.close();
+            
+        } catch (Exception e) {
+            System.out.println("Error al cerrar sesión: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @FXML
     private void handleRegresar() {
-        try {
-            Stage currentStage = (Stage) btnRegresar.getScene().getWindow();
-            currentStage.close();
-        } catch (Exception e) {
-            System.out.println("Error al regresar: " + e.getMessage());
-        }
+        // Regresar a la vista principal del catálogo en lugar de cerrar
+        mostrarCatalogoPrincipal();
     }
     //Recomendaciones por implementar
     @FXML
