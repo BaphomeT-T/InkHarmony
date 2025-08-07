@@ -2,6 +2,8 @@ package UserInterface.CustomerControl.Recomendaciones;
 
 import BusinessLogic.*;
 import DataAccessComponent.DTO.CancionDTO;
+import UserInterface.CustomerControl.Playlist.CatalogoPlaylistController;
+import UserInterface.CustomerControl.Recomendaciones.BarraReproduccionController;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
@@ -9,15 +11,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.skin.TableHeaderRow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-
 import java.io.ByteArrayInputStream;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +36,7 @@ public class RecomendacionesController {
 
     // ---------- estilos ----------
     private static final String BASE_STYLE = "-fx-background-color: #5A5A80; -fx-text-fill: white; -fx-background-radius: 40; -fx-padding: 20 40;";
-    private static final String PRESSED_STYLE = "-fx-background-color: #48486A; -fx-text-fill: white; -fx-background-radius: 40; -fx-padding: 20 40;";
+    private static final String PRESSED_STYLE = "-fx-background-color: #9190C2; -fx-text-fill: white; -fx-background-radius: 40; -fx-padding: 20 40;";
 
     // ---------- estado de filtros ----------
     private boolean filtroGenero = false;
@@ -41,6 +47,12 @@ public class RecomendacionesController {
     // ---------- servicios y datos ----------
     private final ServicioRecomendaciones servicio = new ServicioRecomendaciones();
     private final ObservableList<CancionDTO> datos = FXCollections.observableArrayList();
+    private List<CancionDTO> canciones;
+
+    public List<CancionDTO> getCanciones() {
+        return canciones;
+    }
+
 
     // ---------- FXML ----------
     @FXML
@@ -63,15 +75,31 @@ public class RecomendacionesController {
     @FXML
     private StackPane contentPane;
 
+    @FXML
+    private StackPane rootPane; // ← se inyecta desde el nuevo FXML
+    private BarraReproduccionController barraCtrl;
+
+    private TableHeaderRow headerRow;
+
     // ---------- init ----------
     @FXML
     private void initialize() {
         configurarColumnas();
         configurarBusquedasEnVivo();
         tablaCanciones.setItems(datos);
-        tablaCanciones.setColumnResizePolicy(
-                TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        tablaCanciones.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        tablaCanciones.prefWidthProperty().bind(contentPane.widthProperty().subtract(40));
+        tablaCanciones.prefHeightProperty().bind(contentPane.heightProperty().subtract(80));
         configurarAnchuraDinamica();
+
+        // ─── localizar la fila de encabezado ───
+        Platform.runLater(() -> {
+            headerRow = (TableHeaderRow) tablaCanciones.lookup("TableHeaderRow");
+            if (headerRow != null) { // al inicio la tabla está vacía
+                headerRow.setVisible(false);
+                headerRow.setManaged(false);
+            }
+        });
 
         // arranque: UI limpia
         filtrosBox.setVisible(false);
@@ -80,6 +108,7 @@ public class RecomendacionesController {
         txtBuscarGenero.setManaged(false);
         txtBuscarArtista.setVisible(false);
         txtBuscarArtista.setManaged(false);
+        cargarBarraReproduccion();
     }
 
     // ---------- handlers de botones ----------
@@ -113,14 +142,12 @@ public class RecomendacionesController {
         refrescarTabla();
     }
 
-    @FXML
-    private void cerrarVentana(ActionEvent e) {
-        ((Button) e.getSource()).getScene().getWindow().hide();
-    }
 
     // ---------- lógica de toggles ----------
     private void toggleFiltroGenero() {
         filtroGenero = !filtroGenero;
+        if (!filtroGenero)
+            txtBuscarGenero.clear();
         actualizarEstilosBotones();
         actualizarVisibilidadCampos();
         refrescarTabla();
@@ -128,6 +155,8 @@ public class RecomendacionesController {
 
     private void toggleFiltroArtista() {
         filtroArtista = !filtroArtista;
+        if (!filtroArtista)
+            txtBuscarArtista.clear();
         actualizarEstilosBotones();
         actualizarVisibilidadCampos();
         refrescarTabla();
@@ -186,56 +215,77 @@ public class RecomendacionesController {
         });
     }
 
+    /** Llena la tabla según los filtros activos y el texto escrito. */
     private void refrescarTabla() {
 
-        String textoGenero = filtroGenero ? txtBuscarGenero.getText().trim() : "";
-
-        Genero generoExacto = null;
-        if (!textoGenero.isBlank()) {
-            String mayus = textoGenero.toUpperCase();
-            try {
-                generoExacto = Genero.valueOf(mayus);
-            } catch (IllegalArgumentException ignored) {
-                /* no exact match aún */ }
+        /* ---------- A. Sin filtros ---------- */
+        if (!mostrarFiltrosActivos()) {
+            datos.clear();
+            actualizarHeader(); // ← NUEVO
+            mensajeBienvenida.setVisible(true);
+            mensajeSelecciona.setVisible(true);
+            mensajeSelecciona.setText("Selecciona uno o más filtros");
+            return;
         }
 
-        String artista = filtroArtista ? txtBuscarArtista.getText() : null;
+        /* ---------- B. Falta texto ---------- */
+        String textoGenero = filtroGenero ? txtBuscarGenero.getText().trim() : "";
+        String textoArtista = filtroArtista ? txtBuscarArtista.getText().trim() : "";
 
+        boolean generoPend = filtroGenero && textoGenero.isBlank();
+        boolean artistaPend = filtroArtista && textoArtista.isBlank();
+        boolean faltaTextoEnTodos = (generoPend || artistaPend)
+                && !(filtroGenero && !generoPend)
+                && !(filtroArtista && !artistaPend)
+                && !(filtroPrefer || filtroEstrenos);
+
+        if (faltaTextoEnTodos) {
+            datos.clear();
+            actualizarHeader(); // ← NUEVO
+            mensajeBienvenida.setVisible(false);
+            mensajeSelecciona.setVisible(true);
+            mensajeSelecciona.setText(
+                    generoPend && artistaPend ? "Ingresa un género o artista"
+                            : generoPend ? "Ingresa un género"
+                                    : "Ingresa un artista");
+            return;
+        }
+
+        /* ---------- C. Consulta al servicio ---------- */
         List<CancionDTO> base = servicio.recomendar(
-                filtroPrefer, // usa preferencias
-                generoExacto, // null si no exacto
-                artista, // null o texto artista
-                filtroEstrenos); // estrenos?
+                filtroPrefer, null,
+                filtroArtista ? textoArtista : null,
+                filtroEstrenos);
 
         List<CancionDTO> resultado = base;
-        if (filtroGenero && (generoExacto == null) && !textoGenero.isBlank()) {
+        if (filtroGenero && !textoGenero.isBlank()) {
             String patron = textoGenero.toLowerCase();
             resultado = base.stream()
                     .filter(c -> c.getGeneros() != null &&
                             c.getGeneros().stream()
-                                    .anyMatch(g -> g.name().toLowerCase().contains(patron)))
+                                    .anyMatch(g -> g.name().toLowerCase()
+                                            .contains(patron)))
                     .toList();
         }
 
-        datos.setAll(resultado); // refresca la tabla
+        datos.setAll(resultado);
+        actualizarHeader();
 
-        boolean hayDatos = !resultado.isEmpty();
-        boolean filtrosActivos = mostrarFiltrosActivos();
-
-        if (hayDatos) {
+        if (resultado.isEmpty()) {
+            mensajeBienvenida.setVisible(false);
+            mensajeSelecciona.setVisible(true);
+            mensajeSelecciona.setText("No hay coincidencias");
+        } else {
             mensajeBienvenida.setVisible(false);
             mensajeSelecciona.setVisible(false);
-        } else {
-            if (filtrosActivos) {
-                mensajeBienvenida.setVisible(false);
-                mensajeSelecciona.setVisible(true);
-                mensajeSelecciona.setText("No hay coincidencias");
-            } else {
-                mensajeBienvenida.setVisible(true);
-                mensajeBienvenida.setText("¡Bienvenido!");
-                mensajeSelecciona.setVisible(true);
-                mensajeSelecciona.setText("Selecciona uno o más filtros");
-            }
+        }
+    }
+
+    private void actualizarHeader() {
+        if (headerRow != null) {
+            boolean hayDatos = !datos.isEmpty();
+            headerRow.setVisible(hayDatos);
+            headerRow.setManaged(hayDatos);
         }
     }
 
@@ -248,16 +298,23 @@ public class RecomendacionesController {
     private void configurarColumnas() {
 
         // ── columna TÍTULO + PORTADA ──
-        colTituloConImagen.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue()));
-        colTituloConImagen.setCellFactory(col -> new TableCell<>() {
+        colTituloConImagen.setCellValueFactory(cd -> new SimpleObjectProperty<>(cd.getValue()));
+
+        colTituloConImagen.setCellFactory(tc -> new TableCell<>() {
 
             private final ImageView portada = new ImageView();
-            private final Label lblTitulo = new Label();
-            private final HBox box = new HBox(10, portada, lblTitulo);
+            private final Label titulo = new Label();
+            private final HBox box = new HBox(10, portada, titulo);
 
             {
-                portada.setFitHeight(40);
                 portada.setFitWidth(40);
+                portada.setFitHeight(40);
+                titulo.setStyle("-fx-font-weight: bold;");
+
+                box.setAlignment(Pos.CENTER_LEFT);
+
+                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                setAlignment(Pos.CENTER_LEFT);
             }
 
             @Override
@@ -268,16 +325,16 @@ public class RecomendacionesController {
                 } else {
                     if (c.getPortada() != null)
                         portada.setImage(new Image(new ByteArrayInputStream(c.getPortada())));
-                    lblTitulo.setText(c.getTitulo());
+                    titulo.setText(c.getTitulo());
                     setGraphic(box);
                 }
             }
         });
 
-        // ── ARTISTA ──
-        colArtista.setCellValueFactory(cd -> Bindings.createStringBinding(() -> cd.getValue().getArtistas().isEmpty()
-                ? ""
-                : cd.getValue().getArtistas().get(0).getNombre()));
+        // ── ARTISTA(S) ──
+        colArtista.setCellValueFactory(cd -> Bindings.createStringBinding(() -> cd.getValue().getArtistas().stream()
+                .map(a -> a.getNombre())
+                .collect(Collectors.joining(", "))));
 
         // ── GÉNERO(S) ──
         colGenero.setCellValueFactory(cd -> Bindings.createStringBinding(() -> cd.getValue().getGeneros().stream()
@@ -285,9 +342,8 @@ public class RecomendacionesController {
                 .collect(Collectors.joining(", "))));
 
         // ── AÑO ──
-        colAnio.setCellValueFactory(cd -> Bindings.createStringBinding(() -> cd.getValue().getFechaRegistro() == null
-                ? ""
-                : cd.getValue().getFechaRegistro().format(DateTimeFormatter.ofPattern("yyyy"))));
+        colAnio.setCellValueFactory(cd -> Bindings.createStringBinding(
+                () -> String.valueOf(cd.getValue().getAnio())));
 
         // ── DURACIÓN ──
         colDuracion.setCellValueFactory(cd -> Bindings.createStringBinding(
@@ -300,7 +356,7 @@ public class RecomendacionesController {
 
             {
                 Image img = new Image(getClass().getResourceAsStream(
-                        "/UserInterface/Resources/img/play.png"), 18, 18, true, true);
+                        "/UserInterface/Resources/img/play.png"), 11, 11, true, true);
                 btnPlay.setGraphic(new ImageView(img));
                 btnPlay.setStyle("""
                             -fx-background-color: #9190C2;
@@ -308,6 +364,8 @@ public class RecomendacionesController {
                             -fx-cursor: hand;
                         """);
                 btnPlay.setOnAction(e -> {
+                    int idx = getIndex(); // índice de la fila
+                    barraCtrl.reproducir(List.copyOf(datos), idx);
                 });
             }
 
@@ -320,4 +378,58 @@ public class RecomendacionesController {
         });
     }
 
+    private void cargarBarraReproduccion() {
+        try {
+            var url = getClass().getResource("/UserInterface/GUI/Recomendaciones/barraReproduccion.fxml");
+            if (url == null) {
+                System.out.println("No se encontró barraReproduccion.fxml");
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(url);
+            Node barra = loader.load();
+            barraCtrl = loader.getController();
+
+            StackPane.setAlignment(barra, Pos.BOTTOM_CENTER);
+            rootPane.getChildren().add(barra);
+            barra.toFront();
+
+            barraCtrl.mostrarSiActiva(datos); // por si ya sonaba algo
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    public void setReproduccionActual(List<CancionDTO> canciones, int indiceActual) {
+    if (barraCtrl != null) {
+        barraCtrl.actualizarUIDesdeReproductor();
+    }
+}
+public void setCanciones(List<CancionDTO> canciones) {
+    this.canciones = canciones;
+    if (barraCtrl != null) {
+        barraCtrl.setCanciones(canciones);
+    }
+}
+@FXML  void cerrarVentana(ActionEvent event){
+        //cargar la ventana de catálogo de playlist
+        System.out.println("cerrarVentana");
+        try{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/Playlist/frameCatalogoPlaylist.fxml"));
+        Parent root = loader.load();
+       CatalogoPlaylistController controller = loader.getController();
+        controller.mostrarReproductor();
+        controller.actualizarInformacionCancionReproductor();
+        Stage newStage = new Stage();
+        newStage.setTitle("Catálogo de Playlists");
+        newStage.setScene(new Scene(root, 1200, 800));
+        newStage.setResizable(true);
+        newStage.show();
+
+        // Cerrar la ventana actual
+        Stage currentStage = (Stage) cerrarButton.getScene().getWindow();
+        currentStage.close();
+    } catch (Exception e) {
+        System.err.println("Error al cargar la ventana de catálogo de playlists: " + e.getMessage());
+        e.printStackTrace();
+    }
+    }
 }

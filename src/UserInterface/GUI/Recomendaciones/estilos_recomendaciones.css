@@ -22,14 +22,13 @@
     -fx-background-color: #1D1F4E;
 }
 
-/* Color del texto de las celdas */
 .table-view .table-cell {
     -fx-text-fill: white;
     -fx-border-color: transparent;
 }
 
 .table-view .table-row-cell:hover {
-    -fx-background-color: #2a2c6a; /* Un poco más claro */
+    -fx-background-color: #2a2c6a;
 }
 
 .table-view .table-row-cell:selected {
@@ -40,10 +39,14 @@
     -fx-background-color: transparent;
 }
 .table-view .scroll-bar .track {
-    -fx-background-color: #1B1A55;      /* mismo tono del fondo de fila */
+    -fx-background-color: #1B1A55;
     -fx-background-radius: 10;
 }
 .table-view .scroll-bar .thumb {
-    -fx-background-color: #9190C2;      /* color acorde a la paleta */
+    -fx-background-color: #9190C2;
     -fx-background-radius: 10;
+}
+
+.table-view .table-cell .titulo-label {
+    -fx-font-weight: bold;
 }

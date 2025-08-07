@@ -754,14 +754,39 @@ public class CatalogoPlaylistController implements Initializable {
         // Regresar a la vista principal del catálogo en lugar de cerrar
         mostrarCatalogoPrincipal();
     }
-    //Recomendaciones por implementar
-    @FXML
-    private void handleRecomendaciones() {
-        // Por implementar
-        System.out.println("Funcionalidad de recomendaciones por implementar");
-        mostrarAlerta("Información", "Funcionalidad de recomendaciones por implementar", Alert.AlertType.INFORMATION);
-    }
+@FXML
+private void handleRecomendaciones() {
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/Recomendaciones/recomendaciones.fxml"));
+        Parent root = loader.load();
 
+        // Obtener el controlador de recomendaciones
+        UserInterface.CustomerControl.Recomendaciones.RecomendacionesController controller = loader.getController();
+
+        // Si hay una canción activa, pásala
+        if (cancionesReproduciendose != null && !cancionesReproduciendose.isEmpty() && reproductor != null) {
+            int indiceActual = reproductor.getPlaylist() != null ? reproductor.getPlaylist().getIndiceActual() : 0;
+            //pasar el id de la canción no de la playlist
+            controller.setCanciones(cancionesReproduciendose);
+            controller.setReproduccionActual(cancionesReproduciendose, indiceActual);
+        }
+
+        Stage loginStage = new Stage();
+        loginStage.setScene(new Scene(root));
+        loginStage.setTitle("Recomendaciones - InkHarmony");
+        loginStage.setMinWidth(1280);
+        loginStage.setMinHeight(680);
+        loginStage.show();
+
+        // Cerrar ventana actual
+        Stage currentStage = (Stage) btnLogo.getScene().getWindow();
+        currentStage.close();
+
+    } catch (Exception e) {
+        System.out.println("Error al abrir recomendaciones: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
     @FXML
     private void handleBuscarPlaylist() {
         // No es necesario implementar aquí, se maneja con el listener del textProperty

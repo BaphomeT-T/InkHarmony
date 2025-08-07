@@ -45,7 +45,7 @@ public class LoginController {
             Sesion sesion = Sesion.getSesion();
             sesion.iniciarSesion(PerfilDTO);
             mostrarAlerta("Correcto","Inicio correcto", Alert.AlertType.INFORMATION);
-
+            System.out.println("Usuario en sesión: " + Sesion.getSesion().obtenerUsuarioActual().getNombre());
             // Mostrar nueva vista "Catálogo de Playlists"
             try {
                 javafx.fxml.FXMLLoader loader;
