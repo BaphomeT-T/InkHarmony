@@ -46,7 +46,7 @@ public class LoginController {
             sesion.iniciarSesion(PerfilDTO);
             mostrarAlerta("Correcto","Inicio correcto", Alert.AlertType.INFORMATION);
 
-            // Mostrar nueva vista "Reproductor de Música"
+            // Mostrar nueva vista "Catálogo de Playlists"
             try {
                 javafx.fxml.FXMLLoader loader;
                 if (PerfilDTO.getTipoUsuario() == TipoUsuario.ADMINISTRADOR) {
