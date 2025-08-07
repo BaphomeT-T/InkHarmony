@@ -17,7 +17,20 @@ import DataAccessComponent.DTO.CancionDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Clase de lógica de negocio para la gestión de playlists.
+ * <p>
+ * Implementa el patrón de diseño {@code Composite}, permitiendo que playlists
+ * contengan otros componentes como canciones, y sean manipuladas de forma unificada.
+ * </p>
+ * <p>
+ * Esta clase interactúa con los DAOs y valida datos utilizando {@link ServicioValidacionPlaylist}.
+ * </p>
+ * 
+ * @author Grupo C
+ * @version 1.0
+ * @since 2025
+ */
 public class Playlist implements ComponentePlaylist {
 
     private PlaylistDTO playlistDTO;
@@ -27,7 +40,7 @@ public class Playlist implements ComponentePlaylist {
     private ServicioValidacionPlaylist validador;
 
     /**
-     * Constructor vacío
+     * Constructor vacío que inicializa DAOs, componentes y validador.
      */
     public Playlist() {
         this.playlistDAO = new PlaylistDAO();
@@ -37,7 +50,11 @@ public class Playlist implements ComponentePlaylist {
     }
 
     /**
-     * Constructor lleno xD
+     * Constructor que crea una nueva playlist con los datos proporcionados.
+     *
+     * @param titulo título de la playlist
+     * @param descripcion descripción de la playlist
+     * @param idPropietario identificador del usuario propietario
      */
     public Playlist(String titulo, String descripcion, int idPropietario) {
         this();
@@ -45,7 +62,16 @@ public class Playlist implements ComponentePlaylist {
     }
 
     /**
-     * Registra una nueva playlist en el sistema.
+     * Registra una nueva playlist en el sistema, validando su integridad
+     * y verificando duplicados.
+     *
+     * @param titulo título de la playlist
+     * @param descripcion descripción de la playlist
+     * @param idPropietario ID del usuario propietario
+     * @param imagenPortada imagen en bytes (puede ser null)
+     * @param cancionesIds lista de IDs de canciones
+     * @return {@code true} si se registró correctamente
+     * @throws Exception si los datos son inválidos o hay duplicados
      */
     public boolean registrar(String titulo, String descripcion, int idPropietario,
                              byte[] imagenPortada, List<Integer> cancionesIds) throws Exception {
@@ -75,14 +101,21 @@ public class Playlist implements ComponentePlaylist {
 
 
     /**
-     * Busca todas las playlists.
+     * Busca y devuelve todas las playlists del sistema.
+     *
+     * @return lista de objetos {@code PlaylistDTO}
+     * @throws Exception si ocurre un error en la consulta
      */
     public List<PlaylistDTO> buscarTodo() throws Exception {
         return playlistDAO.buscarTodo();
     }
 
     /**
-     * Busca playlist por ID.
+     * Busca una playlist por su ID.
+     *
+     * @param id identificador de la playlist
+     * @return objeto {@code PlaylistDTO} encontrado o {@code null}
+     * @throws Exception si ocurre un error en la búsqueda
      */
     public PlaylistDTO buscarPorId(int id) throws Exception {
         PlaylistDTO playlist = playlistDAO.buscarPorId(id);
@@ -95,20 +128,32 @@ public class Playlist implements ComponentePlaylist {
 
     /**
      * Busca playlists por nombre.
+     *
+     * @param nombre cadena a buscar
+     * @return lista de playlists con nombre coincidente
+     * @throws Exception si ocurre un error en la consulta
      */
     public List<PlaylistDTO> buscarPorNombre(String nombre) throws Exception {
         return playlistDAO.buscarPorNombre(nombre);
     }
 
     /**
-     * Obtiene playlists de un usuario específico.
+     * Obtiene las playlists pertenecientes a un usuario específico.
+     *
+     * @param idUsuario identificador del usuario
+     * @return lista de {@code PlaylistDTO}
+     * @throws Exception si ocurre un error en la consulta
      */
     public List<PlaylistDTO> obtenerPlaylistPorUsuario(int idUsuario) throws Exception {
         return playlistDAO.obtenerPlaylistPorUsuario(idUsuario);
     }
 
     /**
-     * Actualiza una playlist existente.
+     * Actualiza los datos de una playlist.
+     *
+     * @param playlist objeto con la información a actualizar
+     * @return {@code true} si se actualizó exitosamente
+     * @throws Exception si ocurre un error
      */
     public boolean actualizar(PlaylistDTO playlist) throws Exception {
         boolean resultado = playlistDAO.actualizar(playlist);
@@ -120,14 +165,22 @@ public class Playlist implements ComponentePlaylist {
     }
 
     /**
-     * Elimina una playlist.
+     * Elimina una playlist del sistema.
+     *
+     * @param idPlaylist identificador de la playlist
+     * @return {@code true} si se eliminó correctamente
+     * @throws Exception si ocurre un error
      */
     public boolean eliminar(int idPlaylist) throws Exception {
         return playlistDAO.eliminar(idPlaylist);
     }
 
     /**
-     * Agrega una canción a la playlist.
+     * Agrega una canción a la playlist, evitando duplicados.
+     *
+     * @param idCancion identificador de la canción
+     * @return {@code true} si se agregó; {@code false} si ya existía
+     * @throws Exception si no hay playlist cargada
      */
     public boolean agregarCancion(int idCancion) throws Exception {
         if (playlistDTO == null) {
@@ -148,6 +201,10 @@ public class Playlist implements ComponentePlaylist {
 
     /**
      * Elimina una canción de la playlist.
+     *
+     * @param idCancion identificador de la canción
+     * @return {@code true} si se eliminó; {@code false} si no estaba presente
+     * @throws Exception si ocurre un error
      */
     public boolean eliminarCancion(int idCancion) throws Exception {
         if (playlistDTO == null || playlistDTO.getCancionesIds() == null) {
@@ -163,7 +220,10 @@ public class Playlist implements ComponentePlaylist {
     }
 
     /**
-     * Obtiene los bytes de audio de todas las canciones para reproducción.
+     * Obtiene los archivos de audio de las canciones asociadas a la playlist.
+     *
+     * @return lista de arreglos de bytes con los archivos MP3
+     * @throws Exception si ocurre un error
      */
     public List<byte[]> obtenerCancionesParaReproduccion() throws Exception {
         if (playlistDTO == null) {
@@ -183,8 +243,11 @@ public class Playlist implements ComponentePlaylist {
     }
 
     /**
-     * Reproduce la playlist usando el reproductor MP3.
+     * Reproduce la playlist usando un reproductor MP3 si contiene canciones válidas.
+     *
+     * @throws Exception si no hay canciones o ocurre un error
      */
+
     public void reproducir() throws Exception {
         List<byte[]> cancionesBytes = obtenerCancionesParaReproduccion();
         if (!cancionesBytes.isEmpty()) {
@@ -229,7 +292,9 @@ public class Playlist implements ComponentePlaylist {
     }
 
     /**
-     * Agrega un componente a la playlist (patrón Composite).
+     * Agrega un componente a la lista de subcomponentes.
+     *
+     * @param componente objeto que implementa {@code ComponentePlaylist}
      */
     public void agregar(ComponentePlaylist componente) {
         if (componentes == null) {
@@ -239,7 +304,9 @@ public class Playlist implements ComponentePlaylist {
     }
 
     /**
-     * Elimina un componente de la playlist.
+     * Elimina un componente de la lista de subcomponentes.
+     *
+     * @param componente objeto a eliminar
      */
     public void eliminar(ComponentePlaylist componente) {
         if (componentes != null) {
@@ -248,7 +315,9 @@ public class Playlist implements ComponentePlaylist {
     }
 
     /**
-     * Calcula la cantidad total de canciones.
+     * Retorna la cantidad total de canciones en la playlist.
+     *
+     * @return número de canciones
      */
     public int calcularCantidadCanciones() {
         if (playlistDTO != null && playlistDTO.getCancionesIds() != null) {
@@ -258,7 +327,9 @@ public class Playlist implements ComponentePlaylist {
     }
 
     /**
-     * Carga los componentes de la playlist desde la base de datos.
+     * Carga las canciones de la playlist desde la base de datos y las adapta como componentes.
+     *
+     * @throws Exception si ocurre un error al acceder a la base de datos
      */
     private void cargarComponentes() throws Exception {
         if (playlistDTO != null && playlistDTO.getCancionesIds() != null) {
@@ -280,7 +351,11 @@ public class Playlist implements ComponentePlaylist {
      */
     private static class CancionComponente implements ComponentePlaylist {
         private final CancionDTO cancionDTO;
-
+        /**
+         * Constructor que recibe el objeto {@code CancionDTO} a adaptar.
+         *
+         * @param cancionDTO objeto de tipo canción
+         */
         public CancionComponente(CancionDTO cancionDTO) {
             this.cancionDTO = cancionDTO;
         }
@@ -299,19 +374,28 @@ public class Playlist implements ComponentePlaylist {
                 }
             }
         }
-
+     /**
+         * Obtiene la duración de la canción adaptada.
+         *
+         * @return duración en segundos
+         */
         @Override
         public double obtenerDuracion() {
             return cancionDTO != null ? cancionDTO.getDuracion() : 0.0;
         }
-
+        /**
+         * Obtiene el título de la canción adaptada.
+         *
+         * @return título como cadena
+         */
         @Override
         public String getTitulo() {
             return cancionDTO != null ? cancionDTO.getTitulo() : "";
         }
-
         /**
-         * Getter para acceder al CancionDTO encapsulado.
+         * Devuelve el objeto {@code CancionDTO} original encapsulado.
+         *
+         * @return instancia de {@code CancionDTO}
          */
         public CancionDTO getCancionDTO() {
             return cancionDTO;
@@ -319,9 +403,16 @@ public class Playlist implements ComponentePlaylist {
     }
 
     /**
-     * Getter y setters
+     * Asigna el objeto {@code PlaylistDTO} a la playlist.
+     *
+     * @param playlistDTO objeto a asignar
      */
     public PlaylistDTO getPlaylistDTO() { return playlistDTO; }
     public void setPlaylistDTO(PlaylistDTO playlistDTO) { this.playlistDTO = playlistDTO; }
+    /**
+     * Devuelve la lista de componentes asociados a la playlist.
+     *
+     * @return lista de {@code ComponentePlaylist}
+     */
     public List<ComponentePlaylist> getComponentes() { return componentes; }
 }
