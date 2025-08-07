@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
 import java.util.function.Consumer;
-import BusinessLogic.utilities.AdvancedPlayerAcc;
+
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.application.Platform;
@@ -115,6 +115,7 @@ public class ReproductorMP3 {
      */
     public void siguiente() {
         estadoActual.siguiente();
+        notificarCambioCancion();
     }
 
     /**
@@ -122,6 +123,7 @@ public class ReproductorMP3 {
      */
     public void anterior() {
         estadoActual.anterior();
+        notificarCambioCancion();
     }
 
     // --------------------------
@@ -175,10 +177,10 @@ public class ReproductorMP3 {
 
             mediaPlayer.setOnEndOfMedia(() -> {
                 System.out.println("Canción terminada, avanzando a la siguiente");
-                playlist.siguiente();
                 // Callback para avanzar automáticamente
                 Platform.runLater(() -> {
                     iniciarReproduccionDesde(0);
+                    siguiente();
                 });
             });
 
@@ -410,4 +412,25 @@ public class ReproductorMP3 {
     public void setEstado(EstadoReproductor estado) {
         this.estadoActual = estado;
     }
+
+    // Callback que se ejecuta cuando cambia de canción
+    private Runnable onSongChange;
+
+    /**
+     * Permite registrar un callback para cuando cambie la canción
+     */
+    public void setOnSongChange(Runnable onSongChange) {
+        this.onSongChange = onSongChange;
+    }
+
+    /**
+     * Método interno para notificar cambio de canción
+     */
+    public void notificarCambioCancion() {
+        if (onSongChange != null) {
+            onSongChange.run();
+        }
+    }
+
+
 }

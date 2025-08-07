@@ -9,6 +9,7 @@ package BusinessLogic;
  *
  * Forma parte del patrón de diseño **State**.
  */
+
 /**
  * Estado que representa cuando el reproductor está detenido.
  * Actualizado para usar JavaFX MediaPlayer.

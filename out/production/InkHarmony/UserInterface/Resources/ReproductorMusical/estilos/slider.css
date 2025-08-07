@@ -1,0 +1,11 @@
+.custom-slider {
+    -fx-accent: #FF0000; /* 🔴 Esto pinta el relleno del slider */
+}
+
+.custom-slider .track {
+    -fx-background-color: #555555; /* ⚫ Parte vacía */
+}
+
+.custom-slider .thumb {
+    -fx-background-color: #FF0000; /* 🔴 El punto */
+}

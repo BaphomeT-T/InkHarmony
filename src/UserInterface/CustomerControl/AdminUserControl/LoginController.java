@@ -52,7 +52,7 @@ public class LoginController {
                 if (PerfilDTO.getTipoUsuario() == TipoUsuario.ADMINISTRADOR) {
                     loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/AdminUserControl/home.fxml"));
                 } else {
-                    loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/reproduccionCancion.fxml"));
+                    loader = new FXMLLoader(getClass().getResource("/UserInterface/GUI/ReproductorMusical/reproduccionVariasCanciones.fxml"));
                 }
                 javafx.scene.Parent root = loader.load();
                 javafx.stage.Stage stage = new javafx.stage.Stage();

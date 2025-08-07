@@ -1,7 +1,7 @@
 package DataAccessComponent.DAO;
 
-import DataAccessComponent.DTO.ArtistaDTO;
 import DataAccessComponent.SQLiteDataHelper;
+import DataAccessComponent.DTO.ArtistaDTO;
 import BusinessLogic.Genero;
 
 import java.sql.*;
