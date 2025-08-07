@@ -45,7 +45,7 @@ public class PlaylistDAO extends SQLiteDataHelper implements IDAO<PlaylistDTO> {
         }
 
         String insertPlaylist = "INSERT INTO Playlist(titulo, descripcion, id_propietario, imagen_portada, fecha_creacion) VALUES (?, ?, ?, ?, ?)";
-        String insertCancionPlaylist = "INSERT INTO Playlist_Cancion(id_playlist, id_cancion, orden) VALUES (?, ?, ?)";
+        String insertCancionPlaylist = "INSERT INTO playlist_elementos(id_playlist, id_cancion, orden) VALUES (?, ?, ?)";
 
         Connection conn = null;
         try {
