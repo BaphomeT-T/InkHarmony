@@ -1,0 +1,112 @@
+
+/* General background */
+.root {
+    -fx-base: #0A0E27;
+    -fx-background: #0A0E27;
+}
+
+/* TextFields */
+.text-field {
+    -fx-background-color: #AFAFC7;
+    -fx-text-fill: #0A0E27;
+    -fx-prompt-text-fill: #666666;
+    -fx-background-radius: 20;
+    -fx-font-size: 14px;
+}
+
+/* ListView */
+.list-view {
+    -fx-background-color: #E6E6E6;
+    -fx-control-inner-background: #E6E6E6;
+    -fx-text-fill: #0A0E27;
+    -fx-background-radius: 10px;
+}
+
+/* Labels */
+.label {
+    -fx-text-fill: white;
+}
+.label.small-label {
+    -fx-text-fill: #AFAFC7;
+    -fx-font-size: 12px;
+}
+
+/* TilePane */
+.tile-pane {
+    -fx-background-color: #0A0E27;
+}
+
+/* Playlist Card */
+.tarjeta-playlist {
+    -fx-background-color: #1B1A55;
+    -fx-padding: 15px;
+    -fx-background-radius: 10px;
+    -fx-border-color: #5A5A80;
+    -fx-border-radius: 10px;
+    -fx-alignment: center;
+    -fx-spacing: 10px;
+    -fx-cursor: hand;
+}
+.tarjeta-playlist:hover {
+    -fx-background-color: #2C2C5E;
+}
+.tarjeta-playlist Label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* TableView */
+.table-view {
+    -fx-background-color: #1B1A55;
+    -fx-control-inner-background: #1B1A55;
+    -fx-border-color: #5A5A80;
+    -fx-border-radius: 10px;
+    -fx-table-cell-border-color: transparent;
+    -fx-padding: 10px;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+}
+.table-view .column-header-background {
+    -fx-background-color: #2E2E5E;
+}
+.table-view .table-row-cell {
+    -fx-background-color: #0A0E27;
+}
+.table-view .table-row-cell:odd {
+    -fx-background-color: #121530;
+}
+.table-view .table-row-cell:selected {
+    -fx-background-color: #5A5A80;
+    -fx-text-fill: white;
+}
+.table-cell {
+    -fx-text-fill: white;
+    -fx-padding: 5px;
+}
+
+/* Buttons */
+.button {
+    -fx-background-color: #5A5A80;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+}
+.button:hover {
+    -fx-background-color: #7D7DAA;
+}
+.button:pressed {
+    -fx-background-color: #4A4A70;
+}
+.button.transparent {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+}
+
+/* Slider */
+.slider .track {
+    -fx-background-color: #5A5A80;
+}
+.slider .thumb {
+    -fx-background-color: #AFAFC7;
+}
