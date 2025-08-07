@@ -24,6 +24,8 @@ import DataAccessComponent.DTO.PlaylistDTO;
 import DataAccessComponent.DTO.CancionDTO;
 import DataAccessComponent.DAO.CancionDAO;
 import DataAccessComponent.DAO.PlaylistDAO;
+import DataAccessComponent.DAO.UsuarioDAO;
+import BusinessLogic.Sesion;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.List;
@@ -1294,8 +1296,16 @@ public class CatalogoPlaylistController implements Initializable {
         }
 
         try {
-            Playlist playlistLogic = new Playlist();
-            List<PlaylistDTO> todasLasPlaylists = playlistLogic.buscarTodo();
+            // Obtener el ID del usuario actual
+            int idUsuarioActual = obtenerIdUsuarioActual();
+            if (idUsuarioActual <= 0) {
+                System.err.println("No se pudo obtener el ID del usuario actual para filtrar");
+                return;
+            }
+
+            // Obtener solo las playlists del usuario actual
+            PlaylistDAO playlistDAO = new PlaylistDAO();
+            List<PlaylistDTO> todasLasPlaylists = playlistDAO.obtenerPlaylistPorUsuario(idUsuarioActual);
 
             listPlaylistsData.clear();
 
@@ -1410,8 +1420,17 @@ public class CatalogoPlaylistController implements Initializable {
      */
     private void cargarPlaylists() {
         try {
-            Playlist playlistLogic = new Playlist();
-            List<PlaylistDTO> playlists = playlistLogic.buscarTodo();
+            // Obtener el ID del usuario actual
+            int idUsuarioActual = obtenerIdUsuarioActual();
+            if (idUsuarioActual <= 0) {
+                System.err.println("No se pudo obtener el ID del usuario actual");
+                mostrarAlerta("Error", "No se pudo identificar al usuario actual. Por favor, inicia sesión nuevamente.", Alert.AlertType.ERROR);
+                return;
+            }
+
+            // Usar el método que filtra por usuario
+            PlaylistDAO playlistDAO = new PlaylistDAO();
+            List<PlaylistDTO> playlists = playlistDAO.obtenerPlaylistPorUsuario(idUsuarioActual);
 
             listPlaylistsData.clear();
 
@@ -1437,6 +1456,28 @@ public class CatalogoPlaylistController implements Initializable {
             errorLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #AFAFC7; -fx-text-alignment: center;");
             listPlaylists.setPlaceholder(errorLabel);
             System.out.println("Error al cargar playlists: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Obtiene el ID del usuario actualmente logueado
+     * @return ID del usuario actual, o -1 si no se puede obtener
+     */
+    private int obtenerIdUsuarioActual() {
+        try {
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+            String correoUsuario = Sesion.getSesion().obtenerUsuarioActual().getCorreo();
+            int idUsuario = usuarioDAO.obtenerIdUsuarioPorCorreo(correoUsuario);
+            
+            if (idUsuario <= 0) {
+                System.err.println("No se pudo obtener un ID válido para el usuario con correo: " + correoUsuario);
+            }
+            
+            return idUsuario;
+        } catch (Exception e) {
+            System.err.println("Error al obtener ID del usuario actual: " + e.getMessage());
+            e.printStackTrace();
+            return -1;
         }
     }
 
