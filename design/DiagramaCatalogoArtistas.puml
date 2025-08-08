@@ -1,0 +1,62 @@
+
+package "CatalogoArtistas" {
+    class ArtistaDAO {
+        +registrar(artista: ArtistaDTO): boolean
+        +actualizar(artista: ArtistaDTO): boolean
+        +eliminar(id: int): boolean
+        +buscarTodo(): List<ArtistaDTO>
+        +buscarPorId(id: int): ArtistaDTO
+        +tieneCancionesAsociadas(idArtista: int): boolean
+    }
+    class "ServicioValidacionArtista"{
+        +validarCamposNombre(nombre: String):String
+        +esNombreUnico(nombre: String): boolean
+        +tieneElementoAsociados(artista: ArtistaDTO):boolean
+    }
+    class "Artista"{
+        -id:int
+        -nombre:String
+        -generos:List<Genero>
+        -fechaNacimiento: Date
+        -biografia: String
+        -imagen: BufferedImage
+    }
+
+    interface UnicoNombreValidable{
+       +esNombreUnico(nombre: String): boolean
+    }
+    interface AsociacionValidable{
+       +tieneElementosAsociados(artista: ArtistaDTO):boolean
+    }
+ArtistaDAO --> Artista
+ArtistaDAO --> ServicioValidacionArtista
+ServicioValidacionArtista--> Artista
+ServicioValidacionArtista..|> UnicoNombreValidable
+ServicioValidacionArtista..|> AsociacionValidable
+}
+
+
+package "CatalogoCanciones"{
+    enum Genero {
+        GAME_OST
+        ROCK
+        ROCK_ALTERNATIVO
+        VALS
+        TANGO
+        REGIONAL_MEXICANA
+        RAP
+        CLASICA
+        MOVIE_OST
+        JAZZ
+        COUNTRY
+        POP
+        REGGAETON
+        TRAP_LATINO
+        TRAP
+        K_POP
+        BOLERO
+        PASILLO
+    }
+Artista --> Genero
+
+}

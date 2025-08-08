@@ -9,6 +9,7 @@ package "CatalogoCanciones"{
         -anioCancion: int
         -portadaCancion: BufferedImage
         -archivoMP3: BLOB
+        -fechaRegistro: Date
     }
     class CancionDAO {
         +registrarCancion(cancion:Cancion): void
@@ -16,7 +17,6 @@ package "CatalogoCanciones"{
         +buscarCanciones(): List<Cancion>
         +buscarCancionNombre(nombre: string): Cancion
         +eliminarCancion(cancion:Cancion): void
-        +esNombreUnico(nombre: String): boolean
     }
     enum Genero {
         GAME_OST
@@ -48,7 +48,6 @@ class ServicioValidacionCancion {
     +validarPortada(portada: byte[]): boolean
     +validarArchivoMP3(archivoMP3: byte[]): boolean
     +validar(cancion: CancionDTO, esActualizacion: boolean): boolean
-    +esNombreUnico(nombre: String): boolean
 }
 Cancion --> CancionDAO
 Cancion --> Genero
@@ -57,82 +56,86 @@ ServicioValidacionCancion --> CancionDAO
 
 package "CatalogoArtistas" {
     class ArtistaDAO {
-        +registrarArtista(artista: Artista):void
-        +actualizarArtista(artista: Artista):void
-        +eliminarArtista(artista: Artista): void
-        +buscarArtistas(): List<Artista>
-        +buscarArtista(id: int): Artista
-    }
-    class "ServicioValidacion"{
-        +validarCampos(artista: Artista):boolean
-        +esNombreUnico(nombre: String): boolean
-        +tieneElementoAsociado(artista: Artista):boolean
-    }
-    class "Artista"{
-        -id:int
-        -nombre:String
-        -generos:List<Genero>
-        -fechaNacimiento: Date
-        -biografia: String
-        -imagen: BufferedImage
-    }
+                +registrar(artista: ArtistaDTO): boolean
+                +actualizar(artista: ArtistaDTO): boolean
+                +eliminar(id: int): boolean
+                +buscarTodo(): List<ArtistaDTO>
+                +buscarPorId(id: int): ArtistaDTO
+                +tieneCancionesAsociadas(idArtista: int): boolean
+            }
+            class "ServicioValidacionArtista"{
+                +validarCamposNombre(nombre: String):String
+                +esNombreUnico(nombre: String): boolean
+                +tieneElementoAsociados(artista: ArtistaDTO):boolean
+            }
+            class "Artista"{
+                -id:int
+                -nombre:String
+                -generos:List<Genero>
+                -fechaNacimiento: Date
+                -biografia: String
+                -imagen: BufferedImage
+            }
 
-    interface IUnicoNombreValidable{
-       +esNombreUnico(nombre: String): boolean
-    }
-    interface IAsociacionValidable{
-       +tieneElementosAsociados(artista: Artista):boolean
-    }
-ArtistaDAO --> Artista
-ArtistaDAO --> ServicioValidacion
-ServicioValidacion --> Artista
-ServicioValidacion ..|> IUnicoNombreValidable
-ServicioValidacion ..|> IAsociacionValidable
-Artista --> Genero
+            interface UnicoNombreValidable{
+               +esNombreUnico(nombre: String): boolean
+            }
+            interface AsociacionValidable{
+               +tieneElementosAsociados(artista: ArtistaDTO):boolean
+            }
+    ArtistaDAO --> Artista
+    ArtistaDAO --> "ServicioValidacionArtista"
+    "ServicioValidacionArtista" --> Artista
+    "ServicioValidacionArtista" ..|> UnicoNombreValidable
+    "ServicioValidacionArtista" ..|> AsociacionValidable
+    Artista --> Genero
 }
 package "Administración de usuarios" {
   class Perfil {
-    - nombre: String
-    - apellido: String
-    - correo: String
-    - contrasenia: String
-    - estadoCuenta: String
-    - fechaRegistro: Date
-    - foto: String
-  }
+      - nombre: String
+      - apellido: String
+      - correo: String
+      - contrasenia: String
+      - estadoCuenta: String
+      - fechaRegistro: Date
+      - foto: String
+    }
 
-  class Usuario {
-    - preferenciasMusicales: List<Genero>
-    + actualizarPerfil(nombre, apellido, foto): void
-    + agregarPreferenciasMusicales(generos: List<Genero>): void
-  }
+    class Usuario {
+      - preferenciasMusicales: List<GeneroDTO>
+      + actualizarPerfil(PerfilDTO perfil, boolean borrarPreferencias, List<GeneroDTO> nuevosGeneros): boolean
+      + {static} preferenciasToJSON(List<GeneroDTO> preferenciasMusicales): String
+      + {static}  preferenciasFromJSON(String json): List<GeneroDTO>
+    }
 
-  class Administrador {
-    + consultarUsuarios(): List<Perfil>
-    + activarCuenta(usuario: Perfil): void
-    + desactivarCuenta(usuario: Perfil): void
-    + cambiarTipoUsuario(usuario: Perfil, tipoUsuario: TipoUsuario): void
-    + eliminarCuenta(usuario: Perfil): void
-  }
+    class Administrador {
+      + consultarUsuarios(): List<PerfilDTO>
+      + activarCuenta(usuario: PerfilDTO): void
+      + desactivarCuenta(usuario: PerfilDTO): void
+      + cambiarTipoUsuario(usuario: PerfilDTO, tipoUsuario: TipoUsuario): void
+      + eliminarCuenta(usuario: PerfilDTO): void
+    }
 
-  class ServicioPerfil {
-    - perfilDTO: PerfilDTO
-    - {static} encoder: PasswordEncoder
-    + registrarUsuario(nombre, apellido, correo, contrasenia, foto): void
-    + autenticar(email, password): Perfil
-  }
-  Enum TipoUsuario {
-  ADMINISTRADOR
-  USUARIO
-  }
-  class Sesion {
-    - usuarioActual: Perfil
-    - {static} sesion: Sesion
-    + {static} getSesion(): Sesion
-    + iniciarSesio(usarioLogueado: Perfil): void
-    + cerrarSesion(): void
-    + obtenerUsuarioActual(): Perfil
-  }
+    class ServicioPerfil {
+      - perfilDAO: PerfilDAO
+      - {static} encoder: BCryptPasswordEncoder
+      + registrarUsuario(String nombre, String apellido, String correo, String contrasenia, String foto): void
+      + autenticar(String correo, String contraseniaIngresada): PerfilDTO
+    }
+    Enum TipoUsuario {
+    ADMINISTRADOR
+    USUARIO
+    }
+    class Sesion {
+      - usuarioActual: PerfilDTO
+      - {static} sesion: Sesion
+      - Sesion()
+      + {static} getSesion(): Sesion
+      + iniciarSesion(usarioLogueado: PerfilDTO): void
+      + cerrarSesion(): void
+      + obtenerUsuarioActual(): PerfilDTO
+    }
+
 
   ServicioPerfil .> Perfil
   Usuario --|> Perfil
@@ -143,145 +146,231 @@ package "Administración de usuarios" {
 }
 
 
-package "ReproductorDeMusica" {
+package "ReproductorMusical" { 
 
-    class ReproductorMusical {
-        - static instancia : ReproductorMusical
-        - cancionesBytes : List<byte[]>
-        - indiceActual : int
-        - player : AdvancedPlayerAcc
-        - hiloReproduccion : Thread
-        - frameActual : int
-        - estadoActual : EstadoReproductor
+  
 
-        - ReproductorMP3(List<byte[]>)
-        + static getInstancia(List<byte[]>) : ReproductorMP3
-        + setEstado(EstadoReproductor) : void
-        + getEstado() : EstadoReproductor
+    class ReproductorMP3 { 
 
-        + reproducir() : void
-        + pausar() : void
-        + reanudar() : void
-        + detener() : void
-        + siguiente() : void
-        + anterior() : void
+        - motor: MotorReproduccion 
 
-        + iniciarReproduccionDesde(frameInicial : int) : void
-        + cerrarReproduccion() : void
-        + moverAFrame(nuevoFrame : int) : void
-        + cambiarPlaylist(nuevaLista : List<byte[]>) : void
+        - playlist: GestorPlaylist 
 
-        + getFrameActual() : int
-        + setFrameActual(int) : void
-        + getPlayer() : AdvancedPlayerAcc
-        + getIndiceActual() : int
-        + setIndiceActual(int) : void
-        + getCancionesBytes() : List<byte[]>
-    }
+        - estadoActual: EstadoReproductor 
 
-    interface EstadoReproductor {
-        + reproducir() : void
-        + pausar() : void
-        + reanudar() : void
-        + detener() : void
-        + siguiente() : void
-        + anterior() : void
-    }
+        + getInstancia(nuevaLista: List): ReproductorMP3 
 
-    class EstadoDetenido {
-        - reproductor : ReproductorMusical
-        + EstadoDetenido(ReproductorMusical)
-    }
+        + reproducir(): void 
 
-    class EstadoReproduciendo {
-        - reproductor : ReproductorMusical
-        + EstadoReproduciendo(ReproductorMusical)
-    }
+        + pausar(): void 
 
-    class EstadoPausado {
-        - reproductor : ReproductorMusical
-        + EstadoPausado(ReproductorMusical)
-    }
+        + reanudar(): void 
 
-    class AdvancedPlayerAcc
+        + detener(): void 
 
-    EstadoDetenido ..|> EstadoReproductor
-    EstadoReproduciendo ..|> EstadoReproductor
-    EstadoPausado ..|> EstadoReproductor
+        + siguiente(): void 
 
-    ReproductorMusical --> EstadoReproductor
-    ReproductorMusical --> EstadoDetenido
-    ReproductorMusical --> EstadoReproduciendo
-    ReproductorMusical --> EstadoPausado
-    ReproductorMusical --> AdvancedPlayerAcc
-}
+        + anterior(): void 
 
-folder "JLayer" <<library>> {
-    class AdvancedPlayer
-    interface PlaybackListener
-    class PlaybackEvent
-}
+        + cambiarPlaylist(nuevaLista: List): void 
 
-AdvancedPlayerAcc --|> AdvancedPlayer
-AdvancedPlayerAcc --> PlaybackListener
-PlaybackListener --> PlaybackEvent
+        + iniciarReproduccionDesde(frameInicial: int): void 
 
+        + cerrarReproduccion(): void 
+
+        + cerrarReproduccionTotal(): void 
+
+        + moverAFrame(nuevoFrame: int): void 
+
+        + getPlaylist(): GestorPlaylist 
+
+        + getMotor(): MotorReproduccion 
+
+        + getEstado(): EstadoReproductor 
+
+        + setEstado(estado: EstadoReproductor): void 
+
+    } 
+
+  
+
+    class MotorReproduccion { 
+
+        - player: AdvancedPlayerAcc 
+
+        - hilo: Thread 
+
+        - frameActual: int 
+
+        + reproducir(cancion: byte[], desdeFrame: int, alFinalizar: Runnable): void 
+
+        + cerrar(): void 
+
+        + getFrameActual(): int 
+
+        + setFrameActual(frame: int): void 
+
+        + getPlayer(): AdvancedPlayerAcc 
+
+    } 
+
+  
+
+    class GestorPlaylist { 
+
+        - canciones: List 
+
+        - indiceActual: int 
+
+        + obtenerCancionActual(): byte[] 
+
+        + siguiente(): void 
+
+        + anterior(): void 
+
+        + reiniciar(): void 
+
+        + getIndiceActual(): int 
+
+        + setIndiceActual(indice: int): void 
+
+        + getCanciones(): List 
+
+        + setCanciones(nuevaLista: List): void 
+
+    } 
+
+  
+
+    interface IEstadoReproductor { 
+
+        + reproducir(): void 
+
+        + pausar(): void 
+
+        + reanudar(): void 
+
+        + detener(): void 
+
+        + siguiente(): void 
+
+        + anterior(): void 
+
+    } 
+
+  
+
+    class EstadoDetenido { 
+
+        - reproductor: ReproductorMP3 
+
+    } 
+
+  
+
+    class EstadoReproduciendo { 
+
+        - reproductor: ReproductorMP3 
+
+    } 
+
+  
+
+    class EstadoPausado { 
+
+        - reproductor: ReproductorMP3 
+
+    } 
+
+  
+
+    class AdvancedPlayerAcc { 
+
+        + getLastPosition(): int 
+
+    } 
+
+  
+
+    EstadoDetenido ..|> IEstadoReproductor 
+
+    EstadoReproduciendo ..|> IEstadoReproductor 
+
+    EstadoPausado ..|> IEstadoReproductor 
+
+  
+
+    ReproductorMP3 --> MotorReproduccion 
+
+    ReproductorMP3 --> GestorPlaylist 
+
+    ReproductorMP3 --> IEstadoReproductor 
+
+    MotorReproduccion --> AdvancedPlayerAcc 
+
+  
+
+    folder "JLayer" <<library>> { 
+
+        class AdvancedPlayer 
+
+    } 
+
+  
+
+    AdvancedPlayerAcc --|> AdvancedPlayer 
+
+} 
 
 
 package "Recomendaciones" {
   interface Recomendador {
-    + recomendar(): List<T>
+    + recomendar(): List<Cancion>
   }
 
   class RecomendadorCanciones {
     - cancionDAO: CancionDAO
-    + recomendar() : List<Cancion>
-  }
-    
-  class RecomendadorPlaylists {
-    - playlistDAO: PlaylistDAO
-    + recomendar() : List<Playlist>
+    + recomendar(): List<Cancion>
   }
 
   abstract class FiltroRecomendador {
-    # siguiente: Recomendador<T>
-    + FiltroRecomendador(siguiente: Recomendador<T>)
-    + recomendar() : List<T>
+    # siguiente: Recomendador
+    # FiltroRecomendador(siguiente: Recomendador)
+    + recomendar(): List<Cancion>
   }
 
   class FiltroGenero  {
-    + FiltroGenero(siguiente: Recomendador<Cancion>, genero: Genero)
-    + recomendar() : List<Cancion>
+    + FiltroGenero(siguiente: Recomendador, genero: Genero)
+    + recomendar(): List<Cancion>
   }
 
-  class FiltroUsuario  {
-    + FiltroUsuario(siguiente: Recomendador<Cancion>, usuario: Usuario)
-    + recomendar() : List<Cancion>
+  class FiltroPreferencias  {
+    + FiltroPreferencias(siguiente: Recomendador)
+    + recomendar(): List<Cancion>
   }
 
   class FiltroEstreno  {
     - diasEstreno: int
-    + FiltroEstreno(siguiente: Recomendador<Cancion>)
-    + recomendar() : List<Cancion>
+    + FiltroEstreno(siguiente: Recomendador)
+    + recomendar(): List<Cancion>
   }
 
-  class FiltroPlaylistGenero {
-    + FiltroPlaylistGenero(siguiente: Recomendador<Playlist>, genero: Genero)
-    + recomendar() : List<Playlist>
+  class FiltroArtista  {
+    - nombreArtista: String
+    + FiltroArtista(siguiente: Recomendador, nombreArtista: String)
+    + recomendar(): List<Cancion>
   }
 
   class ServicioRecomendaciones {
-    + recomendarCanciones(u: Usuario, g: Genero, estrenos: boolean) : List<Cancion>
-    + recomendarPlaylists(g: Genero) : List<Playlist>
+    + recomendar(usarPreferencias: boolean, genero: Genero, artista: String, estrenos: boolean): List<Cancion>
   }
 
     Recomendador <|.. RecomendadorCanciones
     Recomendador <|.. FiltroRecomendador
-    Recomendador <|.. RecomendadorPlaylists
     FiltroRecomendador <|-- FiltroGenero
-    FiltroRecomendador <|-- FiltroUsuario
+    FiltroRecomendador <|-- FiltroPreferencias
     FiltroRecomendador <|-- FiltroEstreno
-    FiltroRecomendador <|-- FiltroPlaylistGenero
+    FiltroRecomendador <|-- FiltroArtista
     ServicioRecomendaciones --> Recomendador
 }
 
@@ -363,22 +452,25 @@ ElementoCancion --> Cancion
 Playlist --> Perfil
 PlaylistDAO --> Perfil
 ReproductorMusical --> Cancion
+ReproductorMusical --> Playlist
 Usuario --> ReproductorMusical
-ServicioValidacionCancion ..|> IUnicoNombreValidable
+ServicioValidacionCancion ..|> UnicoNombreValidable
 CancionDAO -- ArtistaDAO
 Administrador -- CancionDAO
 Administrador -- ArtistaDAO
 Administrador --- Playlist
 Usuario --> Playlist
 Usuario --> "*" Genero : preferenciasMusicales
-FiltroUsuario --> Usuario
+FiltroPreferencias --> Genero
+FiltroPreferencias --> Perfil
+FiltroPreferencias --> Usuario
+FiltroPreferencias --> Cancion
 FiltroGenero  --> Genero
+FiltroGenero  --> Cancion
 FiltroEstreno --> Cancion
-FiltroPlaylistGenero --> Playlist
-FiltroPlaylistGenero --> Genero
-RecomendadorCanciones --> Cancion
+FiltroArtista --> Cancion
+FiltroRecomendador --> Cancion
 RecomendadorCanciones --> CancionDAO
-RecomendadorPlaylists --> Playlist
-RecomendadorPlaylists --> PlaylistDAO
+RecomendadorCanciones --> Cancion
+ServicioRecomendaciones --> Cancion
 @enduml
-
